@@ -7,25 +7,27 @@ class Game:
         self.screen = pygame.display.set_mode((window_width, window_height))
         self.clock = pygame.time.Clock()
     
-    def create(self):
-        print("how many characters? ")
-    # get user input for # of characters
+    #create players 
+    def createPlayers(self,players):
+        print("creating players... ")
     
-    # create the map
-    #createMap(); 
+    # create map
+    def createMap(self):
+        print("creating map... ")
     
-    # create the characters 
-    # createChars();
+    
+  
     
     # primary game loop
     def run(self):
         
         while True:
             for event in pygame.event.get():
+                
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-
+                
             self.screen.fill('black')
             
             pygame.display.update()
@@ -33,4 +35,12 @@ class Game:
 
 if __name__ == '__main__':
     game = Game();
+    
+    # create players 
+    #game.createPlayers();
+    
+    # create the map
+    #game.createMap();
+    
+    # run the game
     game.run();

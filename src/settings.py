@@ -1,3 +1,17 @@
-window_height = 800;
-window_width = 1400;
+window_height = 600;
+window_width = 800;
 FPS = 30;
+
+
+map = [ 
+    
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],    
+       
+    ]
