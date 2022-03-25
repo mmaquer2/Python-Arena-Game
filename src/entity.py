@@ -15,6 +15,12 @@ class Entity:
         print("created behaviorTree")
     
     
+    def useItem(self):
+        pass
+    
+    def attack(self):
+        pass
+    
     def move(self):
         print("moved")
     
