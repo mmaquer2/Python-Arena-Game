@@ -1,7 +1,7 @@
 window_height = 600;
 window_width = 800;
-FPS = 30;
-tileSize = 30;
+FPS = 60;
+tileSize = 64;
 
 X = "X"
 
