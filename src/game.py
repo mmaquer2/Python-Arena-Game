@@ -31,7 +31,13 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 
+                #user actions
+                    
             self.screen.fill('black')
+            #run level and levelMap
+            
+            # opponent actions
+            
             
             pygame.display.update()
             self.clock.tick(FPS)
