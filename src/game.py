@@ -14,12 +14,8 @@ class Game:
         self.clock = pygame.time.Clock()
     
     #create players 
-    def createPlayers(self):
-        print("creating players... ")
-    
-    # create map
-    def createMap(self):
-        print("creating map... ")
+    def createPlayers(self, numOfPlayers):
+        print("creating players... ", numOfPlayers)
     
     # primary game loop
     def run(self):
