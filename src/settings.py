@@ -3,6 +3,14 @@ window_width = 800;
 FPS = 60;
 tileSize = 64;
 
+
+# player stats 
+
+
+# cpu AI stats
+
+
+
 WORLD_MAP_ONE = [
 ['x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x'],
 ['x',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','x'],

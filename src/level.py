@@ -3,6 +3,7 @@ import pygame
 import random
 from settings import *
 from tile import Tile
+from floor import Floor
 from player import Player
 
 # class to handle running the level for the game state
@@ -40,7 +41,11 @@ class Level:
                 # create the wall obstacles on the map
                 if col == 'x':
                     Tile((x,y),[self.visible_sprites,self.obstacle_sprites])
-                    
+
+                # add floor spirtes to the game
+                #if col == ' ':
+                    #Floor((x,y),[self.visible_sprites,self.obstacle_sprites])
+                
                 #create the player on the map
                 
                 if col == 'p':

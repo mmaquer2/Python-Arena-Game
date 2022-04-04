@@ -20,23 +20,27 @@ class Player(pygame.sprite.Sprite):
     # handle user input with the arrow keys
     def input(self):
         keys = pygame.key.get_pressed()
+        
+        # y axis
         if keys[pygame.K_UP]:
-            print("pressing key up!")
             self.direction.y = -1;
-            
         elif keys[pygame.K_DOWN]:
-            print("pressing key down!")
             self.direction.y = 1;
-            
         else:
             self.direction.y = 0;
         
+        # x axis 
         if keys[pygame.K_RIGHT]:
             self.direction.x = 1;
         elif keys[pygame.K_LEFT]:
             self.direction.x = -1;
         else:
             self.direction.x = 0;
+            
+        # using items 
+        
+        
+        # attack
 
     # handling player movement across the map including physics
     def move(self,speed):
@@ -69,8 +73,7 @@ class Player(pygame.sprite.Sprite):
                         self.hitbox.bottom = sprite.hitbox.top
                     if self.direction.y < 0:
                         self.hitbox.top = sprite.hitbox.bottom
-                    
-                        
+                                   
     def update(self):
         self.input();
         self.move(self.speed)

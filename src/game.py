@@ -4,7 +4,6 @@ import pygame, sys
 from settings import *
 from level import Level 
 
-
 # main game loop class
 class Game:
     def __init__(self):
@@ -15,15 +14,13 @@ class Game:
         self.screen = pygame.display.set_mode((window_width, window_height))
         self.clock = pygame.time.Clock()
         
+        # get the number of AI players from the player
+        #numOfPlayers = int(input("how many cpu players would you like to play? 1- 3 " ))
+        
         # init game level and map
         self.level = Level();
     
-    #create players 
-    def createPlayers(self, numOfPlayers):
-        print("creating players... ", numOfPlayers)
-        
-        
-    
+   
     # primary game loop
     def run(self):
         
@@ -33,8 +30,7 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 
-            #run level and levelMap
-            self.screen.fill('black')
+            self.screen.fill('light green') # background color 
             self.level.run();
             pygame.display.update()
             self.clock.tick(FPS)
@@ -44,10 +40,6 @@ class Game:
 # this calls the main game start and loop
 if __name__ == '__main__':
     game = Game();
-
-    # create players 
-    # numOfPlayers = input("how many cpu players would you like to play?" )
-    #game.createPlayers(numOfPlayers);
-
+    
     # run the game
     game.run();
