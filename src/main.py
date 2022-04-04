@@ -1,6 +1,4 @@
 import pygame, sys
-
-# import game support classes
 from settings import *
 from level import Level 
 
@@ -34,7 +32,6 @@ class Game:
             self.level.run();
             pygame.display.update()
             self.clock.tick(FPS)
-
 
 
 # this calls the main game start and loop

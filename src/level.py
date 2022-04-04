@@ -37,17 +37,11 @@ class Level:
                 x = col_ind * tileSize;
                 y = row_ind * tileSize
                 # set what each tile will represent on the world map
-                
                 # create the wall obstacles on the map
                 if col == 'x':
                     Tile((x,y),[self.visible_sprites,self.obstacle_sprites])
 
-                # add floor spirtes to the game
-                #if col == ' ':
-                    #Floor((x,y),[self.visible_sprites,self.obstacle_sprites])
-                
                 #create the player on the map
-                
                 if col == 'p':
                     self.player = Player((x,y), [self.visible_sprites], self.obstacle_sprites)
                 
@@ -73,7 +67,7 @@ class CameraGroup(pygame.sprite.Group):
         self.offset.x = player.rect.centerx - self.half_width;
         self.offset.y = player.rect.centery - self.half_height;
         
-        for sprite in sorted(self.sprites(), key = lambda sprite: sprite.rect.centery):
+        for sprite in sorted(self.sprites(),key = lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image,offset_pos)
             
