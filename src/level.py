@@ -2,7 +2,7 @@
 import pygame
 import random
 from settings import *
-from tile import Tile
+from wall import Wall
 from floor import Floor
 from player import Player
 
@@ -22,6 +22,7 @@ class Level:
     
     def createMap(self):
         
+        # Select Map
         # randomize what map is being selected from the world maps in the settings 
         mapNum = random.randint(0, 2)
         if(mapNum == 0):
@@ -31,6 +32,14 @@ class Level:
         if(mapNum == 2):
             levelMap = WORLD_MAP_THREE
         
+        # Create Traps
+        
+        # get trap type
+        
+        # append trap to level map, such as t = bear trap, f = flame 
+        # 
+        
+    
         # TODO: make the x,p into a list, and push what the items will be to account for the 
         # selected number of players 
         
@@ -41,7 +50,7 @@ class Level:
                 # set what each tile will represent on the world map
                 # create the wall obstacles on the map
                 if col == 'x':
-                    Tile((x,y),[self.visible_sprites,self.obstacle_sprites])
+                    Wall((x,y),[self.visible_sprites,self.obstacle_sprites])
 
                 #create the player on the map
                 if col == 'p':

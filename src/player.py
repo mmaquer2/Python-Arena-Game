@@ -8,6 +8,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__(groups) 
         
         # init human controlled player      
+        # load sprite sheet
         self.image = pygame.image.load('src/sprites/player.png')
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-26)
@@ -22,28 +23,51 @@ class Player(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
         
         # y axis
+        #moving up
         if keys[pygame.K_UP]:
             self.direction.y = -1;
-        
+            self.image = pygame.image.load('src/sprites/wooden.png')
+            
+        #moving down
         elif keys[pygame.K_DOWN]:
             self.direction.y = 1;
+            self.image = pygame.image.load('src/sprites/player.png')
         
+        # no movement
         else:
             self.direction.y = 0;
         
         # x axis 
+        #moving right:
         if keys[pygame.K_RIGHT]:
             self.direction.x = 1;
+               
+        # moving left:    
         elif keys[pygame.K_LEFT]:
             self.direction.x = -1;
+            
+        # no movement    
         else:
             self.direction.x = 0;
             
         # using items 
+        if keys[pygame.K_i]:
+            self.use_item = True
+        
+        # attacks
+        
+        # TODO: how to handle which direction the player is attacking?
+        # TODO: what if this is a ranged attack?
+        # changing animations based on movement direction
         
         
-        # attack
-
+        if keys[pygame.K_SPACE]:
+            self.primary_attack = True;
+            
+        if keys[pygame.K_LSHIFT]:
+            self.secondary_attack = True;
+        
+        
     # handling player movement across the map including physics
     def move(self,speed):
         if self.direction.magnitude() != 0:

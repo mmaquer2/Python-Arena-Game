@@ -2,21 +2,21 @@
 - This served as a final Project for CS5150 (Game AI) at Northeastern University Spring 2022
 
 ## Description: 
-- this is a 2d arena fighting game with action rpg mechanics. The game may contain
-up to four characters in which each player is given a randomly selected assorted of items, stats, and is placed in the map. 
+- This is a 2d arena fighting game with action rpg mechanics. The game may contain up to four characters in which each player is given a randomly selected assorted of items, stats, and is placed in the map. 
 
 - The NPC's behaivors and items are determined by procedurally generated behavior trees. So with each playthrough an the players are required to adapt to a different set of items issued to them and adapt the the map created.d
 
 
 # Game AI:
 
-- prcoedurally created behavior trees: 
+- Prcoedurally created behavior trees: 
 
 
-- pathfinding: The pathfinding is done by the A* library provided by 
+- Pathfinding: The pathfinding is done by the A* library provided by 
 
 
 ## items and stats:
+ - baseline stats, health, energy, strength, 
 
 # Setup and Settings
 - Download the source directory onto your machine 
@@ -45,7 +45,8 @@ python 3 game.py run()
 
 ``` 
 
-# Resources
+# Resources and Credits
+- Special Thanks to clear code youtube channel, for providing starter code and boilerplate for the game main loop
 - https://www.pygame.org/docs/
 - Procedural Content Generation using Behavior Trees (PCGBT) by 
 Anurag Sarkar and Seth Cooper
@@ -53,5 +54,3 @@ Anurag Sarkar and Seth Cooper
 # License 
 
 This project is published under the Creative Commons Zero (CC0) license.
-
-You can use the code for any project you like, including commercial ones. Attributions would be appreciated but are not required.

@@ -4,7 +4,12 @@ FPS = 60;
 tileSize = 64;
 
 
+
+# unit stats, speed, strength, heath, 
+
 # player stats 
+
+
 
 
 # cpu AI stats
