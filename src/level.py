@@ -13,11 +13,12 @@ class Level:
 
         # create game sprites
         self.display_surface = pygame.display.get_surface();
+        
         # create the camera view to focus on the player 
         self.visible_sprites = CameraGroup()
         self.obstacle_sprites = pygame.sprite.Group();
         
-        self.createMap();
+        self.createMap(); # init map starting locations for obstacles and players 
     
     def createMap(self):
         
@@ -25,9 +26,10 @@ class Level:
         mapNum = random.randint(0, 2)
         if(mapNum == 0):
             levelMap = WORLD_MAP_ONE
-        else:
+        if(mapNum == 1):
             levelMap = WORLD_MAP_TWO
-        
+        if(mapNum == 2):
+            levelMap = WORLD_MAP_THREE
         
         # TODO: make the x,p into a list, and push what the items will be to account for the 
         # selected number of players 
