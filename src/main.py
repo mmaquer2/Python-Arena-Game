@@ -12,6 +12,10 @@ class Game:
         self.screen = pygame.display.set_mode((window_width, window_height))
         self.clock = pygame.time.Clock()
         
+        # play music
+        
+        # starting screen and level count down...
+        
         # init game level and map
         self.level = Level();
     
