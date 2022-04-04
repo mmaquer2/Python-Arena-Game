@@ -1,5 +1,6 @@
 
 import pygame
+import random
 from settings import *
 from tile import Tile
 from player import Player
@@ -18,13 +19,30 @@ class Level:
         self.createMap();
     
     def createMap(self):
-        for row_ind,row in enumerate(WORLD_MAP_ONE):
+        
+        # randomize what map is being selected from the world maps in the settings 
+        mapNum = random.randint(0, 2)
+        if(mapNum == 0):
+            levelMap = WORLD_MAP_ONE
+        else:
+            levelMap = WORLD_MAP_TWO
+        
+        
+        # TODO: make the x,p into a list, and push what the items will be to account for the 
+        # selected number of players 
+        
+        for row_ind,row in enumerate(WORLD_MAP_TWO):
             for col_ind, col in enumerate(row):
                 x = col_ind * tileSize;
                 y = row_ind * tileSize
                 # set what each tile will represent on the world map
+                
+                # create the wall obstacles on the map
                 if col == 'x':
                     Tile((x,y),[self.visible_sprites,self.obstacle_sprites])
+                    
+                #create the player on the map
+                
                 if col == 'p':
                     self.player = Player((x,y), [self.visible_sprites], self.obstacle_sprites)
                 
