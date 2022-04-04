@@ -1,5 +1,6 @@
 
-import pygame
+import pygame, sys
+from pathlib import Path
 from settings import *
 
 # class to represent the human controller player
@@ -11,7 +12,9 @@ class Player(pygame.sprite.Sprite):
         
       
         # load sprite sheet
-        self.image = pygame.image.load('player.png')
+        folder = Path("sprites\characters")
+        file = folder / "player.png"
+        self.image = pygame.image.load('sprites\characters\human\player.png')
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-26)
         

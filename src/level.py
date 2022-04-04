@@ -1,5 +1,5 @@
 
-import pygame
+import pygame,sys
 import random
 from settings import *
 from wall import Wall
@@ -32,18 +32,15 @@ class Level:
         if(mapNum == 2):
             levelMap = WORLD_MAP_THREE
         
-        # Create Traps
-        
-        # get trap type
+        # Create random Traps
         
         # append trap to level map, such as t = bear trap, f = flame 
-        # 
-        
+         
     
         # TODO: make the x,p into a list, and push what the items will be to account for the 
         # selected number of players 
         
-        for row_ind,row in enumerate(WORLD_MAP_TWO):
+        for row_ind,row in enumerate(WORLD_MAP_THREE):
             for col_ind, col in enumerate(row):
                 x = col_ind * tileSize;
                 y = row_ind * tileSize

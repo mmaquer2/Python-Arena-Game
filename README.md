@@ -2,7 +2,7 @@
 - This served as a final Project for CS5150 (Game AI) at Northeastern University Spring 2022
 
 ## Description: 
-- This is a 2d arena fighting game with action rpg mechanics. The game may contain up to four characters in which each player is given a randomly selected assorted of items, stats, and is placed in the map. 
+- This is a 2d arena fighting game with action rpg mechanics. The game contains 3 NPC characters and one human player. Each is given a randomly selected assorted of items, stats, and is placed in the map.
 
 - The NPC's behaivors and items are determined by procedurally generated behavior trees. So with each playthrough an the players are required to adapt to a different set of items issued to them and adapt the the map created.d
 

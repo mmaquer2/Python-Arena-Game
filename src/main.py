@@ -12,9 +12,6 @@ class Game:
         self.screen = pygame.display.set_mode((window_width, window_height))
         self.clock = pygame.time.Clock()
         
-        # get the number of AI players from the player
-        #numOfPlayers = int(input("how many cpu players would you like to play? 1- 3 " ))
-        
         # init game level and map
         self.level = Level();
     
