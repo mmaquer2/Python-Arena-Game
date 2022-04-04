@@ -3,7 +3,6 @@ import pygame,sys
 import random
 from settings import *
 from wall import Wall
-from floor import Floor
 from player import Player
 
 # class to handle running the level for the game state
@@ -32,27 +31,41 @@ class Level:
         if(mapNum == 2):
             levelMap = WORLD_MAP_THREE
         
-        # Create random Traps
-        
+        # Create and place traps on 
         # append trap to level map, such as t = bear trap, f = flame 
          
     
-        # TODO: make the x,p into a list, and push what the items will be to account for the 
-        # selected number of players 
+        
+        # Randomize starting locations, there are 4 possible starting points on each map
+        players = ["p","a","b","c"]
         
         for row_ind,row in enumerate(WORLD_MAP_THREE):
             for col_ind, col in enumerate(row):
                 x = col_ind * tileSize;
                 y = row_ind * tileSize
-                # set what each tile will represent on the world map
+                
+        # set what each tile will represent on the world map
                 # create the wall obstacles on the map
                 if col == 'x':
                     Wall((x,y),[self.visible_sprites,self.obstacle_sprites])
+                
+                
 
                 #create the player on the map
                 if col == 'p':
                     self.player = Player((x,y), [self.visible_sprites], self.obstacle_sprites)
+                    
+        # place npc characters on the map
                 
+                #if col=='a':
+                # 
+                
+                #if col=='b':
+                # 
+                
+                #if col=='c':
+                # 
+                           
     
     # loop to update and draw the game           
     def run(self):

@@ -3,10 +3,6 @@ window_width = 1280;
 FPS = 60;
 tileSize = 64;
 
-
-
-# unit stats, speed, strength, heath, 
-
 # player stats 
 player_stats = {'health': 100, 'energy': 100, 'attack': 5, 'magic': 5, "speed": 5 }
 

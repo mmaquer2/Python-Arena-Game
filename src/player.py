@@ -14,12 +14,13 @@ class Player(pygame.sprite.Sprite):
         # load sprite sheet
         folder = Path("sprites\characters")
         file = folder / "player.png"
-        self.image = pygame.image.load('sprites\characters\human\player.png')
+        #sprites\characters\human\player.png'
+        
+        
+        
+        self.image = pygame.image.load(file)
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-26)
-        
-        
-        
         
         # movement and attack vars
         self.direction = pygame.math.Vector2();

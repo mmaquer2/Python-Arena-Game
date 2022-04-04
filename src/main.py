@@ -2,6 +2,7 @@ import pygame, sys
 from settings import *
 from level import Level 
 
+
 # main game loop class
 class Game:
     def __init__(self):
@@ -14,7 +15,9 @@ class Game:
         
         # play music
         
+        
         # starting screen and level count down...
+        
         
         # init game level and map
         self.level = Level();
@@ -35,7 +38,7 @@ class Game:
             self.clock.tick(FPS)
 
 
-# this calls the main game start and loop
+# Calls the main game start and loop
 if __name__ == '__main__':
     game = Game();
     
