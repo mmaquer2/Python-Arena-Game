@@ -4,19 +4,36 @@ from settings import *
 
 # class to represent the human controller player
 class Player(pygame.sprite.Sprite):
+    
+      # init human controlled player      
     def __init__(self,pos,groups,obstacle_sprites):
         super().__init__(groups) 
         
-        # init human controlled player      
+      
         # load sprite sheet
-        self.image = pygame.image.load('src/sprites/player.png')
+        self.image = pygame.image.load('player.png')
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-26)
         
+        
+        
+        
+        # movement and attack vars
         self.direction = pygame.math.Vector2();
         self.speed = 5;
         
+        #attacking and blocking
+        self.attacking = False;
+        self.attack_cooldown = 400;
+        self.block_cooldown = 400;
+        self.attack_time = None;
+        
         self.obstacles_sprites = obstacle_sprites
+    
+    def import_player_data(self):
+        img_path = '..'
+        self.animations = ""
+    
         
     # handle user input with the arrow keys
     def input(self):
@@ -26,12 +43,12 @@ class Player(pygame.sprite.Sprite):
         #moving up
         if keys[pygame.K_UP]:
             self.direction.y = -1;
-            self.image = pygame.image.load('src/sprites/wooden.png')
+            #self.image = pygame.image.load('src/sprites/wooden.png')
             
         #moving down
         elif keys[pygame.K_DOWN]:
             self.direction.y = 1;
-            self.image = pygame.image.load('src/sprites/player.png')
+            #self.image = pygame.image.load('src/sprites/player.png')
         
         # no movement
         else:
@@ -62,12 +79,31 @@ class Player(pygame.sprite.Sprite):
         
         
         if keys[pygame.K_SPACE]:
+            print("player is attacking w/ prim")
             self.primary_attack = True;
             
         if keys[pygame.K_LSHIFT]:
+            print("Player is attacking w/ sec")
             self.secondary_attack = True;
+            
+        if keys[pygame.K_b]:
+            print("player is blocking")
+            self.blocking = True;
         
+    
+    def get_status(self):
+        pass
+    
+    
+    def coolDown(self):
+        current_time = pygame.time.get_ticks();
         
+        if self.attacking:
+            current_time -self.attack_time >= self.attack_cooldown + weapon_data[self.weapon]['coolDown'];
+            self.attacking = False;
+            self.destroy_attack();
+        
+    
     # handling player movement across the map including physics
     def move(self,speed):
         if self.direction.magnitude() != 0:
