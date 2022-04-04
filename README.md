@@ -13,10 +13,10 @@ up to four characters in which each player is given a randomly selected assorted
 
 # Game AI:
 
-- pathfinding: 
+- prcoedurally created behavior trees: 
 
 
-- behavior trees: 
+- pathfinding: The pathfinding is done by the A* library provided by 
 
 
 ## items and stats:
