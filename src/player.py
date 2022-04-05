@@ -99,7 +99,7 @@ class Player(pygame.sprite.Sprite):
 
 
         # print final result to see if animation paths were loaded correctly
-        print(self.animations)
+        #print(self.animations)
     
     
     # function to iterate through animation sub folders
@@ -246,16 +246,10 @@ class Player(pygame.sprite.Sprite):
     
     def animate(self):
         animation = self.animations[self.status];
-        
-        
         self.frame_index += self.animation_speed
-        
         # get the frame index to select the current animation
-        
         if self.frame_index >= len(animation): # get the len of the number of the items in the sprite sub folder
             self.frame_index = 0;
-        
-        
         # set curent image
         self.image = animation[int(self.frame_index)];
         self.rect = self.image.get_rect(center = self.hitbox.center); # update hitbox based on sprite change

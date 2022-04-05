@@ -4,6 +4,7 @@ import random
 from settings import *
 from wall import Wall
 from player import Player
+from enemy_a import Enemy_A
 from weapon import Weapon
 
 # class to handle running the level for the game state
@@ -54,15 +55,14 @@ class Level:
                     self.player = Player((x,y), [self.visible_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack)
                     
         # place npc characters on the map
-                
-                #if col=='a':
-                # 
+                if col=='a':
+                    self.cpu_a = Enemy_A((x,y), [self.visible_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
                 
                 #if col=='b':
-                # 
+                # self.cpu_b = Enemy_B((x,y), [self.visible_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
                 
                 #if col=='c':
-                # 
+                # self.cpu_c = Enemy_C((x,y), [self.visible_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
     
     # handles drawing the weapon sprite of a player or cpu AI
     def create_attack(self):
