@@ -9,20 +9,13 @@ from player import Player
 class Level:
     
     def __init__(self):
-
-        # create game sprites
-        self.display_surface = pygame.display.get_surface();
-        
-        # create the camera view to focus on the player 
-        self.visible_sprites = CameraGroup()
-        self.obstacle_sprites = pygame.sprite.Group();
-        
+        self.display_surface = pygame.display.get_surface();  # create game sprites
+        self.visible_sprites = CameraGroup()  # create the camera view to focus on the player 
+        self.obstacle_sprites = pygame.sprite.Group(); # create sprite group for obstacles
         self.createMap(); # init map starting locations for obstacles and players 
     
     def createMap(self):
-        
-        # Select Map
-        # randomize what map is being selected from the world maps in the settings 
+        # select game map by randomizing what map is being selected from the world maps in the settings 
         mapNum = random.randint(0, 2)
         if(mapNum == 0):
             levelMap = WORLD_MAP_ONE
@@ -34,8 +27,6 @@ class Level:
         # Create and place traps on 
         # append trap to level map, such as t = bear trap, f = flame 
          
-    
-        
         # Randomize starting locations, there are 4 possible starting points on each map
         players = ["p","a","b","c"]
         
@@ -69,6 +60,9 @@ class Level:
     
     # loop to update and draw the game           
     def run(self):
+        
+        #check game over?
+        
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update();
     

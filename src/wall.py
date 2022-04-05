@@ -9,10 +9,10 @@ class Wall(pygame.sprite.Sprite):
         super().__init__(groups)
         
         # src\sprites\env\wall.png
-        folder = Path("sprites\env")
-        file = folder / "wall.png"
-        
-        self.image = pygame.image.load("sprites\env\wall.png")
+        #/Users/michaelmaquera/workspace/game-ai-final/src/sprites/env/stump.png
+        folder = Path("src/sprites/env/rock.png")
+    
+        self.image = pygame.image.load(folder)
        
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-10)

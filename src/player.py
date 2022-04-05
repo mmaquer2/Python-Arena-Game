@@ -8,17 +8,13 @@ class Player(pygame.sprite.Sprite):
     
       # init human controlled player      
     def __init__(self,pos,groups,obstacle_sprites):
+        
         super().__init__(groups) 
         
-      
-        # load sprite sheet
-        folder = Path("sprites\characters")
-        file = folder / "player.png"
-        #sprites\characters\human\player.png'
+        # load player sprite sheet
+        player_folder = Path('src/sprites/characters/human/player.png')
         
-        
-        
-        self.image = pygame.image.load(file)
+        self.image = pygame.image.load(player_folder)
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-26)
         
@@ -35,7 +31,6 @@ class Player(pygame.sprite.Sprite):
         self.obstacles_sprites = obstacle_sprites
     
     def import_player_data(self):
-        img_path = '..'
         self.animations = ""
     
         

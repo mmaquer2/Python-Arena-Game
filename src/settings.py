@@ -13,7 +13,6 @@ cpu_three = {'health': 100, 'energy': 100, 'attack': 5, 'magic': 5, "speed": 5 }
 
 # weapon stats
 weapon_data = {
-    
     'axe': { 'cooldown': 100, 'damage': 15, 'graphic' : ''},
     'bow': { 'cooldown': 100, 'damage': 15, 'graphic' : ''},
     'spear': { 'cooldown': 100, 'damage': 15, 'graphic' : ''},
