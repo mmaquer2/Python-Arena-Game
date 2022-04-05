@@ -38,10 +38,16 @@ class Game:
             self.screen.fill('light green') # background color
             
             # starting screen and level count down...
-             
-            self.level.run();
-            pygame.display.update()
-            self.clock.tick(FPS)
+            
+            
+            # check if the game is over
+            if(self.level.isGameOver()):
+                print("game is over!")
+            else:
+                self.level.run();
+                pygame.display.update()
+                self.clock.tick(FPS)
+                
 
 
 # Calls the main game start and loop

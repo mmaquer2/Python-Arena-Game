@@ -56,12 +56,21 @@ class Level:
                 
                 #if col=='c':
                 # 
-                           
+    
+    # check the status of the players, is the game over?             
+    def isGameOver(self):
+        
+        # check statues of players
+        
+        
+        # if people are still alive
+        
+        
+        return False;
+        
     
     # loop to update and draw the game           
     def run(self):
-        
-        #check game over?
         
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update();
