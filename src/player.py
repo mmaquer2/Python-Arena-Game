@@ -2,6 +2,7 @@
 import pygame, sys
 from pathlib import Path
 from settings import *
+from os import walk
 
 # class to represent the human controller player
 class Player(pygame.sprite.Sprite):
@@ -23,59 +24,8 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-5);
         
-        # import sprite sheets for different actions
-        
-        idle_up_folder = Path('sprites/characters/player/up_idle')
-        idle_down_folder = Path('sprites/characters/player/down_idle')
-        idle_right_folder = Path('sprites/characters/player/right_idle')
-        idle_left_folder = Path('sprites/characters/player/left_idle')
-        
-        
-        move_down_folder = Path('sprites/characters/player/down')
-        move_up_folder = Path('sprites/characters/player/up')
-        move_right_folder = Path('sprites/characters/player/right')
-        move_left_folder = Path('sprites/characters/player/left')
-        
-        attack_down_folder = Path('sprites/characters/player/down_attack')
-        attack_up_folder = Path('sprites/characters/player/up_attack')
-        attack_right_folder = Path('sprites/characters/player/right_attack')
-        attack_left_folder = Path('sprites/characters/player/left_attack')
-        
-        block_down_folder = Path('sprites/characters/player/block_down')
-        block_up_folder = Path('sprites/characters/player/block_up.png')
-        block_right_folder = Path('sprites/characters/player/block_right')
-        block_left_folder = Path('sprites/characters/player/block_left')
-        
-        idleRight = []
-        idleLeft = []
-        idleUp = []
-        idleDown = []
-        
-        walkRight = []
-        walkLeft = []
-        walkUp = []
-        walkDown = []
-        
-        attackUp = []
-        attackDown = []
-        attackRight = []
-        attackLeft = []
-        
-        blockUp = []
-        blockDown = []
-        blockRight = []
-        blockLeft = []
-        
-        player_death = []
-        
-        
-        self.animations = {
-            'up': [], 'down': [], 'left': [], 'right': [], 
-            'up_idle': [], 'down_idle': [], 'left_idle': [], 'right_idle': [], 
-            'up_block': [], 'down_block': [], 'left_block': [], 'right_block': [], 
-            'up_attack': [], 'down_attack': [], 'left_attack': [], 'right_attack': [], 
-            
-        }
+        # graphics init
+        self.import_player_animations()
         
         # player status 
         self.status = 'down'
@@ -94,7 +44,64 @@ class Player(pygame.sprite.Sprite):
         self.attack_time = None;
         
         self.obstacles_sprites = obstacle_sprites
+    
+    
+    def import_player_animations(self):
+        
+        idle_up_folder = 'sprites/characters/player/up_idle'
+        idle_down_folder = 'sprites/characters/player/down_idle'
+        idle_right_folder = 'sprites/characters/player/right_idle'
+        idle_left_folder = 'sprites/characters/player/left_idle'
+        
+        
+        move_down_folder = 'sprites/characters/player/down'
+        move_up_folder = 'sprites/characters/player/up'
+        move_right_folder = 'sprites/characters/player/right'
+        move_left_folder = 'sprites/characters/player/left'
+        
+        attack_down_folder = 'sprites/characters/player/down_attack'
+        attack_up_folder = 'sprites/characters/player/up_attack'
+        attack_right_folder = 'sprites/characters/player/right_attack'
+        attack_left_folder = 'sprites/characters/player/left_attack'
+        
+        block_down_folder = 'sprites/characters/player/block_down'
+        block_up_folder = 'sprites/characters/player/block_up'
+        block_right_folder = 'sprites/characters/player/block_right'
+        block_left_folder = 'sprites/characters/player/block_left'  
+        
+        player_death = []
+        
+        self.animations = {
+            'up': move_up_folder, 'down': move_down_folder, 'left': move_left_folder, 'right': move_right_folder, 
+            'up_idle': idle_up_folder, 'down_idle': idle_down_folder, 'left_idle': idle_left_folder, 'right_idle': idle_right_folder, 
+            'up_block': block_up_folder, 'down_block':block_down_folder , 'left_block': block_left_folder, 'right_block': block_right_folder, 
+            'up_attack': attack_up_folder, 'down_attack': attack_down_folder, 'left_attack': attack_left_folder, 'right_attack': attack_right_folder, 
             
+        }
+        
+        
+        for animation in self.animations.keys():
+            currentPath = self.animations[animation]
+            self.animations[animation] = self.import_folder(currentPath)
+
+
+        # print final result to see if animation paths were loaded correctly
+        print(self.animations)
+    
+    
+    # function to iterate through animation sub folders
+    def import_folder(self, path):
+        items = []
+        # get all images inside the given path
+        for _,__,img_files in walk(path): # walk the given path
+            for data in img_files:
+                img_path = path + '/' + data # create full image path
+                image_temp = pygame.image.load(img_path) # load file image 
+                sacled_image = pygame.transform.scale(image_temp,(64,64));   #scale image to correct size
+                items.append(sacled_image) # append surface image to the current item list
+            
+        return items
+          
     # handle user input with the arrow keys
     def input(self):
         keys = pygame.key.get_pressed()
@@ -232,27 +239,19 @@ class Player(pygame.sprite.Sprite):
         if self.frame_index >= len(animation): # get the len of the number of the items in the sprite sub folder
             self.frame_index = 0;
         
-        print(self.frame_index)
         
         # set curent image
-        #self.temp_image = animation[int(self.frame_index)];
-        #print(animation[int(self.frame_index)])
+        self.image = animation[int(self.frame_index)];
+        self.rect = self.image.get_rect(center = self.hitbox.center); # update hitbox based on sprite change
         
-        #self.rect = self.image.get_rect(center = self.hitbox.center); # update hitbox based on sprite change
-        
-        # scale sprite sheet
-        #self.image = pygame.transform.scale(self.temp_image,(64,64));   
+  
         
                          
     def update(self):
-        #self.get_status(); # get the current status of the player
-        print(self.status)
-        
+        self.get_status(); # get the current status of the player
         self.animate()
-        
         self.input();
         self.cool_down();
-        
         self.move(self.speed)
             
         
