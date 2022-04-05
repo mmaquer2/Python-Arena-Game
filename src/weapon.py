@@ -9,7 +9,11 @@ class Weapon(pygame.sprite.Sprite):
         direction = player.status.split('_')[0]; # get the current direction of the player to point weapon in correct direction
         print(direction)
         
-        self.image = pygame.Surface((40,40))
+        # src\sprites\weapons\axe example of folder path to weapon sprite
+        weapon_path = f'sprites/weapons/{player.weapon}/{direction}.png' # path to the graphic of the weapon
+        self.image = pygame.image.load(weapon_path).convert_alpha()
+        
+        #self.image = pygame.Surface((40,40))
         
         if direction == 'right':
             self.rect = self.image.get_rect(midleft = player.rect.midright + pygame.math.Vector2(0,16)) # move weapon image down to players hand

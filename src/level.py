@@ -14,7 +14,11 @@ class Level:
         self.visible_sprites = CameraGroup()  # create the camera view to focus on the player 
         self.obstacle_sprites = pygame.sprite.Group(); # create sprite group for obstacles
         self.createMap(); # init map starting locations for obstacles and players 
-    
+
+        # attack sprites
+        self.current_attack_player = None;
+        
+        
     def createMap(self):
         # select game map by randomizing what map is being selected from the world maps in the settings 
         mapNum = random.randint(0, 2)
@@ -30,6 +34,10 @@ class Level:
          
         # Randomize starting locations, there are 4 possible starting points on each map
         players = ["p","a","b","c"]
+        random.shuffle(players) # shuffle players for different locations
+        
+        # players[0] = p
+        #  
         
         for row_ind,row in enumerate(WORLD_MAP_ONE):
             for col_ind, col in enumerate(row):
@@ -41,11 +49,9 @@ class Level:
                 if col == 'x':
                     Wall((x,y),[self.visible_sprites,self.obstacle_sprites])
                 
-                
-
                 #create the player on the map
                 if col == 'p':
-                    self.player = Player((x,y), [self.visible_sprites], self.obstacle_sprites, self.create_attack)
+                    self.player = Player((x,y), [self.visible_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack)
                     
         # place npc characters on the map
                 
@@ -58,10 +64,15 @@ class Level:
                 #if col=='c':
                 # 
     
-    
+    # handles drawing the weapon sprite of a player or cpu AI
     def create_attack(self):
-        Weapon(self.player,[self.visible_sprites])
+       self.current_attack_player = Weapon(self.player,[self.visible_sprites])
     
+    # removes a weapon from the game, once an attack is complete
+    def destroy_attack(self):
+        if self.current_attack_player:
+            self.current_attack_player.kill()
+        
     
     # check the status of the players, is the game over?             
     def isGameOver(self):

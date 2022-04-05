@@ -3,8 +3,7 @@ window_width = 1280;
 FPS = 60;
 tileSize = 64;
 
-# player stats 
-player_stats = {'health': 100, 'energy': 100, 'attack': 5, 'magic': 5, "speed": 5 }
+
 
 # cpu NPC stats
 cpu_one = {'health': 100, 'energy': 100, 'attack': 5, 'magic': 5, "speed": 5 }
@@ -14,11 +13,14 @@ cpu_three = {'health': 100, 'energy': 100, 'attack': 5, 'magic': 5, "speed": 5 }
 # weapon stats
 weapon_data = {
     'axe': { 'cooldown': 100, 'damage': 15, 'graphic' : ''},
-    'bow': { 'cooldown': 100, 'damage': 15, 'graphic' : ''},
-    'spear': { 'cooldown': 100, 'damage': 15, 'graphic' : ''},
+    'rapier': { 'cooldown': 100, 'damage': 15, 'graphic' : ''},
+    'lance': { 'cooldown': 100, 'damage': 15, 'graphic' : ''},
     'sword': { 'cooldown': 100, 'damage': 15, 'graphic' : ''},
-    'place_trap': { 'cooldown': 100, 'damage': 15, 'graphic' : ''}
+    'knife': { 'cooldown': 100, 'damage': 15, 'graphic' : ''},
+    
 }
+
+#'trap': { 'cooldown': 100, 'damage': 15, 'graphic' : ''}
 
 magic_data = {
     
