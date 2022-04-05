@@ -12,9 +12,13 @@ class Player(pygame.sprite.Sprite):
         super().__init__(groups) 
         
         # load player sprite sheet
-        player_folder = Path('sprites/characters/human/human_down.png')
+        player_folder = Path('src/sprites/characters/human/human_down.png')
         
-        self.image = pygame.image.load(player_folder)
+        # import image 
+        self.image_import = pygame.image.load(player_folder)
+        
+        # scale sprite sheet
+        self.image = pygame.transform.scale(self.image_import,(64,64));   
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-5);
         
