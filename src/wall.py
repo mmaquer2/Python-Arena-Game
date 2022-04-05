@@ -10,7 +10,7 @@ class Wall(pygame.sprite.Sprite):
         
         # src\sprites\env\wall.png
         #/Users/michaelmaquera/workspace/game-ai-final/src/sprites/env/stump.png
-        folder = Path("src/sprites/env/rock.png")
+        folder = Path("sprites/env/rock.png")
     
         self.image = pygame.image.load(folder)
        
