@@ -25,27 +25,26 @@ class Player(pygame.sprite.Sprite):
         
         # import sprite sheets for different actions
         
-        idle_up_folder = Path('sprites/characters/player/up_idle/idle_up.png')
-        idle_right_folder = Path('sprites/characters/player/up_idle/idle_down.png')
-        idle_left_folder = Path('sprites/characters/player/up_idle/idle_left.png')
-        
-        move_down_folder = Path('sprites/characters/player/up_idle/idle_down.png')
-        move_up_folder = Path('sprites/characters/player/up_idle/idle_down.png')
-        move_right_folder = Path('sprites/characters/player/up_idle/idle_down.png')
-        move_left_folder = Path('sprites/characters/player/up_idle/idle_down.png')
-        
-        attack_down_folder = Path('sprites/characters/player/up_idle/idle_down.png')
-        attack_up_folder = Path('sprites/characters/player/up_idle/idle_down.png')
-        attack_right_folder = Path('sprites/characters/player/up_idle/idle_down.png')
-        attack_left_folder = Path('sprites/characters/player/up_idle/idle_down.png')
-        
-        block_down_folder = Path('sprites/characters/player/up_idle/idle_down.png')
-        block_up_folder = Path('sprites/characters/player/up_idle/idle_down.png')
-        block_right_folder = Path('sprites/characters/player/up_idle/idle_down.png')
-        block_left_folder = Path('sprites/characters/player/up_idle/idle_down.png')
+        idle_up_folder = Path('sprites/characters/player/up_idle')
+        idle_down_folder = Path('sprites/characters/player/down_idle')
+        idle_right_folder = Path('sprites/characters/player/right_idle')
+        idle_left_folder = Path('sprites/characters/player/left_idle')
         
         
+        move_down_folder = Path('sprites/characters/player/down')
+        move_up_folder = Path('sprites/characters/player/up')
+        move_right_folder = Path('sprites/characters/player/right')
+        move_left_folder = Path('sprites/characters/player/left')
         
+        attack_down_folder = Path('sprites/characters/player/down_attack')
+        attack_up_folder = Path('sprites/characters/player/up_attack')
+        attack_right_folder = Path('sprites/characters/player/right_attack')
+        attack_left_folder = Path('sprites/characters/player/left_attack')
+        
+        block_down_folder = Path('sprites/characters/player/block_down')
+        block_up_folder = Path('sprites/characters/player/block_up.png')
+        block_right_folder = Path('sprites/characters/player/block_right')
+        block_left_folder = Path('sprites/characters/player/block_left')
         
         idleRight = []
         idleLeft = []
@@ -69,8 +68,20 @@ class Player(pygame.sprite.Sprite):
         
         player_death = []
         
+        
+        self.animations = {
+            'up': [], 'down': [], 'left': [], 'right': [], 
+            'up_idle': [], 'down_idle': [], 'left_idle': [], 'right_idle': [], 
+            'up_block': [], 'down_block': [], 'left_block': [], 'right_block': [], 
+            'up_attack': [], 'down_attack': [], 'left_attack': [], 'right_attack': [], 
+            
+        }
+        
         # player status 
         self.status = 'down'
+        self.frame_index = 0;
+        self.animation_speed = 0.15;
+        
         
         # movement and attack vars
         self.direction = pygame.math.Vector2();
@@ -128,15 +139,19 @@ class Player(pygame.sprite.Sprite):
         # changing animations based on movement direction
         
         
-        if keys[pygame.K_SPACE]:
-            print("player is attacking w/ prim")
+        if keys[pygame.K_SPACE] and not self.attacking:
+            self.attack_time = pygame.time.get_ticks();
             self.primary_attack = True;
+            self.attacking = True;
+            print("player is attacking w/ prim")
             
-        if keys[pygame.K_LSHIFT]:
+        if keys[pygame.K_LSHIFT] and not self.attacking:
+            self.attack_time = pygame.time.get_ticks();
             print("Player is attacking w/ sec")
             self.secondary_attack = True;
+            self.attacking = True
             
-        if keys[pygame.K_b]:
+        if keys[pygame.K_b] and not self.attacking:
             print("player is blocking")
             self.blocking = True;
         
@@ -163,13 +178,13 @@ class Player(pygame.sprite.Sprite):
             if 'attack' in self.status:
                 self.status = self.status.replace('_attack', '')
     
-    def coolDown(self):
+    def cool_down(self):
         current_time = pygame.time.get_ticks();
         
         if self.attacking:
-            current_time -self.attack_time >= self.attack_cooldown + weapon_data[self.weapon]['coolDown'];
+            current_time - self.attack_time >= self.attack_cooldown 
             self.attacking = False;
-            self.destroy_attack();
+            
         
     
     # handling player movement across the map including physics
@@ -203,11 +218,41 @@ class Player(pygame.sprite.Sprite):
                         self.hitbox.bottom = sprite.hitbox.top
                     if self.direction.y < 0:
                         self.hitbox.top = sprite.hitbox.bottom
-                                   
+    
+    # iterate through the animation index to obtain the correct character animation
+    
+    def animate(self):
+        animation = self.animations[self.status];
+        
+        
+        self.frame_index += self.animation_speed
+        
+        # get the frame index to select the current animation
+        
+        if self.frame_index >= len(animation): # get the len of the number of the items in the sprite sub folder
+            self.frame_index = 0;
+        
+        print(self.frame_index)
+        
+        # set curent image
+        #self.temp_image = animation[int(self.frame_index)];
+        #print(animation[int(self.frame_index)])
+        
+        #self.rect = self.image.get_rect(center = self.hitbox.center); # update hitbox based on sprite change
+        
+        # scale sprite sheet
+        #self.image = pygame.transform.scale(self.temp_image,(64,64));   
+        
+                         
     def update(self):
-        self.get_status();
+        #self.get_status(); # get the current status of the player
         print(self.status)
+        
+        self.animate()
+        
         self.input();
+        self.cool_down();
+        
         self.move(self.speed)
             
         
