@@ -12,13 +12,20 @@ class Game:
         pygame.init()
         pygame.display.set_caption('Arena Game by Mike Maquera')
         self.screen = pygame.display.set_mode((window_width, window_height))
+        
+        
+        # set game icon
+        icon_path = Path('sprites/characters/player/down_idle/idle_down.png')
+        icon = pygame.image.load(icon_path)
+        pygame.display.set_icon(icon)
+        
         self.clock = pygame.time.Clock()
         
         # load music
         main_music = Path('music/battle_music.wav')
         main_sound = pygame.mixer.Sound(main_music) # play music
         main_sound.set_volume(0.1)
-        main_sound.play(loops = -1);
+        main_sound.play(loops = -1); # keep looping the music
   
         # init game level and map
         self.level = Level();

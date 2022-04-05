@@ -12,32 +12,78 @@ class Player(pygame.sprite.Sprite):
         super().__init__(groups) 
         
         # load player sprite sheet
-        player_folder = Path('sprites/characters/human/human_down.png')
+       
+        idle_down_folder = Path('sprites/characters/player/down_idle/idle_down.png')
         
         # import image 
-        self.image_import = pygame.image.load(player_folder)
+        self.image_import = pygame.image.load(idle_down_folder)
         
         # scale sprite sheet
         self.image = pygame.transform.scale(self.image_import,(64,64));   
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-5);
         
+        # import sprite sheets for different actions
+        
+        idle_up_folder = Path('sprites/characters/player/up_idle/idle_up.png')
+        idle_right_folder = Path('sprites/characters/player/up_idle/idle_down.png')
+        idle_left_folder = Path('sprites/characters/player/up_idle/idle_left.png')
+        
+        move_down_folder = Path('sprites/characters/player/up_idle/idle_down.png')
+        move_up_folder = Path('sprites/characters/player/up_idle/idle_down.png')
+        move_right_folder = Path('sprites/characters/player/up_idle/idle_down.png')
+        move_left_folder = Path('sprites/characters/player/up_idle/idle_down.png')
+        
+        attack_down_folder = Path('sprites/characters/player/up_idle/idle_down.png')
+        attack_up_folder = Path('sprites/characters/player/up_idle/idle_down.png')
+        attack_right_folder = Path('sprites/characters/player/up_idle/idle_down.png')
+        attack_left_folder = Path('sprites/characters/player/up_idle/idle_down.png')
+        
+        block_down_folder = Path('sprites/characters/player/up_idle/idle_down.png')
+        block_up_folder = Path('sprites/characters/player/up_idle/idle_down.png')
+        block_right_folder = Path('sprites/characters/player/up_idle/idle_down.png')
+        block_left_folder = Path('sprites/characters/player/up_idle/idle_down.png')
+        
+        
+        
+        
+        idleRight = []
+        idleLeft = []
+        idleUp = []
+        idleDown = []
+        
+        walkRight = []
+        walkLeft = []
+        walkUp = []
+        walkDown = []
+        
+        attackUp = []
+        attackDown = []
+        attackRight = []
+        attackLeft = []
+        
+        blockUp = []
+        blockDown = []
+        blockRight = []
+        blockLeft = []
+        
+        player_death = []
+        
+        # player status 
+        self.status = 'down'
+        
         # movement and attack vars
         self.direction = pygame.math.Vector2();
         self.speed = 5;
         
-        #attacking and blocking
+        # attacking and blocking
         self.attacking = False;
         self.attack_cooldown = 400;
         self.block_cooldown = 400;
         self.attack_time = None;
         
         self.obstacles_sprites = obstacle_sprites
-    
-    def import_player_data(self):
-        self.animations = ""
-    
-        
+            
     # handle user input with the arrow keys
     def input(self):
         keys = pygame.key.get_pressed()
@@ -46,12 +92,12 @@ class Player(pygame.sprite.Sprite):
         #moving up
         if keys[pygame.K_UP]:
             self.direction.y = -1;
-            #self.image = pygame.image.load('src/sprites/wooden.png')
+            self.status = 'up'
             
         #moving down
         elif keys[pygame.K_DOWN]:
             self.direction.y = 1;
-            #self.image = pygame.image.load('src/sprites/player.png')
+            self.status = 'down'
         
         # no movement
         else:
@@ -61,11 +107,12 @@ class Player(pygame.sprite.Sprite):
         #moving right:
         if keys[pygame.K_RIGHT]:
             self.direction.x = 1;
+            self.status = 'right'
                
         # moving left:    
         elif keys[pygame.K_LEFT]:
             self.direction.x = -1;
-            
+            self.status = 'left'
         # no movement    
         else:
             self.direction.x = 0;
@@ -95,8 +142,26 @@ class Player(pygame.sprite.Sprite):
         
     
     def get_status(self):
-        pass
-    
+        
+        # handle idle animation 
+        if self.direction.x == 0 and self.direction.y == 0:
+            if not 'idle' in self.status and not 'attack' in self.status:
+                self.status = self.status + '_idle'
+        
+        # handle attack then idle transition
+        if self.attacking:
+            self.direction.x = 0;
+            self.direction.y = 0;
+            if not 'attack' in self.status:
+                if 'idle' in self.status:
+                    self.status = self.status.replace('_idle', '_attack')
+                
+                else:    
+                    self.status = self.status + "_attack"
+
+        else:
+            if 'attack' in self.status:
+                self.status = self.status.replace('_attack', '')
     
     def coolDown(self):
         current_time = pygame.time.get_ticks();
@@ -140,6 +205,8 @@ class Player(pygame.sprite.Sprite):
                         self.hitbox.top = sprite.hitbox.bottom
                                    
     def update(self):
+        self.get_status();
+        print(self.status)
         self.input();
         self.move(self.speed)
             
