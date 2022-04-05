@@ -54,8 +54,8 @@ class Player(pygame.sprite.Sprite):
         
         # base player stats
         player_stats = {'health': 100, 'energy': 100, 'attack': 5, 'magic': 5, "speed": 5 }
-        self.health = self.stats['health']
-        self.speed = self.stats['speed'];
+        self.health = player_stats['health']
+        self.speed = player_stats['speed'];
     
     # function to import player animation resources
     def import_player_animations(self):
