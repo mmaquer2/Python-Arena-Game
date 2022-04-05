@@ -12,7 +12,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__(groups) 
         
         # load player sprite sheet
-        player_folder = Path('src/sprites/characters/human/human_down.png')
+        player_folder = Path('sprites/characters/human/human_down.png')
         
         # import image 
         self.image_import = pygame.image.load(player_folder)
