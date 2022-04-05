@@ -4,6 +4,7 @@ import random
 from settings import *
 from wall import Wall
 from player import Player
+from weapon import Weapon
 
 # class to handle running the level for the game state
 class Level:
@@ -30,7 +31,7 @@ class Level:
         # Randomize starting locations, there are 4 possible starting points on each map
         players = ["p","a","b","c"]
         
-        for row_ind,row in enumerate(WORLD_MAP_THREE):
+        for row_ind,row in enumerate(WORLD_MAP_ONE):
             for col_ind, col in enumerate(row):
                 x = col_ind * tileSize;
                 y = row_ind * tileSize
@@ -44,7 +45,7 @@ class Level:
 
                 #create the player on the map
                 if col == 'p':
-                    self.player = Player((x,y), [self.visible_sprites], self.obstacle_sprites)
+                    self.player = Player((x,y), [self.visible_sprites], self.obstacle_sprites, self.create_attack)
                     
         # place npc characters on the map
                 
@@ -56,6 +57,11 @@ class Level:
                 
                 #if col=='c':
                 # 
+    
+    
+    def create_attack(self):
+        Weapon(self.player,[self.visible_sprites])
+    
     
     # check the status of the players, is the game over?             
     def isGameOver(self):

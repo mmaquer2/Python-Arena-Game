@@ -8,7 +8,7 @@ from os import walk
 class Player(pygame.sprite.Sprite):
     
       # init human controlled player      
-    def __init__(self,pos,groups,obstacle_sprites):
+    def __init__(self,pos,groups,obstacle_sprites,create_attack):
         
         super().__init__(groups) 
         
@@ -34,6 +34,7 @@ class Player(pygame.sprite.Sprite):
         
         
         # movement and attack vars
+        self.create_attack = create_attack;
         self.direction = pygame.math.Vector2();
         self.speed = 5;
         
@@ -45,9 +46,10 @@ class Player(pygame.sprite.Sprite):
         
         self.obstacles_sprites = obstacle_sprites
     
-    
+    # function to import player animation resources
     def import_player_animations(self):
         
+        # the locations of the player sprites
         idle_up_folder = 'sprites/characters/player/up_idle'
         idle_down_folder = 'sprites/characters/player/down_idle'
         idle_right_folder = 'sprites/characters/player/right_idle'
@@ -64,10 +66,10 @@ class Player(pygame.sprite.Sprite):
         attack_right_folder = 'sprites/characters/player/right_attack'
         attack_left_folder = 'sprites/characters/player/left_attack'
         
-        block_down_folder = 'sprites/characters/player/block_down'
-        block_up_folder = 'sprites/characters/player/block_up'
-        block_right_folder = 'sprites/characters/player/block_right'
-        block_left_folder = 'sprites/characters/player/block_left'  
+        block_down_folder = 'sprites/characters/player/down_block'
+        block_up_folder = 'sprites/characters/player/up_block'
+        block_right_folder = 'sprites/characters/player/right_block'
+        block_left_folder = 'sprites/characters/player/left_block'  
         
         player_death = []
         
@@ -150,13 +152,15 @@ class Player(pygame.sprite.Sprite):
             self.attack_time = pygame.time.get_ticks();
             self.primary_attack = True;
             self.attacking = True;
+            self.create_attack()
             print("player is attacking w/ prim")
             
         if keys[pygame.K_LSHIFT] and not self.attacking:
             self.attack_time = pygame.time.get_ticks();
-            print("Player is attacking w/ sec")
             self.secondary_attack = True;
             self.attacking = True
+            self.create_attack()
+            print("Player is attacking w/ sec")
             
         if keys[pygame.K_b] and not self.attacking:
             print("player is blocking")
