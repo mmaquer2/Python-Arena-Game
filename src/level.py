@@ -52,24 +52,24 @@ class Level:
         #self.health_cpu_b = self.cpu_b.health
         #self.health_cpu_c = self.cpu_c.health
         
-              
+        # place objects on  the world map   
         for row_ind,row in enumerate(WORLD_MAP_ONE):
             for col_ind, col in enumerate(row):
                 x = col_ind * tileSize;
                 y = row_ind * tileSize
-                
-        # set what each tile will represent on the world map
-                # create the wall obstacles on the map
+                 
+        # create the wall obstacles on the map
                 if col == 'x':
                     Wall((x,y),[self.visible_sprites,self.obstacle_sprites])
                 
-                # place traps on the map
+        # place traps on the map
                 if col == 't':
                     pass
                     
-                #create the player on the map
+        #set the player starting location on the map
                 if col == 'p':
                     self.player.set_location((x,y))
+                    
         # place npc characters on the map
                 if col=='a':
                     self.cpu_a.set_location((x,y));
@@ -113,6 +113,8 @@ class Level:
     
     # check the status of the players, is the game over?             
     def isGameOver(self):
+        
+        # check health of players with their damage
         
         # check statues of players
         #counter_of_remaining_players = 0
