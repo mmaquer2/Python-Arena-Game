@@ -32,11 +32,22 @@ class Player(pygame.sprite.Sprite):
         
         # weapon handling
         self.create_attack = create_attack; # pass the function pointer of create attack to the player class
+        self.destroy_attack = destroy_attack; # pass the function pointer of destroy attack
+        
+        
         weaponRandomAssignment = random.randint(0,len(weapon_data) - 1)  # assign a random weapon to the player 
         self.weapon_index = weaponRandomAssignment
+        
         self.weapon = list(weapon_data.keys())[self.weapon_index]; # assign the random weapon to the player
-        self.destroy_attack = destroy_attack; # pass the function pointer of destroy attack
-            
+        self.secondary_weapon = ""
+        
+        
+        
+        
+        
+        
+        
+         
         # attacking and blocking cooldown status vars
         self.attacking = False;
         self.attack_cooldown = 400;
@@ -48,14 +59,15 @@ class Player(pygame.sprite.Sprite):
         
         # randomize player stats
         random_health = random.randint(80,100);   
-        random_speed = random.randint(3,10);
-        random_energy = random.randint(80,100);   
+        random_energy = random.randint(80,100); 
+        random_attack = random.randint(2,10); 
+        random_magic = random.randint(80,100); 
+        random_speed = random.randint(3,10); 
 
-        
         # base player stats
-        player_stats = {'health': 100, 'energy': 100, 'attack': 5, 'magic': 5, "speed": 5 }
-        self.health = player_stats['health']
-        self.speed = player_stats['speed'];
+        self.layer_stats = {'health': 100, 'energy': 100, 'attack': 5, 'magic': 5, "speed": 5 }
+        self.health = self.player_stats['health']
+        self.speed = self.player_stats['speed'];
     
     # function to import player animation resources
     def import_player_animations(self):
@@ -152,13 +164,7 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_i]:
             self.use_item = True
         
-        # attacks
-        
-        # TODO: how to handle which direction the player is attacking?
-        # TODO: what if this is a ranged attack?
-        # changing animations based on movement direction
-        
-        
+        # attacks      
         if keys[pygame.K_SPACE] and not self.attacking:
             self.attack_time = pygame.time.get_ticks();
             self.primary_attack = True;
