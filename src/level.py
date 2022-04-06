@@ -39,17 +39,18 @@ class Level:
         players = ["p","a","b","c"]
         random.shuffle(players) # shuffle players for different locations
         
-        # init players: 
+        # init player and CPU_AI: 
+        self.player = Player((1,1), [self.visible_sprites,self.attackable_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack)    
         self.cpu_a = Enemy_A((2,2), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
         #self.cpu_b = Enemy_B((3,3), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
         #self.cpu_c = Enemy_C((4,4), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
         
         
         # create holder variables for the health of each player, these will be checked to determine when the game is over
-        #self.health_player = self.player.
-        #self.health_cpu_a = self.cpu_a.
-        #self.health_cpu_b = self.cpu_b.
-        #self.health_cpu_c = self.cpu_c.
+        self.health_player = self.player.health
+        self.health_cpu_a = self.cpu_a.health
+        #self.health_cpu_b = self.cpu_b.health
+        #self.health_cpu_c = self.cpu_c.health
         
               
         for row_ind,row in enumerate(WORLD_MAP_ONE):
@@ -68,8 +69,7 @@ class Level:
                     
                 #create the player on the map
                 if col == 'p':
-                    self.player = Player((x,y), [self.visible_sprites,self.attackable_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack)
-                                
+                    self.player.set_location((x,y))
         # place npc characters on the map
                 if col=='a':
                     self.cpu_a.set_location((x,y));

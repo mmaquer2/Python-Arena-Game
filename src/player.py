@@ -66,6 +66,12 @@ class Player(pygame.sprite.Sprite):
         self.health = self.player_stats['health']
         self.speed = self.player_stats['speed'];
     
+    
+    def set_location(self,pos):
+        self.rect = self.image.get_rect(topleft = pos)
+        self.hitbox = self.rect.inflate(0,-5);
+    
+    
     # function to import player animation resources
     def import_player_animations(self):
         
@@ -294,10 +300,6 @@ class Player(pygame.sprite.Sprite):
                      
     def update(self):
         self.get_status(); # get the current status of the player
-        
-        #print("Player: " + self.status)
-        #print(self.rect)
-    
         self.animate()
         self.input();
         self.cool_down();

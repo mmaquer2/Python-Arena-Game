@@ -31,12 +31,16 @@ class Enemy_A(pygame.sprite.Sprite):
         # what is the current goal of the AI?
         self.goal = "wander"
         self.command = "move_left"
+        self.inCollision = False; # status in if in a collision or not
         
         self.create_attack = create_attack;
         weaponRandomAssignment = random.randint(0,len(weapon_data) - 1);
         self.weapon_index = weaponRandomAssignment;
         self.weapon = list(weapon_data.keys())[self.weapon_index];
         self.destroy_attack = destroy_attack;
+        
+        self.target = None; # this is the current target unit of the AI
+        
         
         # setting the distance which one may see or attack other units
         # attack_radius': 80, 'notice_radius': 360}, example attack and notice radius data
@@ -132,23 +136,43 @@ class Enemy_A(pygame.sprite.Sprite):
     # plan action
     def plan_action(self):
         
+        
+        #if self.goal == "beserk":
+        # lock onto the nearest enemy as the target and chase it around
+        
+        
         if self.goal == "ambush":
-            if self.see_enemy():
-                
-                
+            if self.see_enemy(): # iterate through all enemies to determine if one is within range
+                # move towards the enemy        
                 pass
-      
+            
+            
+            else:
+                pass
             # move towards enemey
-         
-        #self.iterate_enemy() # iterate through enemy locations
-       
+                 
         if self.goal == 'wander':
+            # if i'm not in a collision move in a direction
+            if self.inCollision:
+                self.command = 'move_up'
+                self.inCollision = False
+                
+            # if i'm in a collision select another direction
+            
             new_movement = self.get_waypoint();    # plan path to a new waypoint
             # move to this waypoint
             # what direction do I need to move to go here?
 
         
+        
+        #plant traps
+        #if self.goal == "set_traps":
+            #set a trap and move somewhere else
+        
+        # run and hide from enemy players
         if self.goal == 'hide':
+            
+            # if i'm getting attacked, move,
             pass
     
     
@@ -256,8 +280,12 @@ class Enemy_A(pygame.sprite.Sprite):
                 if sprite.hitbox.colliderect(self.hitbox):
                     if self.direction.x > 0:
                         self.hitbox.right = sprite.hitbox.left
+                        print("cpu in collision right")
+                        self.inCollision = True
                     if self.direction.x < 0:
                         self.hitbox.left = sprite.hitbox.right
+                        print("cpu in collision left")
+                        self.inCollision = True
                         
         # handle vertical collisions
         if direction == 'vertical':
@@ -265,8 +293,12 @@ class Enemy_A(pygame.sprite.Sprite):
                 if sprite.hitbox.colliderect(self.hitbox):
                     if self.direction.y > 0:
                         self.hitbox.bottom = sprite.hitbox.top
+                        print("in collision bot")
+                        self.inCollision = True
                     if self.direction.y < 0:
                         self.hitbox.top = sprite.hitbox.bottom
+                        print("in collision bot")
+                        self.inCollision = True
     
     # make some sort of decision based on the game AI behavior Tree
     def decide(self):
