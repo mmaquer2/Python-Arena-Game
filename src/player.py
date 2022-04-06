@@ -176,8 +176,8 @@ class Player(pygame.sprite.Sprite):
             
         if keys[pygame.K_b] and not self.attacking:
             print("player is blocking")
-            self.blocking = True;
-            self.status = 'block'
+            #self.blocking = True;
+           
         
     
     def get_status(self):
@@ -186,6 +186,7 @@ class Player(pygame.sprite.Sprite):
         if self.direction.x == 0 and self.direction.y == 0:
             if not 'idle' in self.status and not 'attack' in self.status:
                 self.status = self.status + '_idle'
+                    
         
         # handle attack then idle transition
         if self.attacking:
@@ -204,14 +205,17 @@ class Player(pygame.sprite.Sprite):
                 
         # handle blocking action
         if self.blocking:
+            self.direction.x = 0;
+            self.direction.y = 0;
             if not 'block' in self.status:
                 if 'idle' in self.status:
                     self.status = self.status.replace('_idle', '_block')
+                
                 else:
-                    self.status = self.status + "_attack"
-                    
+                    self.status = self.status + "_block"
+                
         else:
-            if'block' in self.status:
+            if 'block' in self.status:
                 self.status = self.status.replace('_block', '')
         
     
@@ -288,6 +292,9 @@ class Player(pygame.sprite.Sprite):
                      
     def update(self):
         self.get_status(); # get the current status of the player
+        
+        print(self.status)
+        
         self.animate()
         self.input();
         self.cool_down();
