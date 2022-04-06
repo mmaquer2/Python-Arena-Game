@@ -25,6 +25,11 @@ class Enemy_A(pygame.sprite.Sprite):
         self.animation_speed = 0.15;
         self.direction = pygame.math.Vector2()
         self.obstacles_sprites = obstacle_sprites
+        
+        
+        # action_planning and behavior tree
+        # what is the current goal of the AI?
+        self.goal = "wander"
 
         
         self.create_attack = create_attack;
@@ -32,6 +37,11 @@ class Enemy_A(pygame.sprite.Sprite):
         self.weapon_index = weaponRandomAssignment;
         self.weapon = list(weapon_data.keys())[self.weapon_index];
         self.destroy_attack = destroy_attack;
+        
+        # setting the distance which one may see or attack other units
+        # attack_radius': 80, 'notice_radius': 360}, example attack and notice radius data
+        self.notice_radius = 50;
+        self.attack_radius = 360;
         
         
         # randomize stats
@@ -109,7 +119,55 @@ class Enemy_A(pygame.sprite.Sprite):
         self.rect.center = self.hitbox.center;
     
     
+    
+    # plan action
+    def plan_action(self):
+        if self.goal == 'wander':
+            new_movement = self.get_waypoint();    # plan path to a new waypoint
+            # move to this waypoint
+
+        
+        
+    def get_waypoint(self):
+        # plan path to this new waypoint
+        waypoint = 1;
+        return waypoint;
+    
+    def plan_path(self):
+        pass
+    
+    # check if an opponent is within visible range
+    def is_Opponent_Within_Range(self):
+        pass;
+    
+    
+    # get the distance and direction for an opponent
+    def find_opponent_distance_direction(self,enemy):
+        myVec = pygame.math.Vector2(self.rect.center)
+        opponentVec = pygame.math.Vector2(enemy.rect.center)
+        
+        distance = (opponentVec - myVec).magnitude()
+        
+        if distance > 0:
+            direction = (opponentVec - myVec).normalize();
+        else:
+            direction = pygame.math.Vector2()
+        
+        return (distance, direction)
+    
     def get_status(self):
+        
+        distance = 0;
+        
+        #if distance <= self.attack_radius:
+        #    self.status = 'attack'
+        
+        #if distance <= self.notice_radius:
+        #    self.status = 'move'
+        
+        # else:
+        #    self.status = 'idle'
+
         if self.direction.x == 0 and self.direction.y == 0:
             if not 'idle' in self.status and not 'attack' in self.status:
                 self.status = self.status + '_idle'
@@ -144,7 +202,7 @@ class Enemy_A(pygame.sprite.Sprite):
         
         # if not pick a reachable point and move to it
         
-        
+    
     
     def animate(self):
         animation = self.animations[self.status];
@@ -165,8 +223,9 @@ class Enemy_A(pygame.sprite.Sprite):
         
     def update(self):  
         self.get_status()
+        print("CPU A: " + self.status)
         self.animate();
-        #self.decide();
+        self.plan_action();
         self.cool_down();
         self.move(self.speed);
     

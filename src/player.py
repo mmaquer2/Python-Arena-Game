@@ -293,7 +293,7 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.get_status(); # get the current status of the player
         
-        print(self.status)
+        print("Player: " + self.status)
         
         self.animate()
         self.input();
