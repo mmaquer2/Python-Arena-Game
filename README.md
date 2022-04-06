@@ -40,6 +40,16 @@ python main.py
 
 ``` 
 
+## Player Controls
+
+- movement, arrow keys
+- primary attack, space bar
+- secondary attack, left shift
+- block, b key
+- switch items, v key
+- use item, right shift
+
+
 # Resources and Credits
 
 - Special Thanks to clear code youtube channel, for providing starter code and boilerplate for the game main loop
