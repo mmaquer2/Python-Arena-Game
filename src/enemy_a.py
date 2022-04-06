@@ -30,7 +30,7 @@ class Enemy_A(pygame.sprite.Sprite):
         # action_planning and behavior tree
         # what is the current goal of the AI?
         self.goal = "wander"
-
+        self.command = "move_left"
         
         self.create_attack = create_attack;
         weaponRandomAssignment = random.randint(0,len(weapon_data) - 1);
@@ -132,24 +132,34 @@ class Enemy_A(pygame.sprite.Sprite):
     # plan action
     def plan_action(self):
         
-        self.iterate_enemy() # iterate through enemy locations
-        
-        # am i within range to attack an enemy?
-        # where is the enemy?
-        # self.status='attack'
-        
+        if self.goal == "ambush":
+            if self.see_enemy():
+                
+                
+                pass
+      
+            # move towards enemey
+         
+        #self.iterate_enemy() # iterate through enemy locations
+       
         if self.goal == 'wander':
             new_movement = self.get_waypoint();    # plan path to a new waypoint
             # move to this waypoint
+            # what direction do I need to move to go here?
+
+        
+        if self.goal == 'hide':
+            pass
+    
     
     # iterate through enemy oppoenents and their locations
-    def iterate_enemy(self):
+    def see_enemy(self):
         for opp in self.opponents:
             # print(opp.rect[0], opp.rect[1]) # get the x,y coordinates of an opponent
             pass
-                
+    
     def get_waypoint(self):
-        # plan path to this new waypoint
+            # plan path to this new waypoint
         waypoint = 1;
         return waypoint;
     
@@ -167,6 +177,38 @@ class Enemy_A(pygame.sprite.Sprite):
     def is_Opponent_Within_Range(self):
         pass;
     
+    
+
+    # change the status of the cpu AI to actually animate and execute the action
+    def cpu_input(self):
+        
+        if self.command == "move_up":
+            self.direction.y = -1;
+            self.status = "up"
+        
+        if self.command == "move_down":
+            self.direction.y = 1;
+            self.status = "down"
+        
+        if self.command == "move_left":
+            self.direction.x = -1;
+            self.status = 'left'
+        
+        if self.command == "move_right":
+            self.direction.x = 1
+            self.status = 'right'
+        
+        if self.command == 'attack' and not self.attacking:
+            self.attacking = True;
+        
+        if self.command == 'block' and not self.blocking:
+            self.blocking = True;
+        
+        if self.command == "idle":
+            pass
+        
+             
+   
     
     # get the distance and direction for an opponent
     def find_opponent_distance_direction(self,enemy):
@@ -257,13 +299,10 @@ class Enemy_A(pygame.sprite.Sprite):
 
         
     def update(self):
-        
-        self.plan_action();  
         self.get_status()
-        #print("CPU A: " + self.status)
         self.animate();
+        self.plan_action(); # determine the next action for the CPU AI
+        self.cpu_input(); # 
         self.cool_down();
-        #print("cpu rectangle: ")
-        #print(self.rect)
         self.move(self.speed);
     
