@@ -12,6 +12,8 @@ class Player(pygame.sprite.Sprite):
     def __init__(self,pos,groups,obstacle_sprites,create_attack, destroy_attack):   
         super().__init__(groups) 
         
+        self.id = '1'
+        
         # load starting player sprite sheet
         idle_down_folder = Path('sprites/characters/player/down_idle/idle_down.png')
         self.image_import = pygame.image.load(idle_down_folder) # import image 
@@ -293,8 +295,9 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.get_status(); # get the current status of the player
         
-        print("Player: " + self.status)
-        
+        #print("Player: " + self.status)
+        #print(self.rect)
+    
         self.animate()
         self.input();
         self.cool_down();

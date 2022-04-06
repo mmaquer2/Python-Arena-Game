@@ -8,6 +8,8 @@ class Enemy_A(pygame.sprite.Sprite):
     def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack):
         super().__init__(groups)
         
+        self.id = '2'
+        
         # import starting sprite
         idle_down_folder = Path('sprites/characters/cpu_a/down_idle/idle_down.png')
         self.image_import = pygame.image.load(idle_down_folder) # import image 
@@ -55,6 +57,16 @@ class Enemy_A(pygame.sprite.Sprite):
         self.ai_stats = {'health': 100, 'energy': 100, 'attack': 5, 'magic': 5, "speed": 5 }
         self.health = self.ai_stats['health']
         self.speed = self.ai_stats['speed'];
+    
+    
+    def set_location(self,x,y):
+        loc = (x,y)
+        print(loc)
+        self.rect = self.image.get_rect(topleft = loc)
+      
+    
+    def set_opponents(self,opponents):
+        self.opponents = opponents;
     
     
     def import_animations(self):
@@ -122,19 +134,38 @@ class Enemy_A(pygame.sprite.Sprite):
     
     # plan action
     def plan_action(self):
+        self.iterate_enemy()
+        
+        # am i within range to attack an enemy?
+        # where is the enemy?
+        # self.status='attack'
+        
         if self.goal == 'wander':
             new_movement = self.get_waypoint();    # plan path to a new waypoint
             # move to this waypoint
-
-        
+    
+    
+    def iterate_enemy(self):
+        for opp in self.opponents:
+            print("yeeeeet")
+            print(opp.rect)
+    
+    
         
     def get_waypoint(self):
         # plan path to this new waypoint
         waypoint = 1;
         return waypoint;
     
+    
     def plan_path(self):
         pass
+    
+    
+    def plan_movement(self):
+        pass
+        # get the difference between the previous and next direction
+    
     
     # check if an opponent is within visible range
     def is_Opponent_Within_Range(self):
@@ -155,9 +186,17 @@ class Enemy_A(pygame.sprite.Sprite):
         
         return (distance, direction)
     
+    
+    def rotate(self):
+        misc_dirs = ['left','right','up','down']
+        random_dir = random.randint(0,3);
+        self.status = misc_dirs[random_dir]
+    
+    
     def get_status(self):
         
         distance = 0;
+        
         
         #if distance <= self.attack_radius:
         #    self.status = 'attack'
@@ -215,17 +254,20 @@ class Enemy_A(pygame.sprite.Sprite):
         self.image = animation[int(self.frame_index)];
         self.rect = self.image.get_rect(center = self.hitbox.center); # update hitbox based on sprite change
         
-    
+
     
     def cool_down(self):
         pass
 
         
-    def update(self):  
+    def update(self):
+        
+        self.plan_action();  
         self.get_status()
-        print("CPU A: " + self.status)
+        #print("CPU A: " + self.status)
         self.animate();
-        self.plan_action();
         self.cool_down();
+        #print("cpu rectangle: ")
+        #print(self.rect)
         self.move(self.speed);
     
