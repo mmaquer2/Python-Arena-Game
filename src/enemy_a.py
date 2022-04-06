@@ -15,9 +15,7 @@ class Enemy_A(pygame.sprite.Sprite):
         self.image_import = pygame.image.load(idle_down_folder) # import image 
         self.image = pygame.transform.scale(self.image_import,(64,64));   # scale sprite sheet
         
-        # set hitbox
-        self.rect = self.image.get_rect(topleft = pos)
-        self.hitbox = self.rect.inflate(0,-5);
+      
         
         self.import_animations();  
         
@@ -59,10 +57,9 @@ class Enemy_A(pygame.sprite.Sprite):
         self.speed = self.ai_stats['speed'];
     
     
-    def set_location(self,x,y):
-        loc = (x,y)
-        print(loc)
-        self.rect = self.image.get_rect(topleft = loc)
+    def set_location(self,pos):
+        self.rect = self.image.get_rect(topleft = pos)
+        self.hitbox = self.rect.inflate(0,-5);
       
     
     def set_opponents(self,opponents):
@@ -134,7 +131,8 @@ class Enemy_A(pygame.sprite.Sprite):
     
     # plan action
     def plan_action(self):
-        self.iterate_enemy()
+        
+        self.iterate_enemy() # iterate through enemy locations
         
         # am i within range to attack an enemy?
         # where is the enemy?
@@ -144,14 +142,12 @@ class Enemy_A(pygame.sprite.Sprite):
             new_movement = self.get_waypoint();    # plan path to a new waypoint
             # move to this waypoint
     
-    
+    # iterate through enemy oppoenents and their locations
     def iterate_enemy(self):
         for opp in self.opponents:
-            print("yeeeeet")
-            print(opp.rect)
-    
-    
-        
+            # print(opp.rect[0], opp.rect[1]) # get the x,y coordinates of an opponent
+            pass
+                
     def get_waypoint(self):
         # plan path to this new waypoint
         waypoint = 1;

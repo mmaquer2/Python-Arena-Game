@@ -48,8 +48,8 @@ class Level:
         
         # init players: 
     
-        self.cpu_a = Enemy_A((786,1043), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
-        #self.cpu_b
+        self.cpu_a = Enemy_A((2,2), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
+        #self.cpu_b = Enemy_B((3,3), [self.visible_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
         #self.cpu_c
               
         for row_ind,row in enumerate(WORLD_MAP_ONE):
@@ -68,17 +68,17 @@ class Level:
                                 
         # place npc characters on the map
                 if col=='a':
-                    self.cpu_a.set_location(x,y);
+                    self.cpu_a.set_location((x,y));
                     enemy_list = [self.player]
                     self.cpu_a.set_opponents(enemy_list)
                 
                 #if col=='b':
-                # self.cpu_b = Enemy_B((x,y), [self.visible_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
+                # self.cpu_b.set_location((x,y));
                 # enemy_list = [self.player, self.cpu_a,self.cpu_c]
                 # self.cpu_b.set_opponents(enemy_list)
                 
                 #if col=='c':
-                # self.cpu_c = Enemy_C((x,y), [self.visible_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
+                # self.cpu_c.set_location((x,y));
                 # enemy_list = [self.player, self.cpu_a,self.cpu_b]
                 # self.cpu_c.set_opponents(enemy_list)
     
