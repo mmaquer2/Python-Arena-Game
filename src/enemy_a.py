@@ -17,13 +17,14 @@ class Enemy_A(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-5);
         
-        #self.import_animations();  
+        self.import_animations();  
         
         # direction and status vars
         self.status = 'down'
         self.frame_index = 0;
         self.animation_speed = 0.15;
         self.direction = pygame.math.Vector2()
+        self.obstacles_sprites = obstacle_sprites
 
         
         self.create_attack = create_attack;
