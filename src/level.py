@@ -11,13 +11,18 @@ from weapon import Weapon
 class Level:
     
     def __init__(self):
+        
+        #init visual surfaces
         self.display_surface = pygame.display.get_surface();  # create game sprites
         self.visible_sprites = CameraGroup()  # create the camera view to focus on the player 
         self.obstacle_sprites = pygame.sprite.Group(); # create sprite group for obstacles
-        self.createMap(); # init map starting locations for obstacles and players 
-
+    
         # attack sprites
         self.current_attack_player = None;
+        self.attack_sprites = pygame.sprite.Group(); # create sprite group for attcking objects
+        self.attackable_sprites = pygame.sprite.Group();
+        
+        self.createMap(); # init map starting locations for obstacles and players 
         
         
     def createMap(self):
@@ -52,11 +57,11 @@ class Level:
                 
                 #create the player on the map
                 if col == 'p':
-                    self.player = Player((x,y), [self.visible_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack)
+                    self.player = Player((x,y), [self.visible_sprites,self.attackable_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack)
                     
         # place npc characters on the map
                 if col=='a':
-                    self.cpu_a = Enemy_A((x,y), [self.visible_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
+                    self.cpu_a = Enemy_A((x,y), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
                 
                 #if col=='b':
                 # self.cpu_b = Enemy_B((x,y), [self.visible_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
@@ -66,13 +71,28 @@ class Level:
     
     # handles drawing the weapon sprite of a player or cpu AI
     def create_attack(self):
-       self.current_attack_player = Weapon(self.player,[self.visible_sprites])
+       self.current_attack_player = Weapon(self.player,[self.visible_sprites,self.attack_sprites])
     
     # removes a weapon from the game, once an attack is complete
     def destroy_attack(self):
         if self.current_attack_player:
             self.current_attack_player.kill()
         
+    
+    # handles logic for checking collisions between weapons and players 
+    def attack_logic(self):
+        if self.attack_sprites:
+            for attack_sprite in self.attack_sprites:
+               collision_sprites =  pygame.sprite.spritecollide(attack_sprite,self.attackable_sprites,False) # get collisions between sprites and weapons
+               if collision_sprites:
+                   for target_sprite in collision_sprites:
+                       
+                       # handle what happens when a collision occurs
+                       
+                       # target_sprite.get_damage(self.player,attack_sprite)
+                       
+                       # how to handle the current health of the player and enemy AI?
+                       target_sprite.kill() # kill the target?
     
     # check the status of the players, is the game over?             
     def isGameOver(self):
@@ -88,11 +108,10 @@ class Level:
     
     # loop to update and draw the game           
     def run(self):
-        
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update();
     
-    
+# small class to create a camera view focused on the player     
 class CameraGroup(pygame.sprite.Group):
     def __init__(self):
         

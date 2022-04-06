@@ -136,12 +136,22 @@ class Enemy_A(pygame.sprite.Sprite):
     def decide(self):
         pass
     
+        # general seek and destory strategy: 
+        
+        # can i see an enemy unit? 
+            # move towards enemy and attack 
+        
+        # if not pick a reachable point and move to it
+        
+        
+    
     def animate(self):
         animation = self.animations[self.status];
         self.frame_index += self.animation_speed
         # get the frame index to select the current animation
         if self.frame_index >= len(animation): # get the len of the number of the items in the sprite sub folder
             self.frame_index = 0;
+        
         # set curent image
         self.image = animation[int(self.frame_index)];
         self.rect = self.image.get_rect(center = self.hitbox.center); # update hitbox based on sprite change

@@ -11,7 +11,10 @@
 
 - Pathfinding:
 
-- 
+- Possible AI Strategies:
+    - bersek mode, enemy will find the nearest target lock and and might until destoryed and victory is reached 
+    - lay traps and run
+    - attack from range 
 
 
 # Setup and Settings

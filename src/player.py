@@ -42,12 +42,6 @@ class Player(pygame.sprite.Sprite):
         self.secondary_weapon = ""
         
         
-        
-        
-        
-        
-        
-         
         # attacking and blocking cooldown status vars
         self.attacking = False;
         self.attack_cooldown = 400;
@@ -260,6 +254,22 @@ class Player(pygame.sprite.Sprite):
         self.image = animation[int(self.frame_index)];
         self.rect = self.image.get_rect(center = self.hitbox.center); # update hitbox based on sprite change
         
+    # calculate the total damage of a weapon based on player strength and weapon type
+    def get_weapon_damage(self):
+        total_damage = self.player_stats['strength'] + weapon_data[self.weapon]['damage']
+        return total_damage
+    
+    # get the current health of the player
+    def get_health_stats(self):
+        return self.health
+    
+    # recieve damage from other units/ obstacles on the map
+    
+    def recieve_damage(self,damage_amount):
+        self.health = self.health - damage_amount;
+        
+        if(self.health <= 0):
+            print("player has died!")
                      
     def update(self):
         self.get_status(); # get the current status of the player
