@@ -7,7 +7,6 @@ class Weapon(pygame.sprite.Sprite):
         
         # remove idle type to obtain only player direction 
         direction = player.status.split('_')[0]; # get the current direction of the player to point weapon in correct direction
-        print(direction)
         
         # src\sprites\weapons\axe example of folder path to weapon sprite
         weapon_path = f'sprites/weapons/{player.weapon}/{direction}.png' # path to the graphic of the weapon

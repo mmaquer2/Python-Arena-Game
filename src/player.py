@@ -44,6 +44,7 @@ class Player(pygame.sprite.Sprite):
         
         # attacking and blocking cooldown status vars
         self.attacking = False;
+        self.blocking = False;
         self.attack_cooldown = 400;
         self.attack_time = None;
         self.block_cooldown = 400;
@@ -176,6 +177,7 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_b] and not self.attacking:
             print("player is blocking")
             self.blocking = True;
+            self.status = 'block'
         
     
     def get_status(self):
@@ -199,6 +201,19 @@ class Player(pygame.sprite.Sprite):
         else:
             if 'attack' in self.status:
                 self.status = self.status.replace('_attack', '')
+                
+        # handle blocking action
+        if self.blocking:
+            if not 'block' in self.status:
+                if 'idle' in self.status:
+                    self.status = self.status.replace('_idle', '_block')
+                else:
+                    self.status = self.status + "_attack"
+                    
+        else:
+            if'block' in self.status:
+                self.status = self.status.replace('_block', '')
+        
     
     def cool_down(self):
         current_time = pygame.time.get_ticks();

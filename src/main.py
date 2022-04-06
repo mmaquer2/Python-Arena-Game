@@ -28,7 +28,7 @@ class Game:
         main_sound.play(loops = -1); # keep looping the music
   
         # init game level and map
-        self.level = Level();
+        self.level = Level();b
     
    
     # primary game loop
