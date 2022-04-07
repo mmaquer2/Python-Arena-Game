@@ -55,7 +55,9 @@ class Player(pygame.sprite.Sprite):
         self.obstacles_sprites = obstacle_sprites
 
         # balence the given weapon types with a certain class or range of weapons to create pros and cons of having different equipment
+        #create ranom stats, or assign stats based on the given weapon? 
         
+                
         # randomize player stats
         random_health = random.randint(80,100);   
         random_energy = random.randint(80,100); 
@@ -171,16 +173,19 @@ class Player(pygame.sprite.Sprite):
             self.attacking = True;
             self.create_attack()
             #print("player is attacking w/ prim")
-            
+        
+        
+        #secondary attack    
         #if keys[pygame.K_LSHIFT] and not self.attacking:
         #    self.attack_time = pygame.time.get_ticks();
         #    self.secondary_attack = True;
         #    self.attacking = True
         #    self.create_attack()
         #    print("Player is attacking w/ sec")
-            
-        if keys[pygame.K_b] and not self.attacking:
-            print("player is blocking")
+        
+        # blocking    
+        #if keys[pygame.K_b] and not self.attacking:
+        #    print("player is blocking")
             #self.blocking = True;
            
         
