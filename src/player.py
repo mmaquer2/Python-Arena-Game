@@ -51,6 +51,8 @@ class Player(pygame.sprite.Sprite):
         # weapon handling
         self.create_attack = create_attack; # pass the function pointer of create attack to the player class
         self.destroy_attack = destroy_attack; # pass the function pointer of destroy attack
+        self.is_weapon_destroyed = True;
+        
         
         # weapon random assignment and stats
         weaponRandomAssignment = random.randint(0,len(weapon_data) - 1)  # assign a random weapon to the player 
@@ -60,6 +62,8 @@ class Player(pygame.sprite.Sprite):
         self.weapon_data= weapon_data.get('axe')
         self.weapon_cool_down = self.weapon_data['cooldown'];
         self.secondary_weapon = ""
+        
+        
         
         
         # attacking and blocking cooldown status vars
@@ -145,51 +149,50 @@ class Player(pygame.sprite.Sprite):
     # handle user input with the arrow keys
     def input(self):
         keys = pygame.key.get_pressed()
-        
-        # y axis
-        #moving up
-        if keys[pygame.K_UP]:
-            self.direction.y = -1;
-            self.status = 'up'
+    
+        if not self.attacking:
+            # y axis
+            #moving up
+            if keys[pygame.K_UP] and not self.attacking:
+                self.direction.y = -1;
+                self.status = 'up'
+                
+            #moving down
+            elif keys[pygame.K_DOWN] and not self.attacking:
+                self.direction.y = 1;
+                self.status = 'down'
             
-        #moving down
-        elif keys[pygame.K_DOWN]:
-            self.direction.y = 1;
-            self.status = 'down'
-        
-        # no movement
-        else:
-            self.direction.y = 0;
-        
-        # x axis 
-        #moving right:
-        if keys[pygame.K_RIGHT]:
-            self.direction.x = 1;
-            self.status = 'right'
-               
-        # moving left:    
-        elif keys[pygame.K_LEFT]:
-            self.direction.x = -1;
-            self.status = 'left'
-        # no movement    
-        else:
-            self.direction.x = 0;
+            # no movement
+            else:
+                self.direction.y = 0;
             
-        # using items 
-        if keys[pygame.K_i]:
-            self.use_item = True
-        
-        # attacks      
-        if keys[pygame.K_SPACE] and not self.attacking:
-            self.attack_time = pygame.time.get_ticks();
-            self.primary_attack = True;
-            self.attacking = True;
-            self.weapon_sound.play()
-            self.create_attack()
+            # x axis 
+            #moving right:
+            if keys[pygame.K_RIGHT] and not self.attacking:
+                self.direction.x = 1;
+                self.status = 'right'
+                
+            # moving left:    
+            elif keys[pygame.K_LEFT] and not self.attacking:
+                self.direction.x = -1;
+                self.status = 'left'
+            # no movement    
+            else:
+                self.direction.x = 0;
+                
+            # using items 
+            if keys[pygame.K_i]:
+                self.use_item = True
             
-            # play attack sound
-            
-            #print("player is attacking w/ prim")
+            # attacks      
+            if keys[pygame.K_SPACE] and not self.attacking:
+                self.attack_time = pygame.time.get_ticks();
+                self.primary_attack = True;
+                self.attacking = True;
+                self.weapon_sound.play()
+                self.create_attack()   
+                # play attack sound
+             
         
         
         #secondary attack    
@@ -254,8 +257,9 @@ class Player(pygame.sprite.Sprite):
         current_time = pygame.time.get_ticks();
         if self.attacking:
             if current_time - self.attack_time >= self.attack_cooldown + self.weapon_cool_down: 
-                self.attacking = False;
                 self.destroy_attack()
+                self.attacking = False;
+                
             
         
     

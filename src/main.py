@@ -1,5 +1,5 @@
 import pygame, sys
-from pathlib import Path
+from pathlib import Path 
 from settings import *
 from level import Level 
 

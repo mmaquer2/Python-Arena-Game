@@ -94,10 +94,10 @@ class Level:
     
     # handles drawing the weapon sprite of a player or cpu AI
     def create_attack(self):
-       self.current_attack_player = Weapon(self.player,[self.visible_sprites,self.attack_sprites])
+       self.current_attack_player = Weapon(self.player,[self.visible_sprites,self.attack_sprites],self.player.id)
     
     def create_attack_cpu_a(self):
-        self.cpu_a_attack = Weapon(self.cpu_a,[self.visible_sprites,self.attack_sprites])
+        self.cpu_a_attack = Weapon(self.cpu_a,[self.visible_sprites,self.attack_sprites],self.cpu_a.id)
         
     
     def create_attack_cpu_b(self):
@@ -109,15 +109,18 @@ class Level:
         pass
     
     
-    # removes a weapon from the game, once an attack is complete
+    # removes a weapon animation from the game, once an attack is complete
     def destroy_attack_player(self):
+        print("destory weapon")
         if self.current_attack_player:
             self.current_attack_player.kill()
+            self.is_weapon_destroyed = True;
     
     def destroy_attack_cpu_a(self):
-        # destory attacks for enemy AI as well
+        
         if self.cpu_a_attack:
             self.cpu_a_attack.kill()
+            
             
         #if self.cpu_b_attack:
         #        self.cpu_b_attack.kill()
@@ -136,21 +139,26 @@ class Level:
                             #target_sprite.kill() # kill the target without damage, testing only
                             damage = self.player.get_weapon_damage() # get the damage from the current weapon
                             target_sprite.get_damage(damage)  # pass the damage from
+                            self.player.is_weapon_destroyed = False;
                         
                     
                         
     # handlers cpu_ai attacks 
     def cpu_a_attack_logic(self):
+        
         if self.attack_sprites:
             for attack_sprite in self.attack_sprites:
                 collision_sprites =  pygame.sprite.spritecollide(attack_sprite,self.attackable_sprites,False) # get collisions between sprites and weapons
                 if collision_sprites:
                    for target_sprite in collision_sprites:
                        if target_sprite.sprite_type == 'cpu_ai' or 'player':
-                            #target_sprite.kill() # kill the target without damage, testing only
-                            damage = self.cpu_a.get_weapon_damage() # get the damage from the current weapon
-                            target_sprite.get_damage(damage)  # pass the damage from
-            
+                           if self.cpu_a_attack != None:
+                            if self.cpu_a_attack.weapon_owner_id != target_sprite.id:  # check that the owner of a weapon isnt taking damange for its own weapon sprite
+                                
+                                
+                                damage = self.cpu_a.get_weapon_damage() # get the damage from the current weapon
+                                target_sprite.get_damage(damage)  # pass the damage from
+                                
     
     def cpu_b_attack_logic(self):
         pass
