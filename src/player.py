@@ -3,6 +3,7 @@ import random
 from pathlib import Path
 from settings import *
 from os import walk
+from math import sin
 
 # class to represent the human controller player
 class Player(pygame.sprite.Sprite):
@@ -14,12 +15,27 @@ class Player(pygame.sprite.Sprite):
         self.id = '1'
         self.sprite_type = 'player'
         
-        # load starting player sprite sheet
+        # load starting player sprite sheet and attack sound
         idle_down_folder = Path('sprites/characters/player/down_idle/idle_down.png')
         self.image_import = pygame.image.load(idle_down_folder) # import image 
         self.image = pygame.transform.scale(self.image_import,(64,64));   # scale sprite sheet
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-5);
+    
+        # load attack sound
+        weapon_sound_file = Path('music/sword.wav')
+        self.weapon_sound = pygame.mixer.Sound(weapon_sound_file)
+        self.weapon_sound.set_volume(0.1)
+  
+        # load damage sound
+        damage_sound_file = Path('music/hit.wav')
+        self.damage_sound = pygame.mixer.Sound(damage_sound_file)
+        self.damage_sound.set_volume(0.1)
+        
+        # load death sound
+        death_sound_file = Path('music/death.wav')
+        self.death_sound = pygame.mixer.Sound(death_sound_file)
+        self.death_sound.set_volume(0.05)
         
         # load the remaining player animations 
         self.import_player_animations()
@@ -49,7 +65,7 @@ class Player(pygame.sprite.Sprite):
         # attacking and blocking cooldown status vars
         self.attacking = False;
         self.blocking = False;
-        self.attack_cooldown = 400;
+        self.attack_cooldown = 800;
         self.attack_time = None;
         self.block_cooldown = 400;
         self.obstacles_sprites = obstacle_sprites
@@ -168,7 +184,11 @@ class Player(pygame.sprite.Sprite):
             self.attack_time = pygame.time.get_ticks();
             self.primary_attack = True;
             self.attacking = True;
+            self.weapon_sound.play()
             self.create_attack()
+            
+            # play attack sound
+            
             #print("player is attacking w/ prim")
         
         
@@ -286,7 +306,7 @@ class Player(pygame.sprite.Sprite):
     # calculate the total damage of a weapon based on player strength and weapon type
     def get_weapon_damage(self):
         total_damage = self.player_stats['attack'] + weapon_data[self.weapon]['damage']
-        print(total_damage)
+
         return total_damage
     
     # get the current health of the player
@@ -296,12 +316,29 @@ class Player(pygame.sprite.Sprite):
     # recieve damage from other units/ obstacles on the map
     def get_damage(self,damage_amount):
         self.health = self.health - damage_amount;
-        
+        self.flicker() 
+        self.damage_sound.play()
+        self.check_death()
        
-    
+    # function to check if the players health has reached zero
     def check_death(self):
          if(self.health <= 0):
                 self.kill()
+                print("game over you have no health remaining!")
+                quit()
+    
+    # flicker the sprite to show the character is taking damage
+    def flicker(self):
+        alpha = self.flicker_value();
+        self.image.set_alpha(alpha)
+        
+    # create a noise value for the flicker function
+    def flicker_value(self):
+        value = sin(pygame.time.get_ticks())
+        if value >= 0:
+            return 255;
+        else:
+            return 0;
     
     def update(self):
         self.get_status(); # get the current status of the player

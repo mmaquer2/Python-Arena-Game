@@ -17,14 +17,14 @@ weapon_data = {
 
 magic_data = {
     
-    'fireBolt': { 'energy': 100, 'cost': 15, 'graphic' : ''},
-    'iceBolt': { 'energy': 100, 'cost': 15, 'graphic' : ''},
+    'fireBolt': { 'energy': 100, 'cost': 15, },
+    'iceBolt': { 'energy': 100, 'cost': 15, },
 
 }
 
 item_data = {
     
-    'health_potion': { 'energy': 100, 'cost': 15, 'graphic' : ''},
+    'health_potion': { 'energy': 100, 'cost': 15},
     
 }
 

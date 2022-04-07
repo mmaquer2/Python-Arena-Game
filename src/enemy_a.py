@@ -18,8 +18,23 @@ class Enemy_A(pygame.sprite.Sprite):
         idle_down_folder = Path('sprites/characters/cpu_a/down_idle/idle_down.png')
         self.image_import = pygame.image.load(idle_down_folder) # import image 
         self.image = pygame.transform.scale(self.image_import,(64,64));   # scale sprite sheet
-        
         self.import_animations();  
+        
+        # load attack sound
+        weapon_sound_file = Path('music/slash.wav')
+        self.weapon_sound = pygame.mixer.Sound(weapon_sound_file)
+        self.weapon_sound.set_volume(0.1)
+  
+        # load damage sound
+        damage_sound_file = Path('music/hit.wav')
+        self.damage_sound = pygame.mixer.Sound(damage_sound_file)
+        self.damage_sound.set_volume(0.05)
+        
+        
+        # load death sound
+        death_sound_file = Path('music/death.wav')
+        self.death_sound = pygame.mixer.Sound(death_sound_file)
+        self.death_sound.set_volume(0.05)
         
         # direction and status vars
         self.status = 'down'
@@ -215,6 +230,7 @@ class Enemy_A(pygame.sprite.Sprite):
     def get_damage(self,damage):
         print("cpu a is taking damage")
         self.health = self.health - damage;
+        self.damage_sound.play()
         self.flicker() 
         self.check_death()
         
@@ -222,6 +238,7 @@ class Enemy_A(pygame.sprite.Sprite):
     # check if health is 0 and character has died
     def check_death(self):
         if self.health <= 0:
+            self.death_sound.play() 
             self.kill()
     
 
@@ -249,6 +266,7 @@ class Enemy_A(pygame.sprite.Sprite):
         
         if self.command == 'attack' and not self.attacking:
             self.attacking = True;
+            self.weapon_sound.play()
         
         if self.command == 'block' and not self.blocking:
             self.blocking = True;
