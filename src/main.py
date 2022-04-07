@@ -13,15 +13,13 @@ class Game:
         pygame.display.set_caption('Arena Game by Mike Maquera')
         self.screen = pygame.display.set_mode((window_width, window_height))
         
-        
-        # set game icon
+        # set game icon on window tab
         icon_path = Path('sprites/characters/player/down_idle/idle_down.png')
         icon = pygame.image.load(icon_path)
         pygame.display.set_icon(icon)
-        
         self.clock = pygame.time.Clock()
         
-        # load musicb
+        # load music
         main_music = Path('music/battle_music.wav')
         main_sound = pygame.mixer.Sound(main_music) # play music
         main_sound.set_volume(0.1)
@@ -30,16 +28,14 @@ class Game:
         # init game level and map
         self.level = Level();
     
-   
     # primary game loop
     def run(self):
-        
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                
+       
             self.screen.fill('light green') # background color
             
             # check if the game is over
@@ -51,8 +47,7 @@ class Game:
                 self.clock.tick(FPS)
                 
 
-
-# Calls the main game start and loop
+# Calls the game start and loop
 if __name__ == '__main__':
     game = Game();
     

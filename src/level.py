@@ -1,5 +1,5 @@
 
-import pygame,sys
+import pygame
 import random
 from settings import *
 from wall import Wall
@@ -31,14 +31,16 @@ class Level:
         
     def createMap(self):
         # select game map by randomizing what map is being selected from the world maps in the settings 
-        mapNum = random.randint(0, 2)
+        mapNum = random.randint(0, 3)
         if(mapNum == 0):
             levelMap = WORLD_MAP_ONE
         if(mapNum == 1):
             levelMap = WORLD_MAP_TWO
         if(mapNum == 2):
             levelMap = WORLD_MAP_THREE
-                 
+        if(mapNum == 3):
+            levelMap = WORLD_MAP_FOUR
+    
         # Randomize starting locations, there are 4 possible starting points on each map
         players = ["p","a","b","c"]
         random.shuffle(players) # shuffle players for different locations
@@ -56,7 +58,7 @@ class Level:
         #self.health_cpu_b = self.cpu_b.health
         #self.health_cpu_c = self.cpu_c.health
         
-        # place objects on  the world map   
+    # place objects on the world map   
         for row_ind,row in enumerate(levelMap):
             for col_ind, col in enumerate(row):
                 x = col_ind * tileSize;
