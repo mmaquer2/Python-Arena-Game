@@ -18,7 +18,7 @@ class Game:
         icon = pygame.image.load(icon_path)
         pygame.display.set_icon(icon)
         self.clock = pygame.time.Clock()
-        
+               
         # load music
         main_music = Path('music/battle_music.wav')
         main_sound = pygame.mixer.Sound(main_music) # play music

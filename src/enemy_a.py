@@ -337,6 +337,13 @@ class Enemy_A(pygame.sprite.Sprite):
         return (distance, direction)
     
     
+    
+    # calculate the total damage of a weapon based on player strength and weapon type
+    def get_weapon_damage(self):
+        total_damage = self.ai_stats['attack'] + weapon_data[self.weapon]['damage']
+        return total_damage
+    
+    
     def rotate(self):
         misc_dirs = ['left','right','up','down']
         random_dir = random.randint(0,3);
@@ -435,5 +442,7 @@ class Enemy_A(pygame.sprite.Sprite):
         self.cpu_input(); # animate based on the command and change cpu status
         self.cool_down();
         self.move(self.speed);
+        
+        print("cpu attack status:", self.attacking)
         
         self.previous_direction = self.direction # save the previous direction 

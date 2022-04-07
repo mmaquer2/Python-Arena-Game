@@ -81,7 +81,7 @@ class Player(pygame.sprite.Sprite):
         random_speed = random.randint(3,10); 
 
         # base player stats
-        self.player_stats = {'health': 100, 'energy': 100, 'attack': 5, 'magic': 5, "speed": 5 }
+        self.player_stats = {'health': 5000, 'energy': 100, 'attack': 5, 'magic': 5, "speed": 5 }
         self.health = self.player_stats['health']
         self.speed = self.player_stats['speed'];
     

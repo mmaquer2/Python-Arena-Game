@@ -46,8 +46,8 @@ class Level:
         random.shuffle(players) # shuffle players for different locations
         
         # init player and CPU_AI: 
-        self.player = Player((1,1), [self.visible_sprites,self.attackable_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack)    
-        self.cpu_a = Enemy_A((2,2), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_a, self.destroy_attack)
+        self.player = Player((1,1), [self.visible_sprites,self.attackable_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack_player)    
+        self.cpu_a = Enemy_A((2,2), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_a, self.destroy_attack_cpu_a)
         #self.cpu_b = Enemy_B((3,3), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
         #self.cpu_c = Enemy_C((4,4), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
         
@@ -110,10 +110,11 @@ class Level:
     
     
     # removes a weapon from the game, once an attack is complete
-    def destroy_attack(self):
+    def destroy_attack_player(self):
         if self.current_attack_player:
             self.current_attack_player.kill()
-        
+    
+    def destroy_attack_cpu_a(self):
         # destory attacks for enemy AI as well
         if self.cpu_a_attack:
             self.cpu_a_attack.kill()
@@ -132,8 +133,6 @@ class Level:
                if collision_sprites:
                    for target_sprite in collision_sprites:
                        if target_sprite.sprite_type == 'cpu_ai':
-                            
-                            #print(target_sprite.id) # get the id of the sprite
                             #target_sprite.kill() # kill the target without damage, testing only
                             damage = self.player.get_weapon_damage() # get the damage from the current weapon
                             target_sprite.get_damage(damage)  # pass the damage from
@@ -148,18 +147,10 @@ class Level:
                 if collision_sprites:
                    for target_sprite in collision_sprites:
                        if target_sprite.sprite_type == 'cpu_ai' or 'player':
-                            
-                            #print(target_sprite.id) # get the id of the sprite
                             #target_sprite.kill() # kill the target without damage, testing only
-                            damage = self.player.get_weapon_damage() # get the damage from the current weapon
+                            damage = self.cpu_a.get_weapon_damage() # get the damage from the current weapon
                             target_sprite.get_damage(damage)  # pass the damage from
-        
-
-        
-        
-        print("cpu attack logic called")
-        
-    
+            
     
     def cpu_b_attack_logic(self):
         pass
