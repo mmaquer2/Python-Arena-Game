@@ -285,7 +285,8 @@ class Player(pygame.sprite.Sprite):
         
     # calculate the total damage of a weapon based on player strength and weapon type
     def get_weapon_damage(self):
-        total_damage = self.player_stats['strength'] + weapon_data[self.weapon]['damage']
+        total_damage = self.player_stats['attack'] + weapon_data[self.weapon]['damage']
+        print(total_damage)
         return total_damage
     
     # get the current health of the player

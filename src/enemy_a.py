@@ -3,6 +3,7 @@ import random
 from settings import *
 from os import walk
 from pathlib import Path
+from math import sin
 
 class Enemy_A(pygame.sprite.Sprite):
     def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack):
@@ -26,12 +27,12 @@ class Enemy_A(pygame.sprite.Sprite):
         self.animation_speed = 0.15;
         self.direction = pygame.math.Vector2()
         self.obstacles_sprites = obstacle_sprites
-        
+        self.attacking = False;
         
         # action_planning and behavior tree
         
         strategies = ['ambush','wander','beserk'] # list of possible strategies
-        strat_ind = random.randint(0, len(strategies))
+        strat_ind = random.randint(0, len(strategies)-1)
         random_strat = strategies[strat_ind]
         
         self.goal = "wander"
@@ -60,8 +61,9 @@ class Enemy_A(pygame.sprite.Sprite):
         random_speed = random.randint(3,10);
           
 
-        self.ai_stats = {'health': 100, 'energy': 100, 'attack': 5, 'magic': 5, "speed": 5 }
+        self.ai_stats = {'health': 5000, 'energy': 100, 'attack': 2, 'magic': 5, "speed": 5 }
         self.health = self.ai_stats['health']
+        #print("cpu a starting health:" , self.health)
         self.speed = self.ai_stats['speed'];
     
     
@@ -211,7 +213,9 @@ class Enemy_A(pygame.sprite.Sprite):
     
     
     def get_damage(self,damage):
-        self.health =- damage;
+        print("cpu a is taking damage")
+        self.health = self.health - damage;
+        self.flicker() 
         self.check_death()
         
     
@@ -309,11 +313,11 @@ class Enemy_A(pygame.sprite.Sprite):
                 if sprite.hitbox.colliderect(self.hitbox):
                     if self.direction.x > 0:
                         self.hitbox.right = sprite.hitbox.left
-                        print("cpu in collision right")
+                        #print("cpu in collision right")
                         self.inCollision = True
                     if self.direction.x < 0:
                         self.hitbox.left = sprite.hitbox.right
-                        print("cpu in collision left")
+                        #print("cpu in collision left")
                         self.inCollision = True
                         
         # handle vertical collisions
@@ -322,11 +326,11 @@ class Enemy_A(pygame.sprite.Sprite):
                 if sprite.hitbox.colliderect(self.hitbox):
                     if self.direction.y > 0:
                         self.hitbox.bottom = sprite.hitbox.top
-                        print("in collision bot")
+                        #print("in collision bot")
                         self.inCollision = True
                     if self.direction.y < 0:
                         self.hitbox.top = sprite.hitbox.bottom
-                        print("in collision bot")
+                        #print("in collision bot")
                         self.inCollision = True
                          
     def animate(self):
@@ -345,6 +349,19 @@ class Enemy_A(pygame.sprite.Sprite):
                 self.attacking = False;
                 self.destroy_attack()
 
+    
+    def flicker(self):
+        alpha = self.flicker_value();
+        self.image.set_alpha(alpha)
+        
+    
+    def flicker_value(self):
+        value = sin(pygame.time.get_ticks())
+        if value >= 0:
+            return 255;
+        else:
+            return 0;
+    
         
     def update(self):
         self.get_status()
