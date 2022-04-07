@@ -29,7 +29,11 @@ class Enemy_A(pygame.sprite.Sprite):
         
         
         # action_planning and behavior tree
-        # what is the current goal of the AI?
+        
+        strategies = ['ambush','wander','beserk'] # list of possible strategies
+        strat_ind = random.randint(0, len(strategies))
+        random_strat = strategies[strat_ind]
+        
         self.goal = "wander"
         self.command = "move_left"
         self.inCollision = False; # status in if in a collision or not
@@ -41,7 +45,6 @@ class Enemy_A(pygame.sprite.Sprite):
         self.weapon_index = weaponRandomAssignment;
         self.weapon = list(weapon_data.keys())[self.weapon_index];
         self.destroy_attack = destroy_attack;
-        
         
         # setting the distance which one may see or attack other units
         # attack_radius': 80, 'notice_radius': 360}, example attack and notice radius data
@@ -94,14 +97,14 @@ class Enemy_A(pygame.sprite.Sprite):
         block_right_folder = 'sprites/characters/cpu_a/right_block'
         block_left_folder = 'sprites/characters/cpu_a/left_block' 
 
-        death = []
+        ai_death_folder = 'sprites/characters/cpu_a/death'
         
         self.animations = {
             'up': move_up_folder, 'down': move_down_folder, 'left': move_left_folder, 'right': move_right_folder, 
             'up_idle': idle_up_folder, 'down_idle': idle_down_folder, 'left_idle': idle_left_folder, 'right_idle': idle_right_folder, 
             'up_block': block_up_folder, 'down_block':block_down_folder , 'left_block': block_left_folder, 'right_block': block_right_folder, 
             'up_attack': attack_up_folder, 'down_attack': attack_down_folder, 'left_attack': attack_left_folder, 'right_attack': attack_right_folder, 
-            
+            'death': ai_death_folder
         } 
         
         for animation in self.animations.keys():
@@ -134,7 +137,7 @@ class Enemy_A(pygame.sprite.Sprite):
     
     
     
-    # plan action
+    # plan action and set command for the ai to execute
     def plan_action(self):
         
         if self.goal == "beserk":
@@ -207,8 +210,10 @@ class Enemy_A(pygame.sprite.Sprite):
         pass;
     
     
-    def get_damage(self):
-        pass
+    def get_damage(self,damage):
+        self.health =- damage;
+        self.check_death()
+        
     
     # check if health is 0 and character has died
     def check_death(self):

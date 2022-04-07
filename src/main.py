@@ -42,9 +42,6 @@ class Game:
                 
             self.screen.fill('light green') # background color
             
-            # starting screen and level count down...
-            
-            
             # check if the game is over
             if(self.level.isGameOver()):
                 print("game is over!")

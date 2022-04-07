@@ -19,6 +19,10 @@ class Level:
     
         # attack sprites
         self.current_attack_player = None;
+        self.cpu_a_attack = None;
+        self.cpu_b_attack = None;
+        self.cpu_c_attack = None;
+        
         self.attack_sprites = pygame.sprite.Group(); # create sprite group for attcking objects
         self.attackable_sprites = pygame.sprite.Group();
         
@@ -41,7 +45,7 @@ class Level:
         
         # init player and CPU_AI: 
         self.player = Player((1,1), [self.visible_sprites,self.attackable_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack)    
-        self.cpu_a = Enemy_A((2,2), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
+        self.cpu_a = Enemy_A((2,2), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_a, self.destroy_attack)
         #self.cpu_b = Enemy_B((3,3), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
         #self.cpu_c = Enemy_C((4,4), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
         
@@ -72,9 +76,9 @@ class Level:
                     
         # place npc characters on the map
                 if col=='a':
-                    self.cpu_a.set_location((x,y));
+                    self.cpu_a.set_location((x,y)); # set location 
                     enemy_list = [self.player]
-                    self.cpu_a.set_opponents(enemy_list)
+                    self.cpu_a.set_opponents(enemy_list) # set list of enemy characters
                 
                 #if col=='b':
                 # self.cpu_b.set_location((x,y));
@@ -90,12 +94,34 @@ class Level:
     def create_attack(self):
        self.current_attack_player = Weapon(self.player,[self.visible_sprites,self.attack_sprites])
     
+    def create_attack_cpu_a(self):
+        self.cpu_a_attack = Weapon(self.cpu_a,[self.visible_sprites,self.attack_sprites])
+        
+    
+    def create_attack_cpu_b(self):
+        #self.cpu_b_attack = Weapon(self.cpu_b,[self.visible_sprites,self.attack_sprites])
+        pass
+    
+    def create_attack_cpu_c(self):
+        #self.cpu_c_attack = Weapon(self.cpu_c,[self.visible_sprites,self.attack_sprites])
+        pass
+    
+    
     # removes a weapon from the game, once an attack is complete
     def destroy_attack(self):
         if self.current_attack_player:
             self.current_attack_player.kill()
+        
         # destory attacks for enemy AI as well
-    
+        if self.cpu_a_attack:
+            self.cpu_a_attack.kill()
+            
+        #if self.cpu_b_attack:
+        #        self.cpu_b_attack.kill()
+        
+        #if self.cpu_c_attack:
+        #        self.cpu_c_attack.kill()
+        
     # handles logic for checking collisions between weapons and players 
     def attack_logic(self):
         if self.attack_sprites:
@@ -104,14 +130,14 @@ class Level:
                if collision_sprites:
                    for target_sprite in collision_sprites:
                        if target_sprite.sprite_type == 'cpu_ai':
-                       # handle what happens when a collision occurs
-                       
-                       # target_sprite.get_damage(self.player,attack_sprite)
-                       
-                       # how to handle the current health of the player and enemy AI?
-                        target_sprite.kill() # kill the target?
-    
-    
+                            
+                            print(target_sprite.id) # get the id of the sprite
+                            #target_sprite.kill() # kill the target without damage, testing only
+                            damage = self.player.get_weapon_damage() # get the damage from the current weapon
+                            target_sprite.get_damage(damage)  # pass the damage from
+                        
+                    
+                        
     # handlers cpu_ai attacks 
     def cpu_a_attack_logic(self):
         pass
@@ -152,13 +178,16 @@ class Level:
     # loop to update and draw the game           
     def run(self):
         self.visible_sprites.custom_draw(self.player)
+        # handle the attack logic and animations for all characters
         self.attack_logic()
+        #self.cpu_a_attack_logic()
+        #self.cpu_b_attack_logic()
+        #self.cpu_c_attack_logic()
         self.visible_sprites.update();
     
 # small class to create a camera view focused on the player     
 class CameraGroup(pygame.sprite.Group):
     def __init__(self):
-        
         super().__init__()
         self.display_surface = pygame.display.get_surface()
         self.half_width = self.display_surface.get_size()[0] // 2;
@@ -167,10 +196,8 @@ class CameraGroup(pygame.sprite.Group):
         
     # draw the player in relation to the camera view
     def custom_draw(self,player):
-        
         self.offset.x = player.rect.centerx - self.half_width;
         self.offset.y = player.rect.centery - self.half_height;
-        
         for sprite in sorted(self.sprites(),key = lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image,offset_pos)
