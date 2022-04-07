@@ -133,7 +133,7 @@ class Level:
                    for target_sprite in collision_sprites:
                        if target_sprite.sprite_type == 'cpu_ai':
                             
-                            print(target_sprite.id) # get the id of the sprite
+                            #print(target_sprite.id) # get the id of the sprite
                             #target_sprite.kill() # kill the target without damage, testing only
                             damage = self.player.get_weapon_damage() # get the damage from the current weapon
                             target_sprite.get_damage(damage)  # pass the damage from
@@ -142,7 +142,23 @@ class Level:
                         
     # handlers cpu_ai attacks 
     def cpu_a_attack_logic(self):
-        pass
+        if self.attack_sprites:
+            for attack_sprite in self.attack_sprites:
+                collision_sprites =  pygame.sprite.spritecollide(attack_sprite,self.attackable_sprites,False) # get collisions between sprites and weapons
+                if collision_sprites:
+                   for target_sprite in collision_sprites:
+                       if target_sprite.sprite_type == 'cpu_ai' or 'player':
+                            
+                            #print(target_sprite.id) # get the id of the sprite
+                            #target_sprite.kill() # kill the target without damage, testing only
+                            damage = self.player.get_weapon_damage() # get the damage from the current weapon
+                            target_sprite.get_damage(damage)  # pass the damage from
+        
+
+        
+        
+        print("cpu attack logic called")
+        
     
     
     def cpu_b_attack_logic(self):
@@ -182,7 +198,7 @@ class Level:
         self.visible_sprites.custom_draw(self.player)
         # handle the attack logic and animations for all characters
         self.attack_logic()
-        #self.cpu_a_attack_logic()
+        self.cpu_a_attack_logic()
         #self.cpu_b_attack_logic()
         #self.cpu_c_attack_logic()
         self.visible_sprites.update();

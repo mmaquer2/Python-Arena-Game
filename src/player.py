@@ -315,6 +315,7 @@ class Player(pygame.sprite.Sprite):
     
     # recieve damage from other units/ obstacles on the map
     def get_damage(self,damage_amount):
+        print("human player is taking damage!")
         self.health = self.health - damage_amount;
         self.flicker() 
         self.damage_sound.play()
