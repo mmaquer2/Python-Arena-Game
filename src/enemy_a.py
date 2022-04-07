@@ -137,19 +137,17 @@ class Enemy_A(pygame.sprite.Sprite):
     # plan action
     def plan_action(self):
         
-        
-        #if self.goal == "beserk":
-        # lock onto the nearest enemy as the target and chase it around
-        
-        
+        if self.goal == "beserk":
+            self.target = self.find_nearest_enemy() # find nearest enemy
+            # move toward enemy location
+            # attack
+            
         if self.goal == "ambush":
             if self.see_enemy(): # iterate through all enemies to determine if one is within range
-                # move towards the enemy        
+                                 # move towards the enemy        
                 pass
-            
-            
             else:
-                pass
+                self.command = 'wait' # or wait
             # move towards enemey
                  
         if self.goal == 'wander':
@@ -159,23 +157,34 @@ class Enemy_A(pygame.sprite.Sprite):
                 self.inCollision = False
                 
             # if i'm in a collision select another direction
-            
             new_movement = self.get_waypoint();    # plan path to a new waypoint
             # move to this waypoint
             # what direction do I need to move to go here?
 
-        
-        
-        #plant traps
-        #if self.goal == "set_traps":
-            #set a trap and move somewhere else
-        
         # run and hide from enemy players
         if self.goal == 'hide':
-            
             # if i'm getting attacked, move,
             pass
     
+    # get the location of the nearest enemy character
+    def find_nearest_enemy(self):
+        nearest_target_distance = 100000;
+        nearest_target = ''
+        
+        # scan through all opponent players for the one with the shortest distance
+        for opp in self.opponents:
+            myVec = pygame.math.Vector2(self.rect.center)
+            opponentVec = pygame.math.Vector2(opp.rect.center)  #calculate the vector between each opp and ai
+        
+            temp_distance = (opponentVec - myVec).magnitude()
+            if temp_distance < nearest_target_distance:
+                nearest_target = opp;
+                
+            # print(opp.rect[0], opp.rect[1]) # get the x,y coordinates of an opponent
+            
+        print("target is unit id: " + nearest_target.id) # test to see what the target is
+        
+        return nearest_target
     
     # iterate through enemy oppoenents and their locations
     def see_enemy(self):
@@ -191,11 +200,6 @@ class Enemy_A(pygame.sprite.Sprite):
     
     def plan_path(self):
         pass
-    
-    
-    def plan_movement(self):
-        pass
-        # get the difference between the previous and next direction
     
     
     # check if an opponent is within visible range
@@ -214,6 +218,9 @@ class Enemy_A(pygame.sprite.Sprite):
 
     # change the status of the cpu AI to actually animate and execute the action
     def cpu_input(self):
+        
+        if self.command == 'wait':
+            self.status = 'idle_down'
         
         if self.command == "move_up":
             self.direction.y = -1;
@@ -241,8 +248,6 @@ class Enemy_A(pygame.sprite.Sprite):
             pass
         
              
-   
-    
     # get the distance and direction for an opponent
     def find_opponent_distance_direction(self,enemy):
         myVec = pygame.math.Vector2(self.rect.center)
@@ -266,22 +271,32 @@ class Enemy_A(pygame.sprite.Sprite):
     
     def get_status(self):
         
-        distance = 0;
+        #handle death when health reaches 0
+        if self.health <= 0:
+            self.status = 'death'
+            self.kill()
         
-        
-        #if distance <= self.attack_radius:
-        #    self.status = 'attack'
-        
-        #if distance <= self.notice_radius:
-        #    self.status = 'move'
-        
-        # else:
-        #    self.status = 'idle'
-
+        # handle move to idle
         if self.direction.x == 0 and self.direction.y == 0:
             if not 'idle' in self.status and not 'attack' in self.status:
                 self.status = self.status + '_idle'
-    
+                
+         # handle attack then idle transition
+        if self.attacking:
+            self.direction.x = 0;
+            self.direction.y = 0;
+            if not 'attack' in self.status:
+                if 'idle' in self.status:
+                    self.status = self.status.replace('_idle', '_attack')
+                
+                else:    
+                    self.status = self.status + "_attack"
+
+        else:
+            if 'attack' in self.status:
+                self.status = self.status.replace('_attack', '')
+                
+                
     def collision(self,direction):
          # handle horizontal collisions
         if direction == 'horizontal':
@@ -308,35 +323,22 @@ class Enemy_A(pygame.sprite.Sprite):
                         self.hitbox.top = sprite.hitbox.bottom
                         print("in collision bot")
                         self.inCollision = True
-    
-    # make some sort of decision based on the game AI behavior Tree
-    def decide(self):
-        pass
-    
-        # general seek and destory strategy: 
-        
-        # can i see an enemy unit? 
-            # move towards enemy and attack 
-        
-        # if not pick a reachable point and move to it
-        
-    
-    
+                         
     def animate(self):
         animation = self.animations[self.status];
         self.frame_index += self.animation_speed
         # get the frame index to select the current animation
         if self.frame_index >= len(animation): # get the len of the number of the items in the sprite sub folder
             self.frame_index = 0;
-        
-        # set curent image
-        self.image = animation[int(self.frame_index)];
+        self.image = animation[int(self.frame_index)]; # set curent image
         self.rect = self.image.get_rect(center = self.hitbox.center); # update hitbox based on sprite change
         
-
-    
     def cool_down(self):
-        pass
+        current_time = pygame.time.get_ticks();
+        if self.attacking:
+            if current_time - self.attack_time >= self.attack_cooldown + self.weapon_cool_down: 
+                self.attacking = False;
+                self.destroy_attack()
 
         
     def update(self):
@@ -346,4 +348,4 @@ class Enemy_A(pygame.sprite.Sprite):
         self.cpu_input(); # 
         self.cool_down();
         self.move(self.speed);
-        self.check_death()
+        

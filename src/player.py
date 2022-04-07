@@ -55,9 +55,8 @@ class Player(pygame.sprite.Sprite):
         self.obstacles_sprites = obstacle_sprites
 
         # balence the given weapon types with a certain class or range of weapons to create pros and cons of having different equipment
-        #create ranom stats, or assign stats based on the given weapon? 
-        
-                
+        # create random stats, or assign stats based on the given weapon? 
+               
         # randomize player stats
         random_health = random.randint(80,100);   
         random_energy = random.randint(80,100); 
@@ -75,7 +74,6 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-5);
     
-    
     # function to import player animation resources
     def import_player_animations(self):
         
@@ -84,7 +82,6 @@ class Player(pygame.sprite.Sprite):
         idle_down_folder = 'sprites/characters/player/down_idle'
         idle_right_folder = 'sprites/characters/player/right_idle'
         idle_left_folder = 'sprites/characters/player/left_idle'
-        
         
         move_down_folder = 'sprites/characters/player/down'
         move_up_folder = 'sprites/characters/player/up'
@@ -194,6 +191,7 @@ class Player(pygame.sprite.Sprite):
         
         if self.health <= 0:
             self.status = 'death'
+            self.kill()
         
         # handle idle animation 
         if self.direction.x == 0 and self.direction.y == 0:
@@ -234,9 +232,6 @@ class Player(pygame.sprite.Sprite):
     
     def cool_down(self):
         current_time = pygame.time.get_ticks();
-        
-        # to do need
-        
         if self.attacking:
             if current_time - self.attack_time >= self.attack_cooldown + self.weapon_cool_down: 
                 self.attacking = False;
