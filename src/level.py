@@ -53,7 +53,7 @@ class Level:
         #self.health_cpu_c = self.cpu_c.health
         
         # place objects on  the world map   
-        for row_ind,row in enumerate(WORLD_MAP_ONE):
+        for row_ind,row in enumerate(levelMap):
             for col_ind, col in enumerate(row):
                 x = col_ind * tileSize;
                 y = row_ind * tileSize
@@ -94,7 +94,7 @@ class Level:
     def destroy_attack(self):
         if self.current_attack_player:
             self.current_attack_player.kill()
-        
+        # destory attacks for enemy AI as well
     
     # handles logic for checking collisions between weapons and players 
     def attack_logic(self):
@@ -103,13 +103,27 @@ class Level:
                collision_sprites =  pygame.sprite.spritecollide(attack_sprite,self.attackable_sprites,False) # get collisions between sprites and weapons
                if collision_sprites:
                    for target_sprite in collision_sprites:
-                       
+                       if target_sprite.sprite_type == 'cpu_ai':
                        # handle what happens when a collision occurs
                        
                        # target_sprite.get_damage(self.player,attack_sprite)
                        
                        # how to handle the current health of the player and enemy AI?
-                       target_sprite.kill() # kill the target?
+                        target_sprite.kill() # kill the target?
+    
+    
+    # handlers cpu_ai attacks 
+    def cpu_a_attack_logic(self):
+        pass
+    
+    
+    def cpu_b_attack_logic(self):
+        pass
+    
+    
+    def cpu_c_attack_logic(self):
+        pass
+    
     
     # check the status of the players, is the game over?             
     def isGameOver(self):
@@ -138,6 +152,7 @@ class Level:
     # loop to update and draw the game           
     def run(self):
         self.visible_sprites.custom_draw(self.player)
+        self.attack_logic()
         self.visible_sprites.update();
     
 # small class to create a camera view focused on the player     

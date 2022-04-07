@@ -7,3 +7,4 @@ class Enemy_B(pygame.sprite.Sprite):
         pass
     
         self.id = '3'
+        self.sprite_type = "cpu_ai"    

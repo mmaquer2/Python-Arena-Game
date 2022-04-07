@@ -1,4 +1,3 @@
-
 import pygame, sys
 import random
 from pathlib import Path
@@ -13,6 +12,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__(groups) 
         
         self.id = '1'
+        self.sprite_type = 'player'
         
         # load starting player sprite sheet
         idle_down_folder = Path('sprites/characters/player/down_idle/idle_down.png')
@@ -36,11 +36,13 @@ class Player(pygame.sprite.Sprite):
         self.create_attack = create_attack; # pass the function pointer of create attack to the player class
         self.destroy_attack = destroy_attack; # pass the function pointer of destroy attack
         
-        
+        # weapon random assignment and stats
         weaponRandomAssignment = random.randint(0,len(weapon_data) - 1)  # assign a random weapon to the player 
         self.weapon_index = weaponRandomAssignment
         
         self.weapon = list(weapon_data.keys())[self.weapon_index]; # assign the random weapon to the player
+        self.weapon_data= weapon_data.get('axe')
+        self.weapon_cool_down = self.weapon_data['cooldown'];
         self.secondary_weapon = ""
         
         
@@ -97,14 +99,14 @@ class Player(pygame.sprite.Sprite):
         block_right_folder = 'sprites/characters/player/right_block'
         block_left_folder = 'sprites/characters/player/left_block'  
         
-        player_death = []
+        player_death_folder = 'sprites/characters/player/death'  
         
         self.animations = {
             'up': move_up_folder, 'down': move_down_folder, 'left': move_left_folder, 'right': move_right_folder, 
             'up_idle': idle_up_folder, 'down_idle': idle_down_folder, 'left_idle': idle_left_folder, 'right_idle': idle_right_folder, 
             'up_block': block_up_folder, 'down_block':block_down_folder , 'left_block': block_left_folder, 'right_block': block_right_folder, 
-            'up_attack': attack_up_folder, 'down_attack': attack_down_folder, 'left_attack': attack_left_folder, 'right_attack': attack_right_folder, 
-            
+            'up_attack': attack_up_folder, 'down_attack': attack_down_folder, 'left_attack': attack_left_folder, 'right_attack': attack_right_folder,
+            'death': player_death_folder
         }
         
         
@@ -112,11 +114,6 @@ class Player(pygame.sprite.Sprite):
             currentPath = self.animations[animation]
             self.animations[animation] = self.import_folder(currentPath)
 
-
-        # print final result to see if animation paths were loaded correctly
-        #print(self.animations)
-    
-    
     # function to iterate through animation sub folders
     def import_folder(self, path):
         items = []
@@ -173,7 +170,7 @@ class Player(pygame.sprite.Sprite):
             self.primary_attack = True;
             self.attacking = True;
             self.create_attack()
-            print("player is attacking w/ prim")
+            #print("player is attacking w/ prim")
             
         #if keys[pygame.K_LSHIFT] and not self.attacking:
         #    self.attack_time = pygame.time.get_ticks();
@@ -189,6 +186,9 @@ class Player(pygame.sprite.Sprite):
         
     
     def get_status(self):
+        
+        if self.health <= 0:
+            self.status = 'death'
         
         # handle idle animation 
         if self.direction.x == 0 and self.direction.y == 0:
@@ -230,8 +230,10 @@ class Player(pygame.sprite.Sprite):
     def cool_down(self):
         current_time = pygame.time.get_ticks();
         
+        # to do need
+        
         if self.attacking:
-            if current_time - self.attack_time >= self.attack_cooldown:
+            if current_time - self.attack_time >= self.attack_cooldown + self.weapon_cool_down: 
                 self.attacking = False;
                 self.destroy_attack()
             
@@ -291,13 +293,15 @@ class Player(pygame.sprite.Sprite):
         return self.health
     
     # recieve damage from other units/ obstacles on the map
-    
-    def recieve_damage(self,damage_amount):
+    def get_damage(self,damage_amount):
         self.health = self.health - damage_amount;
         
-        if(self.health <= 0):
-            print("player has died!")
-                     
+       
+    
+    def check_death(self):
+         if(self.health <= 0):
+                self.kill()
+    
     def update(self):
         self.get_status(); # get the current status of the player
         self.animate()

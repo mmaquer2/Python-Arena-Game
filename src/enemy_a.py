@@ -8,14 +8,15 @@ class Enemy_A(pygame.sprite.Sprite):
     def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack):
         super().__init__(groups)
         
+        # id types
         self.id = '2'
+        self.sprite_type = "cpu_ai"       
+        
         
         # import starting sprite
         idle_down_folder = Path('sprites/characters/cpu_a/down_idle/idle_down.png')
         self.image_import = pygame.image.load(idle_down_folder) # import image 
         self.image = pygame.transform.scale(self.image_import,(64,64));   # scale sprite sheet
-        
-      
         
         self.import_animations();  
         
@@ -32,14 +33,14 @@ class Enemy_A(pygame.sprite.Sprite):
         self.goal = "wander"
         self.command = "move_left"
         self.inCollision = False; # status in if in a collision or not
+        self.target = None; # this is the current target unit of the AI
+        
         
         self.create_attack = create_attack;
         weaponRandomAssignment = random.randint(0,len(weapon_data) - 1);
         self.weapon_index = weaponRandomAssignment;
         self.weapon = list(weapon_data.keys())[self.weapon_index];
         self.destroy_attack = destroy_attack;
-        
-        self.target = None; # this is the current target unit of the AI
         
         
         # setting the distance which one may see or attack other units
@@ -202,6 +203,14 @@ class Enemy_A(pygame.sprite.Sprite):
         pass;
     
     
+    def get_damage(self):
+        pass
+    
+    # check if health is 0 and character has died
+    def check_death(self):
+        if self.health <= 0:
+            self.kill()
+    
 
     # change the status of the cpu AI to actually animate and execute the action
     def cpu_input(self):
@@ -337,4 +346,4 @@ class Enemy_A(pygame.sprite.Sprite):
         self.cpu_input(); # 
         self.cool_down();
         self.move(self.speed);
-    
+        self.check_death()
