@@ -176,7 +176,7 @@ class Enemy_A(pygame.sprite.Sprite):
     def action_controller(self):
         
         # is enemey within visible range?
-        #self.is_enemy_within_visible_range();
+        
         
         if self.goal == "beserk":
             self.target = self.find_nearest_enemy() # find nearest enemy
@@ -196,14 +196,15 @@ class Enemy_A(pygame.sprite.Sprite):
                  
         if self.goal == 'wander':
             # if i'm not in a collision move in a direction
+            new_movement = self.get_waypoint();
+            #self.is_enemy_within_visible_range();
+            
+            
             if self.inCollision:
                 self.command = 'move_up'
                 self.inCollision = False
                 
-            # if i'm in a collision select another direction
-            new_movement = self.get_waypoint();    # plan path to a new waypoint
-            # move to this waypoint
-            # what direction do I need to move to go here?
+           
 
         # run and hide from enemy players
         if self.goal == 'hide':
