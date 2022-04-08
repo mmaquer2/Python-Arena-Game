@@ -283,7 +283,7 @@ class Enemy_A(pygame.sprite.Sprite):
         print("cpu a is taking damage")
         self.health = self.health - damage;
         self.damage_sound.play()
-        self.flicker() 
+        #self.flicker() 
         self.check_death()
         
     

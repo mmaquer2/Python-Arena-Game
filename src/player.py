@@ -321,7 +321,7 @@ class Player(pygame.sprite.Sprite):
     def get_damage(self,damage_amount):
         print("human player is taking damage!")
         self.health = self.health - damage_amount;
-        self.flicker() 
+        #self.flicker() 
         self.damage_sound.play()
         self.check_death()
        
