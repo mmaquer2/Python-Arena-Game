@@ -45,12 +45,17 @@ class Enemy_A(pygame.sprite.Sprite):
         self.obstacles_sprites = obstacle_sprites
         self.attacking = False;
         
-        # action_planning and behavior tree
+        self.attack_time = None;
+        self.attack_cooldown = 800;  
         
+        
+        # action_planning and behavior tree
         strategies = ['ambush','wander','beserk'] # list of possible strategies
         strat_ind = random.randint(0, len(strategies)-1)
         random_strat = strategies[strat_ind]
         
+        
+    
         
         #set the current strategy of the cpu AI
         #self.goal = "wander"  # have the enemy cpu ai
@@ -65,7 +70,11 @@ class Enemy_A(pygame.sprite.Sprite):
         weaponRandomAssignment = random.randint(0,len(weapon_data) - 1);
         self.weapon_index = weaponRandomAssignment;
         self.weapon = list(weapon_data.keys())[self.weapon_index];
+        self.local_weapon_data= weapon_data.get(self.weapon)
+        self.weapon_cool_down = self.local_weapon_data['cooldown'];
+        
         self.destroy_attack = destroy_attack;
+        
         
         # the ranage/raidus of which being able to detect or "see" other units
         self.view_radius = 360;
@@ -167,17 +176,15 @@ class Enemy_A(pygame.sprite.Sprite):
     def action_controller(self):
         
         # is enemey within visible range?
-        self.is_enemy_within_visible_range();
-        
-        # is enemy within attack range?
-        self.is_enemy_within_attack_range()
+        #self.is_enemy_within_visible_range();
         
         if self.goal == "beserk":
             self.target = self.find_nearest_enemy() # find nearest enemy
             self.direction = self.target[1] # move toward enemy location
-            self.command = self.determine_movement_status(self.direction);
+            self.is_enemy_within_attack_range()
+            #self.command = self.determine_movement_status(self.direction);
             
-            print(self.direction)
+            #print(self.direction)   # for testing purposes, see what the current direction of the player is
             
         if self.goal == "ambush":
             if self.see_enemy(): # iterate through all enemies to determine if one is within range
@@ -204,11 +211,11 @@ class Enemy_A(pygame.sprite.Sprite):
             pass
     
     
-    # function to calculate what is the current
+    # function to calculate what is the current direction of movement for animation purposes
     def determine_movement_status(self,dir):
         displacement =  dir - self.previous_direction ;
         
-        print("displacement: ", displacement)
+        #print("displacement: ", displacement)
         
         
     # get the location of the nearest enemy character
@@ -227,7 +234,7 @@ class Enemy_A(pygame.sprite.Sprite):
                 
             # print(opp.rect[0], opp.rect[1]) # get the x,y coordinates of an opponent
             
-        print("target is unit id: " + nearest_target.id) # test to see what the target is
+        #print("target is unit id: " + nearest_target.id) # test to see what the target is
         temp_target = self.find_opponent_distance_direction(nearest_target);
         
         return temp_target
@@ -256,11 +263,10 @@ class Enemy_A(pygame.sprite.Sprite):
                 print("AI is close enough to attack")   # if there is an opponent within my range, attack in a certain direction...
                 
                 self.command = 'attack'; # attack the current unit
+            else:
+                self.command = ''
             
-            
-            pass
         
-        pass
     
     
     def get_waypoint(self):
@@ -311,6 +317,8 @@ class Enemy_A(pygame.sprite.Sprite):
             self.status = 'right'
         
         if self.command == 'attack' and not self.attacking:
+            self.attack_time = pygame.time.get_ticks();
+            print("command has been issued to attack")
             self.attacking = True;
             self.create_attack()
             self.weapon_sound.play()
@@ -409,6 +417,9 @@ class Enemy_A(pygame.sprite.Sprite):
         animation = self.animations[self.status];
         self.frame_index += self.animation_speed
         # get the frame index to select the current animation
+        print(self.status)
+        print("new animation" , animation)
+        
         if self.frame_index >= len(animation): # get the len of the number of the items in the sprite sub folder
             self.frame_index = 0;
         self.image = animation[int(self.frame_index)]; # set curent image
@@ -436,13 +447,15 @@ class Enemy_A(pygame.sprite.Sprite):
     
         
     def update(self):
-        self.get_status()
-        self.animate();
+        
         self.action_controller(); # determine the next action for the CPU AI
         self.cpu_input(); # animate based on the command and change cpu status
+        self.get_status()
+        self.animate();
         self.cool_down();
         self.move(self.speed);
         
-        print("cpu attack status:", self.attacking)
+        print("cpu status: ", self.status)
+        print("is cpu attacking: ", self.attacking)
         
         self.previous_direction = self.direction # save the previous direction 

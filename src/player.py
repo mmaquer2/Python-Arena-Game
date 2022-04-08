@@ -59,8 +59,8 @@ class Player(pygame.sprite.Sprite):
         self.weapon_index = weaponRandomAssignment
         
         self.weapon = list(weapon_data.keys())[self.weapon_index]; # assign the random weapon to the player
-        self.weapon_data= weapon_data.get('axe')
-        self.weapon_cool_down = self.weapon_data['cooldown'];
+        self.local_weapon_data= weapon_data.get(self.weapon)
+        self.weapon_cool_down = self.local_weapon_data['cooldown'];
         self.secondary_weapon = ""
         
         
@@ -347,6 +347,7 @@ class Player(pygame.sprite.Sprite):
     
     def update(self):
         self.get_status(); # get the current status of the player
+        print("player status: ", self.status)
         self.animate()
         self.input();
         self.cool_down();

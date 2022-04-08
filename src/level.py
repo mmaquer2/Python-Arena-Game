@@ -10,12 +10,13 @@ from weapon import Weapon
 # class to handle running the level for the game state
 class Level:
     
+    
     def __init__(self):
         
         #init visual surfaces
-        self.display_surface = pygame.display.get_surface();  # create game sprites
+        self.display_surface = pygame.display.get_surface()  # create game sprites
         self.visible_sprites = CameraGroup()  # create the camera view to focus on the player 
-        self.obstacle_sprites = pygame.sprite.Group(); # create sprite group for obstacles
+        self.obstacle_sprites = pygame.sprite.Group()   # create sprite group for obstacles
     
         # attack sprites
         self.current_attack_player = None;
@@ -42,8 +43,8 @@ class Level:
             levelMap = WORLD_MAP_FOUR
     
         # Randomize starting locations, there are 4 possible starting points on each map
-        players = ["p","a","b","c"]
-        random.shuffle(players) # shuffle players for different locations
+        players = ["p", "a", "b", "c"]
+        random.shuffle(players)  # shuffle players for different locations
         
         # init player and CPU_AI: 
         self.player = Player((1,1), [self.visible_sprites,self.attackable_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack_player)    
@@ -59,7 +60,7 @@ class Level:
         #self.health_cpu_c = self.cpu_c.health
         
     # place objects on the world map   
-        for row_ind,row in enumerate(levelMap):
+        for row_ind, row in enumerate(levelMap):
             for col_ind, col in enumerate(row):
                 x = col_ind * tileSize;
                 y = row_ind * tileSize
@@ -94,10 +95,10 @@ class Level:
     
     # handles drawing the weapon sprite of a player or cpu AI
     def create_attack(self):
-       self.current_attack_player = Weapon(self.player,[self.visible_sprites,self.attack_sprites],self.player.id)
+       self.current_attack_player = Weapon(self.player, [self.visible_sprites, self.attack_sprites], self.player.id)
     
     def create_attack_cpu_a(self):
-        self.cpu_a_attack = Weapon(self.cpu_a,[self.visible_sprites,self.attack_sprites],self.cpu_a.id)
+        self.cpu_a_attack = Weapon(self.cpu_a, [self.visible_sprites,self.attack_sprites],self.cpu_a.id)
         
     
     def create_attack_cpu_b(self):
@@ -111,7 +112,6 @@ class Level:
     
     # removes a weapon animation from the game, once an attack is complete
     def destroy_attack_player(self):
-        print("destory weapon")
         if self.current_attack_player:
             self.current_attack_player.kill()
             self.is_weapon_destroyed = True;
@@ -152,7 +152,7 @@ class Level:
                 if collision_sprites:
                    for target_sprite in collision_sprites:
                        if target_sprite.sprite_type == 'cpu_ai' or 'player':
-                           if self.cpu_a_attack != None:
+                           if self.cpu_a_attack != None: # only proceed if there is a valid weapon attack
                             if self.cpu_a_attack.weapon_owner_id != target_sprite.id:  # check that the owner of a weapon isnt taking damange for its own weapon sprite
                                 
                                 
