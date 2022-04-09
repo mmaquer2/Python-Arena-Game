@@ -175,46 +175,55 @@ class Enemy_A(pygame.sprite.Sprite):
     # plan action and set command for the ai to execute
     def action_controller(self):
         
-        # is enemey within visible range?
-        
-        
         if self.goal == "beserk":
             self.target = self.find_nearest_enemy() # find nearest enemy
             self.direction = self.target[1] # move toward enemy location
-            self.is_enemy_within_attack_range()
-            #self.command = self.determine_movement_status(self.direction);
             
-            #print(self.direction)   # for testing purposes, see what the current direction of the player is
+            #self.status = self.determine_movement_status(self.direction); 
+            #print(self.direction)
+              
+            self.is_enemy_within_attack_range()
+            return;
+            
             
         if self.goal == "ambush":
-            if self.see_enemy(): # iterate through all enemies to determine if one is within range
-                                 # move towards the enemy        
-                pass
+            if self.is_enemy_within_visible_range(self): # iterate through all enemies to determine if one is within range
+                self.direction = self.target[1] # move towards the enemy 
+                self.is_enemy_within_attack_range()       
+                
             else:
                 self.command = 'wait' # or wait
             # move towards enemey
+        
+            return
                  
         if self.goal == 'wander':
-            # if i'm not in a collision move in a direction
-            new_movement = self.get_waypoint();
+            
+            new_movement = self.get_waypoint();  # if i'm not in a collision move in a direction
             #self.is_enemy_within_visible_range();
             
             
             if self.inCollision:
                 self.command = 'move_up'
                 self.inCollision = False
-                
+            return     
            
 
         # run and hide from enemy players
         if self.goal == 'hide':
-            # if i'm getting attacked, move,
-            pass
+            if self.is_enemy_within_visible_range(self): # check if there is an enemy unit within visible range 
+               
+                pass
     
     
     # function to calculate what is the current direction of movement for animation purposes
     def determine_movement_status(self,dir):
-        displacement =  dir - self.previous_direction ;
+        displacement =  dir - self.previous_direction;
+        
+        if displacement:
+            pass
+        
+        # my current direction is...
         
         #print("displacement: ", displacement)
         
@@ -248,7 +257,8 @@ class Enemy_A(pygame.sprite.Sprite):
         for opp in self.opponents:
             opponentVec = pygame.math.Vector2(opp.rect.center)  #calculate the vector between each opp and ai
             temp_distance = (opponentVec - myVec).magnitude()
-            if temp_distance < self.view_radius:                  # if the distance between ai and other character is within my visitable range return true
+            if temp_distance < self.view_radius:  
+                return opp # if the distance between ai and other character is within my visitable range return true
                 print("there is an enemy within view")
             else:
                 print("there is not an enemy within view")  # print(opp.rect[0], opp.rect[1]) # get the x,y coordinates of an opponent
@@ -261,9 +271,9 @@ class Enemy_A(pygame.sprite.Sprite):
             opponentVec = pygame.math.Vector2(opp.rect.center)
             temp_distance = (opponentVec - myVec).magnitude()
             if temp_distance < self.attack_radius:                  # if the distance between ai and other character is within my visitable range return true
-                print("AI is close enough to attack")   # if there is an opponent within my range, attack in a certain direction...
+                # print("AI is close enough to attack")   # if there is an opponent within my range, attack in a certain direction...
                 
-                self.command = 'attack'; # attack the current unit
+                self.command = 'attack'; # give the command to attack the unit
             else:
                 self.command = ''
             

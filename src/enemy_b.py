@@ -1,5 +1,9 @@
 import pygame
+import random
 from settings import *
+from os import walk
+from pathlib import Path
+from math import sin
 
 
 class Enemy_B(pygame.sprite.Sprite):
