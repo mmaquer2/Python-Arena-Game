@@ -49,7 +49,7 @@ class Game:
 
 # Calls the game start and loop
 if __name__ == '__main__':
-    game = Game()
+    game = Game();
     
     # run the game
     game.run()

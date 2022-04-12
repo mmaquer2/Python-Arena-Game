@@ -465,7 +465,7 @@ class Enemy_A(pygame.sprite.Sprite):
         self.cool_down();
         self.move(self.speed);
         
-        print("cpu status: ", self.status)
-        print("is cpu attacking: ", self.attacking)
+        #print("cpu status: ", self.status)
+        #print("is cpu attacking: ", self.attacking)
         
         self.previous_direction = self.direction # save the previous direction 
