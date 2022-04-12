@@ -59,7 +59,8 @@ class Enemy_A(pygame.sprite.Sprite):
         
         #set the current strategy of the cpu AI
         #self.goal = "wander"  # have the enemy cpu ai
-        self.goal = "beserk" # find the nearest enemy and attack 
+        #self.goal = "beserk" # this  currently works, find the nearest enemy and attack 
+        self.goal = "ambush"
         
         self.command = ""
         self.inCollision = False; # status in if in a collision or not
@@ -76,7 +77,7 @@ class Enemy_A(pygame.sprite.Sprite):
         
         
         # the ranage/raidus of which being able to detect or "see" other units
-        self.view_radius = 360;
+        self.view_radius = 200;
         
         # the ranage in which being able to attack another unit
         self.attack_radius = 50;
@@ -176,35 +177,33 @@ class Enemy_A(pygame.sprite.Sprite):
         if self.goal == "beserk":
             self.target = self.find_nearest_enemy() # find nearest enemy
             self.direction = self.target[1] # move toward enemy location
-            
             #self.status = self.determine_movement_status(self.direction); 
             #print(self.direction)
               
-            self.is_enemy_within_attack_range()
+            self.is_enemy_within_attack_range()  # attack if you are in range
             return;
          
         if self.goal == "ambush":
-            if self.is_enemy_within_visible_range(self): # iterate through all enemies to determine if one is within range
-                self.direction = self.target[1] # move towards the enemy 
-                self.is_enemy_within_attack_range()       
+            self.target = self.is_enemy_within_visible_range()
+            
+            if self.target is not None:
+                temp_dir = self.find_opponent_distance_direction(self.target)
+                self.direction = temp_dir[1] # move towards the enemy 
+                self.is_enemy_within_attack_range()  # attack if you are in range 
                 
             else:
-                self.command = 'wait' # or wait
-            # move towards enemey
-        
+                self.direction = self.previous_direction;
+             
             return
                  
         if self.goal == 'wander':
-            
             new_movement = self.get_waypoint();  # if i'm not in a collision move in a direction
-            #self.is_enemy_within_visible_range();
+            self.target = self.is_enemy_within_visible_range();
+            if self.target is not None:
+                pass # continue wandering
             
             
-            if self.inCollision:
-                self.command = 'move_up'
-                self.inCollision = False
-            return     
-           
+            
 
         # run and hide from enemy players
         if self.goal == 'hide':
@@ -255,8 +254,11 @@ class Enemy_A(pygame.sprite.Sprite):
             opponentVec = pygame.math.Vector2(opp.rect.center)  #calculate the vector between each opp and ai
             temp_distance = (opponentVec - myVec).magnitude()
             if temp_distance < self.view_radius:  
-                return opp # if the distance between ai and other character is within my visitable range return true
-                print("there is an enemy within view")
+                
+                print("there is an enemy within view")  # if the distance between ai and other character is within my visitable range return true
+               
+               
+                return opp
             else:
                 print("there is not an enemy within view")  # print(opp.rect[0], opp.rect[1]) # get the x,y coordinates of an opponent
             
