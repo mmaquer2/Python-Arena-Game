@@ -1,11 +1,10 @@
-# 2d Zelda-like Arena Game with NPC Random Behavior Trees
-
-- This served as a final Project for CS5150 (Game AI) at Northeastern University Spring 2022
+# 2d Zelda-like Arena Game with Randomly assinged NPC AI Behavior 
 
 ## Description: 
+- This served as a final Project for CS5150 (Game AI) at Northeastern University, Spring 2022
 - This is a 2d arena fighting game with action rpg mechanics. The game contains 3 NPC characters and one human player. Each is randomly assigned a weapon and stats, and is placed in the map all to fight each other until a single victor emerges.
 
-- **Note** this program will only work on a windows system due to file path constraints, I have not yet transferred the code to a common fil epath system
+- **Note** This program will only work on a windows system due to file path constraints, I have not yet transferred the code to a common fil epath system
 
 # CPU AI Behavior: 
 
