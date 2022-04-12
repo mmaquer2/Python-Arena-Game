@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame
 import random
 from pathlib import Path
 from settings import *
@@ -7,52 +7,49 @@ from math import sin
 
 # class to represent the human controller player
 class Player(pygame.sprite.Sprite):
-    
-      # init human controlled player      
+    # init human controlled player      
     def __init__(self,pos,groups,obstacle_sprites,create_attack, destroy_attack):   
         super().__init__(groups) 
-        
         self.id = '1'
         self.sprite_type = 'player'
         
         # load starting player sprite sheet and attack sound
         idle_down_folder = Path('sprites/characters/player/down_idle/idle_down.png')
         self.image_import = pygame.image.load(idle_down_folder) # import image 
-        self.image = pygame.transform.scale(self.image_import,(64,64));   # scale sprite sheet
-        self.rect = self.image.get_rect(topleft = pos)
-        self.hitbox = self.rect.inflate(0,-5);
+        self.image = pygame.transform.scale(self.image_import,(64,64))  # scale sprite sheet
+        self.rect = self.image.get_rect( topleft = pos)
+        self.hitbox = self.rect.inflate(0, -5)
     
         # load attack sound
         weapon_sound_file = Path('music/sword.wav')
         self.weapon_sound = pygame.mixer.Sound(weapon_sound_file)
         self.weapon_sound.set_volume(0.1)
   
-        # load damage sound
+        # load damage sound #
         damage_sound_file = Path('music/hit.wav')
         self.damage_sound = pygame.mixer.Sound(damage_sound_file)
         self.damage_sound.set_volume(0.1)
         
-        # load death sound
+        # load death sound #
         death_sound_file = Path('music/death.wav')
         self.death_sound = pygame.mixer.Sound(death_sound_file)
         self.death_sound.set_volume(0.05)
         
-        # load the remaining player animations 
+        # load the remaining player animations # 
         self.import_player_animations()
         
-        # player status 
+        # player status #
         self.status = 'down'
-        self.frame_index = 0;
-        self.animation_speed = 0.15;
+        self.frame_index = 0
+        self.animation_speed = 0.15
         
         # movement and attack vars
-        self.direction = pygame.math.Vector2();
+        self.direction = pygame.math.Vector2()
         
         # weapon handling
-        self.create_attack = create_attack; # pass the function pointer of create attack to the player class
-        self.destroy_attack = destroy_attack; # pass the function pointer of destroy attack
-        self.is_weapon_destroyed = True;
-        
+        self.create_attack = create_attack  # pass the function pointer of create attack to the player class
+        self.destroy_attack = destroy_attack  # pass the function pointer of destroy attack
+        self.is_weapon_destroyed = True
         
         # weapon random assignment and stats
         weaponRandomAssignment = random.randint(0,len(weapon_data) - 1)  # assign a random weapon to the player 
@@ -63,36 +60,30 @@ class Player(pygame.sprite.Sprite):
         self.weapon_cool_down = self.local_weapon_data['cooldown'];
         self.secondary_weapon = ""
         
-        
-        
-        
         # attacking and blocking cooldown status vars
-        self.attacking = False;
-        self.blocking = False;
-        self.attack_cooldown = 800;
-        self.attack_time = None;
-        self.block_cooldown = 400;
+        self.attacking = False
+        self.blocking = False
+        self.attack_cooldown = 800
+        self.attack_time = None
+        self.block_cooldown = 400
         self.obstacles_sprites = obstacle_sprites
-
-        # balence the given weapon types with a certain class or range of weapons to create pros and cons of having different equipment
-        # create random stats, or assign stats based on the given weapon? 
-               
+        
         # randomize player stats
-        random_health = random.randint(80,100);   
-        random_energy = random.randint(80,100); 
-        random_attack = random.randint(2,10); 
-        random_magic = random.randint(80,100); 
-        random_speed = random.randint(3,10); 
+        random_health = random.randint(80, 100) 
+        random_energy = random.randint(80, 100)
+        random_attack = random.randint(2, 10)
+        random_magic = random.randint(80, 100) 
+        random_speed = random.randint(3, 10) 
 
         # base player stats
         self.player_stats = {'health': 5000, 'energy': 100, 'attack': 5, 'magic': 5, "speed": 5 }
         self.health = self.player_stats['health']
-        self.speed = self.player_stats['speed'];
+        self.speed = self.player_stats['speed']
     
     
-    def set_location(self,pos):
+    def set_location(self, pos):
         self.rect = self.image.get_rect(topleft = pos)
-        self.hitbox = self.rect.inflate(0,-5);
+        self.hitbox = self.rect.inflate(0,-5)
     
     # function to import player animation resources
     def import_player_animations(self):
@@ -128,7 +119,6 @@ class Player(pygame.sprite.Sprite):
             'death': player_death_folder
         }
         
-        
         for animation in self.animations.keys():
             currentPath = self.animations[animation]
             self.animations[animation] = self.import_folder(currentPath)
@@ -154,27 +144,27 @@ class Player(pygame.sprite.Sprite):
             # y axis
             #moving up
             if keys[pygame.K_UP] and not self.attacking:
-                self.direction.y = -1;
+                self.direction.y = -1
                 self.status = 'up'
                 
             #moving down
             elif keys[pygame.K_DOWN] and not self.attacking:
-                self.direction.y = 1;
+                self.direction.y = 1
                 self.status = 'down'
             
             # no movement
             else:
-                self.direction.y = 0;
+                self.direction.y = 0
             
             # x axis 
             #moving right:
             if keys[pygame.K_RIGHT] and not self.attacking:
-                self.direction.x = 1;
+                self.direction.x = 1
                 self.status = 'right'
                 
             # moving left:    
             elif keys[pygame.K_LEFT] and not self.attacking:
-                self.direction.x = -1;
+                self.direction.x = -1
                 self.status = 'left'
             # no movement    
             else:
@@ -193,8 +183,6 @@ class Player(pygame.sprite.Sprite):
                 self.create_attack()   
                 # play attack sound
              
-        
-        
         #secondary attack    
         #if keys[pygame.K_LSHIFT] and not self.attacking:
         #    self.attack_time = pygame.time.get_ticks();
@@ -209,7 +197,6 @@ class Player(pygame.sprite.Sprite):
             #self.blocking = True;
            
         
-    
     def get_status(self):
         
         if self.health <= 0:
@@ -260,9 +247,6 @@ class Player(pygame.sprite.Sprite):
                 self.destroy_attack()
                 self.attacking = False;
                 
-            
-        
-    
     # handling player movement across the map including physics
     def move(self,speed):
         if self.direction.magnitude() != 0:
@@ -296,7 +280,6 @@ class Player(pygame.sprite.Sprite):
                         self.hitbox.top = sprite.hitbox.bottom
     
     # iterate through the animation index to obtain the correct character animation
-    
     def animate(self):
         animation = self.animations[self.status];
         self.frame_index += self.animation_speed
