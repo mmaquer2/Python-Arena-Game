@@ -54,8 +54,8 @@ class Enemy_A(pygame.sprite.Sprite):
         strat_ind = random.randint(0, len(strategies)-1)
         random_strat = strategies[strat_ind]
         
-        
-    
+        # search = move to a waypoint on the map, if an opponent is seen, run away
+        # run = move to another waypoint, after a certain period of health has been lost
         
         #set the current strategy of the cpu AI
         #self.goal = "wander"  # have the enemy cpu ai
@@ -72,7 +72,6 @@ class Enemy_A(pygame.sprite.Sprite):
         self.weapon = list(weapon_data.keys())[self.weapon_index];
         self.local_weapon_data= weapon_data.get(self.weapon)
         self.weapon_cool_down = self.local_weapon_data['cooldown'];
-        
         self.destroy_attack = destroy_attack;
         
         
@@ -171,7 +170,6 @@ class Enemy_A(pygame.sprite.Sprite):
         self.rect.center = self.hitbox.center;
     
     
-    
     # plan action and set command for the ai to execute
     def action_controller(self):
         
@@ -184,8 +182,7 @@ class Enemy_A(pygame.sprite.Sprite):
               
             self.is_enemy_within_attack_range()
             return;
-            
-            
+         
         if self.goal == "ambush":
             if self.is_enemy_within_visible_range(self): # iterate through all enemies to determine if one is within range
                 self.direction = self.target[1] # move towards the enemy 
