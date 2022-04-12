@@ -1,4 +1,4 @@
-# 2d Zelda-like Arena Game with Randomly assinged NPC AI Behavior 
+# 2d Zelda-like arena game with randomly assinged NPC AI personalities and behavior 
 
 ## Description: 
 - This served as a final Project for CS5150 (Game AI) at Northeastern University, Spring 2022
