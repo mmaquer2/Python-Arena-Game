@@ -316,12 +316,14 @@ class Enemy_A(pygame.sprite.Sprite):
     def plan_path(self):
         pass
     
-    def get_damage(self,damage):
-        print("cpu a is taking damage")
-        self.health = self.health - damage;
-        self.damage_sound.play()
-        #self.flicker() 
-        self.check_death()
+    def get_damage(self,damage,weapon_owner_id):
+        
+        if self.blocking == False and weapon_owner_id != self.id:
+            print("cpu a is taking damage")
+            self.health = self.health - damage;
+            self.damage_sound.play()
+            #self.flicker() 
+            self.check_death()
         
     
     # check if health is 0 and character has died

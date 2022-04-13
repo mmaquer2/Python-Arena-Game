@@ -310,9 +310,11 @@ class Player(pygame.sprite.Sprite):
         return self.health
     
     # recieve damage from other units/ obstacles on the map
-    def get_damage(self,damage_amount):
+    def get_damage(self,damage_amount, weapon_owner_id):
         
-        if self.blocking == False:
+        print("get damage id check", weapon_owner_id )
+        
+        if self.blocking == False and weapon_owner_id != self.id:
             #print("human player is taking damage!")
             self.health = self.health - damage_amount;
             #self.flicker() 

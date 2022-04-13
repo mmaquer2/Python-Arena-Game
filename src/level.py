@@ -179,10 +179,13 @@ class Level:
                        if target_sprite.sprite_type == 'cpu_ai':
                            if self.current_attack_player.weapon_owner_id != target_sprite.id:
                                
-                            print("player attack logic weapon ID: ", self.current_attack_player.weapon_owner_id, target_sprite.id)
+                            print("player attack logic weapon ID: ", self.current_attack_player.weapon_owner_id)
+                            print("player target ID: ", target_sprite.id)
+                            
+                        
                                
                             damage = self.player.get_weapon_damage() # get the damage from the current weapon
-                            target_sprite.get_damage(damage)  # pass the damage from
+                            target_sprite.get_damage(damage, self.current_attack_player.weapon_owner_id)  # pass the damage from
                             self.player.is_weapon_destroyed = False;
                         
                     
@@ -198,14 +201,18 @@ class Level:
                        if target_sprite.sprite_type == 'cpu_ai' or 'player':
                           
                            if self.cpu_a_attack != None: # only proceed if there is a valid weapon attack
-                            if self.cpu_a_attack.weapon_owner_id != target_sprite.id:  # check that the owner of a weapon isnt taking damange for its own weapon sprite
+                            
+                            if self.cpu_a_attack.weapon_owner_id == self.cpu_a.id:
+                                if self.cpu_a_attack.weapon_owner_id != target_sprite.id:  # check that the owner of a weapon isnt taking damange for its own weapon sprite
                                 
-                                print("CPU A attack logic weapon ID: ", self.cpu_a_attack.weapon_owner_id, target_sprite.id)
-                                
-                                
-                                damage = self.cpu_a.get_weapon_damage() # get the damage from the current weapon
-                                target_sprite.get_damage(damage)  # pass the damage from
-                                self.cpu_a.is_weapon_destroyed = False;
+                                    print("CPU A attack logic weapon ID: ", self.cpu_a_attack.weapon_owner_id)
+                                    print("CPU A Target ID: " , target_sprite.id)
+                                    
+                                    
+                                    damage = self.cpu_a.get_weapon_damage() # get the damage from the current weapon
+                                    
+                                    target_sprite.get_damage(damage, self.cpu_a_attack.weapon_owner_id)  # pass the damage from
+                                    self.cpu_a.is_weapon_destroyed = False;
                                 
     
     def cpu_b_attack_logic(self):
@@ -242,7 +249,8 @@ class Level:
         #self.cpu_b_attack_logic()
         #self.cpu_c_attack_logic()
         self.visible_sprites.update();
-    
+        
+        
 # small class to create a camera view focused on the player     
 class CameraGroup(pygame.sprite.Group):
     def __init__(self):
