@@ -68,7 +68,7 @@ class Level:
         #self.health_cpu_c = self.cpu_c.health
         
     # place objects on the world map   
-        for row_ind, row in enumerate(WORLD_MAP_TWO): #change this to level map for randomization
+        for row_ind, row in enumerate(levelMap): 
             for col_ind, col in enumerate(row):
                 x = col_ind * tileSize;
                 y = row_ind * tileSize
@@ -112,6 +112,23 @@ class Level:
         pass
     
     
+    
+    def destroy_block_player(self):
+        if self.current_block_player:
+            self.current_block_player.kill()
+            self.player.is_block_destroyed = True;
+            
+    def destroy_block_cpu_a(self):
+            pass
+    
+    def destroy_block_cpu_b(self):
+        pass
+    
+    def destroy_block_cpu_c(self):
+        pass
+    
+    
+    
     # handles drawing the weapon sprite of a player or cpu AI
     def create_attack(self):
        self.current_attack_player = Weapon(self.player, [self.visible_sprites, self.attack_sprites], self.player.id)
@@ -128,6 +145,7 @@ class Level:
         #self.cpu_c_attack = Weapon(self.cpu_c,[self.visible_sprites,self.attack_sprites])
         pass
     
+
     
     # removes a weapon animation from the game, once an attack is complete
     def destroy_attack_player(self):

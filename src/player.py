@@ -80,10 +80,15 @@ class Player(pygame.sprite.Sprite):
         self.health = self.player_stats['health']
         self.speed = self.player_stats['speed']
     
-    
+    # function to set the characters location
     def set_location(self, pos):
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-5)
+        
+    # function to get the characters x and y coordinate
+    def get_location(self):
+        print(self.rect.x, self.rect.y);
+        return self.rect.x , self.rect.y
     
     # function to import player animation resources
     def import_player_animations(self):

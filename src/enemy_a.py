@@ -104,6 +104,12 @@ class Enemy_A(pygame.sprite.Sprite):
     def set_location(self,pos):
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-5);
+        
+        
+    # function to get the characters x and y coordinate
+    def get_location(self):
+        print(self.rect.x, self.rect.y);
+        return self.rect.x , self.rect.y
       
     
     def set_opponents(self,opponents):
@@ -224,7 +230,6 @@ class Enemy_A(pygame.sprite.Sprite):
             
             
             
-
         # run and hide from enemy players
         if self.goal == 'hide':
             if self.is_enemy_within_visible_range(self): # check if there is an enemy unit within visible range 
