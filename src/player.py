@@ -8,7 +8,7 @@ from math import sin
 # class to represent the human controller player
 class Player(pygame.sprite.Sprite):
     # init human controlled player      
-    def __init__(self,pos,groups,obstacle_sprites,create_attack, destroy_attack):   
+    def __init__(self,pos,groups,obstacle_sprites,create_attack, destroy_attack, create_block, destroy_block):   
         super().__init__(groups) 
         self.id = '1'
         self.sprite_type = 'player'
@@ -50,6 +50,10 @@ class Player(pygame.sprite.Sprite):
         self.create_attack = create_attack  # pass the function pointer of create attack to the player class
         self.destroy_attack = destroy_attack  # pass the function pointer of destroy attack
         self.is_weapon_destroyed = True
+        
+        self.create_block = create_block
+        self.destory_block = destroy_block
+        
         
         # weapon random assignment and stats
         weaponRandomAssignment = random.randint(0,len(weapon_data) - 1)  # assign a random weapon to the player 

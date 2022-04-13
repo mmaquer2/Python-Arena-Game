@@ -55,7 +55,7 @@ class Level:
         random.shuffle(players)  # shuffle players for different locations
         
         # init player and CPU_AI: 
-        self.player = Player((1,1), [self.visible_sprites,self.attackable_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack_player)    
+        self.player = Player((1,1), [self.visible_sprites,self.attackable_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack_player, self.create_block_player,self.destroy_block_player)    
         self.cpu_a = Enemy_A((2,2), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_a, self.destroy_attack_cpu_a)
         #self.cpu_b = Enemy_B((3,3), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_b, self.destroy_attack_cpu_b)
         #self.cpu_c = Enemy_C((4,4), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
@@ -100,6 +100,7 @@ class Level:
     
     # handling creating the animations for the game
     def create_block_player(self):
+        print("calling the create block from level command")
         self.current_block_player = Shield(self.player, [self.visible_sprites, self.attack_sprites])
     
     def create_block_cpu_a(self):
