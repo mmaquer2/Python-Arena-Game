@@ -307,8 +307,14 @@ class Enemy_A(pygame.sprite.Sprite):
             temp_distance = (opponentVec - myVec).magnitude()
             if temp_distance < self.attack_radius:                  # if the distance between ai and other character is within my visitable range return true
                 # print("AI is close enough to attack")   # if there is an opponent within my range, attack in a certain direction...
-                if( self.target is not None and self.target.health > 0): # check if the target is still alive
+                if self.target is not None and self.target.health > 0: # check if the target is still alive
+                    
+                    # the command to attack is given here, perhaps use a random int to determine whether to block first or attack? 
+                    
                     self.command = 'attack'; # give the command to attack the unit
+                    #self.command = 'block'
+            
+            
             else:
                 self.target = None
                 self.command = ''
@@ -325,13 +331,13 @@ class Enemy_A(pygame.sprite.Sprite):
     
     def get_damage(self,damage,weapon_owner_id):
         
-        if self.blocking != False and weapon_owner_id != self.id:
+        if self.blocking == False and weapon_owner_id != self.id:
             print("cpu a is taking damage")
             self.health = self.health - damage;
-            self.damage_sound.play()
-            #self.flicker() 
+            self.damage_sound.play()   
             self.check_death()
-        
+            
+                    
     
     # check if health is 0 and character has died
     def check_death(self):
@@ -346,7 +352,7 @@ class Enemy_A(pygame.sprite.Sprite):
      
         if self.command == 'attack' and not self.attacking:
             self.attack_time = pygame.time.get_ticks();
-            print("command has been issued to attack")
+            print("cpu ai A is attacking")
             self.attacking = True;
             self.create_attack()
             self.weapon_sound.play()
