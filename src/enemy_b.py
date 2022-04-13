@@ -12,7 +12,7 @@ class Enemy_B(pygame.sprite.Sprite):
         
         self.id = '3'
         self.sprite_type = "cpu_ai"    
-        print("CPU B CREATED")
+        
         
         # import starting sprite sheet
         idle_down_folder = Path('sprites/characters/cpu_b/down_idle/down_idle.png')
@@ -38,15 +38,15 @@ class Enemy_B(pygame.sprite.Sprite):
         
         # direction and status vars
         self.status = 'down'
-        self.frame_index = 0;
-        self.animation_speed = 0.15;
+        self.frame_index = 0
+        self.animation_speed = 0.15
         self.direction = pygame.math.Vector2()
         self.previous_direction = pygame.math.Vector2()
         self.obstacles_sprites = obstacle_sprites
-        self.attacking = False;
+        self.attacking = False
         
-        self.attack_time = None;
-        self.attack_cooldown = 800;  
+        self.attack_time = None
+        self.attack_cooldown = 800  
         
         
         # action_planning and behavior tree
@@ -59,8 +59,8 @@ class Enemy_B(pygame.sprite.Sprite):
         
         #set the current strategy of the cpu AI
         #self.goal = "wander"  # have the enemy cpu ai
-        #self.goal = "beserk" # this  currently works, find the nearest enemy and attack 
-        self.goal = "ambush"
+        self.goal = "beserk" # this  currently works, find the nearest enemy and attack 
+        #self.goal = "ambush"
         
         self.command = ""
         self.inCollision = False; # status in if in a collision or not
@@ -271,9 +271,12 @@ class Enemy_B(pygame.sprite.Sprite):
             temp_distance = (opponentVec - myVec).magnitude()
             if temp_distance < self.attack_radius:                  # if the distance between ai and other character is within my visitable range return true
                 # print("AI is close enough to attack")   # if there is an opponent within my range, attack in a certain direction...
-                
-                self.command = 'attack'; # give the command to attack the unit
+                if opp is not None:
+                    if self.opp.health > 0: # check if the target is still alive
+                        self.command = 'attack';
+                # give the command to attack the unit
             else:
+                self.target = None
                 self.command = ''
             
         
@@ -299,17 +302,17 @@ class Enemy_B(pygame.sprite.Sprite):
     # check if health is 0 and character has died
     def check_death(self):
         if self.health <= 0:
+            self.destroy_attack
             self.death_sound.play() 
+            self.destroy_attack()
             self.kill()
     
 
     # change the status of the cpu AI to actually animate and execute the action
-    def cpu_input(self):
-        
+    def cpu_input(self):        
         if self.command == 'wait':
             self.status = 'idle_down'
 
-            
         if self.command == "move_up":
             self.direction.y = -1;
             self.status = "up"
@@ -328,7 +331,6 @@ class Enemy_B(pygame.sprite.Sprite):
         
         if self.command == 'attack' and not self.attacking:
             self.attack_time = pygame.time.get_ticks();
-            print("command has been issued to attack")
             self.attacking = True;
             self.create_attack()
             self.weapon_sound.play()
@@ -369,12 +371,6 @@ class Enemy_B(pygame.sprite.Sprite):
     
     
     def get_status(self):
-        
-        #handle death when health reaches 0
-        if self.health <= 0:
-            self.status = 'death'
-            self.kill()
-        
         # handle move to idle
         if self.direction.x == 0 and self.direction.y == 0:
             if not 'idle' in self.status and not 'attack' in self.status:
@@ -427,7 +423,7 @@ class Enemy_B(pygame.sprite.Sprite):
         animation = self.animations[self.status];
         self.frame_index += self.animation_speed
         # get the frame index to select the current animation
-        print("cpu b: ", self.status)
+        #print("cpu b: ", self.status)
         
         if self.frame_index >= len(animation): # get the len of the number of the items in the sprite sub folder
             self.frame_index = 0;

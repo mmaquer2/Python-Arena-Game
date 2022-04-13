@@ -198,11 +198,7 @@ class Player(pygame.sprite.Sprite):
            
         
     def get_status(self):
-        
-        if self.health <= 0:
-            self.status = 'death'
-            self.kill()
-        
+              
         # handle idle animation 
         if self.direction.x == 0 and self.direction.y == 0:
             if not 'idle' in self.status and not 'attack' in self.status:
@@ -330,9 +326,10 @@ class Player(pygame.sprite.Sprite):
     
     def update(self):
         self.get_status(); # get the current status of the player
-        print("player status: ", self.status)
-        self.animate()
+        #print("player status: ", self.status)
+        
         self.input();
+        self.animate()
         self.cool_down();
         self.move(self.speed)
             

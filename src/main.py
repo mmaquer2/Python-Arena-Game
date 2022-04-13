@@ -14,7 +14,7 @@ class Game:
         self.screen = pygame.display.set_mode((window_width, window_height))
           
         # set game icon on window tab
-        icon_path = Path('sprites/characters/player/down_idle/idle_down.png')
+        icon_path = Path('sprites/characters/player/down_idle/idle_down.png') 
         icon = pygame.image.load(icon_path)
         pygame.display.set_icon(icon)
         self.clock = pygame.time.Clock()
@@ -25,7 +25,7 @@ class Game:
         main_sound.set_volume(0.1)
         main_sound.play(loops = -1) # keep looping the music
   
-        # init game level and map
+        # init game level and map   
         self.level = Level()
     
     # primary game loop

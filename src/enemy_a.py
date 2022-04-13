@@ -44,6 +44,7 @@ class Enemy_A(pygame.sprite.Sprite):
         self.previous_direction = pygame.math.Vector2()
         self.obstacles_sprites = obstacle_sprites
         self.attacking = False;
+        self.is_weapon_destroyed = True
         
         self.attack_time = None;
         self.attack_cooldown = 800;  
@@ -160,9 +161,28 @@ class Enemy_A(pygame.sprite.Sprite):
         return items
     
     
+    
     def move(self,speed):
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize();
+            
+            if self.direction.x > self.direction.y:
+                
+                if self.direction.x > 0:
+                    self.status = "left"
+                
+                else: 
+                    self.status = "right"
+            
+            else: 
+                
+                if self.direction.y > 0:
+                    self.status = "up"
+                
+                else:
+                    self.status = "down"
+            
+            
         
         self.hitbox.x += self.direction.x * speed
         self.collision('horizontal')
@@ -210,6 +230,12 @@ class Enemy_A(pygame.sprite.Sprite):
             if self.is_enemy_within_visible_range(self): # check if there is an enemy unit within visible range 
                
                 pass
+    
+    def does_target_have_health(self):
+        if self.target is not None and self.target.health > 0:
+            return True;
+        else:
+            return False
     
     
     # function to calculate what is the current direction of movement for animation purposes
@@ -271,16 +297,15 @@ class Enemy_A(pygame.sprite.Sprite):
             temp_distance = (opponentVec - myVec).magnitude()
             if temp_distance < self.attack_radius:                  # if the distance between ai and other character is within my visitable range return true
                 # print("AI is close enough to attack")   # if there is an opponent within my range, attack in a certain direction...
-                
-                self.command = 'attack'; # give the command to attack the unit
+                if( self.target is not None and self.target.health > 0): # check if the target is still alive
+                    self.command = 'attack'; # give the command to attack the unit
             else:
+                self.target = None
                 self.command = ''
             
-        
-    
-    
+            
     def get_waypoint(self):
-            # plan path to this new waypoint
+        # plan path to this new waypoint
         waypoint = 1;
         return waypoint;
     
@@ -300,16 +325,15 @@ class Enemy_A(pygame.sprite.Sprite):
     def check_death(self):
         if self.health <= 0:
             self.death_sound.play() 
+            self.destroy_attack()
             self.kill()
     
 
     # change the status of the cpu AI to actually animate and execute the action
     def cpu_input(self):
-        
         if self.command == 'wait':
             self.status = 'idle_down'
 
-            
         if self.command == "move_up":
             self.direction.y = -1;
             self.status = "up"
@@ -368,13 +392,7 @@ class Enemy_A(pygame.sprite.Sprite):
         self.status = misc_dirs[random_dir]
     
     
-    def get_status(self):
-        
-        #handle death when health reaches 0
-        if self.health <= 0:
-            self.status = 'death'
-            self.kill()
-        
+    def get_status(self):   
         # handle move to idle
         if self.direction.x == 0 and self.direction.y == 0:
             if not 'idle' in self.status and not 'attack' in self.status:
@@ -427,8 +445,8 @@ class Enemy_A(pygame.sprite.Sprite):
         animation = self.animations[self.status];
         self.frame_index += self.animation_speed
         # get the frame index to select the current animation
-        print(self.status)
-        print("new animation" , animation)
+        #print(self.status)
+        #print("new animation" , animation)
         
         if self.frame_index >= len(animation): # get the len of the number of the items in the sprite sub folder
             self.frame_index = 0;
@@ -461,9 +479,14 @@ class Enemy_A(pygame.sprite.Sprite):
         self.action_controller(); # determine the next action for the CPU AI
         self.cpu_input(); # animate based on the command and change cpu status
         self.get_status()
-        self.animate();
+        
+        # what direction is the AI facing here...
+        
+        
         self.cool_down();
         self.move(self.speed);
+        self.animate();
+        print("cpu a direction: ", self.direction)
         
         #print("cpu status: ", self.status)
         #print("is cpu attacking: ", self.attacking)
