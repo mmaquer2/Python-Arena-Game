@@ -48,6 +48,7 @@ python main.py
 
 - movement, arrow keys
 - primary attack, space bar
+- block/defend, left shift key
 
 
 # Resources and Credits

@@ -192,9 +192,10 @@ class Player(pygame.sprite.Sprite):
         #    print("Player is attacking w/ sec")
         
         # blocking    
-        #if keys[pygame.K_b] and not self.attacking:
-        #    print("player is blocking")
-            #self.blocking = True;
+        if keys[pygame.K_b] and not self.attacking:
+            print("player is blocking")
+            self.blocking = True;
+            self.create_block()
            
         
     def get_status(self):

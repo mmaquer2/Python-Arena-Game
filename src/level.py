@@ -8,6 +8,7 @@ from enemy_a import Enemy_A
 from enemy_b import Enemy_B
 from enemy_c import Enemy_C
 from weapon import Weapon
+from shield import Shield
 
 # class to handle running the level for the game state
 class Level:
@@ -26,9 +27,14 @@ class Level:
         self.cpu_b_attack = None;
         self.cpu_c_attack = None;
         
+        # block and shield attack_sprites
+        self.current_block_player = None;
+        self.cpu_a_block = None;
+        self.cpu_b_block = None;
+        self.cpu_c_block = None;
+        
         self.attack_sprites = pygame.sprite.Group(); # create sprite group for attcking objects
         self.attackable_sprites = pygame.sprite.Group();
-        
         self.createMap(); # init map starting locations for obstacles and players 
         
         
@@ -90,6 +96,21 @@ class Level:
                 # self.cpu_c.set_location((x,y));
                 # enemy_list = [self.player, self.cpu_a,self.cpu_b]
                 # self.cpu_c.set_opponents(enemy_list)
+    
+    
+    # handling creating the animations for the game
+    def create_block_player(self):
+        self.current_block_player = Shield(self.player, [self.visible_sprites, self.attack_sprites])
+    
+    def create_block_cpu_a(self):
+        pass
+    
+    def create_block_cpu_b(self):
+        pass
+    
+    def create_block_cpu_c(self):
+        pass
+    
     
     # handles drawing the weapon sprite of a player or cpu AI
     def create_attack(self):

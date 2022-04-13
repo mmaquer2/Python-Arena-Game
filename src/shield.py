@@ -9,3 +9,9 @@ class Shield(pygame.sprite.Sprite):
         
         block_path = f'sprites/weapons/{player.weapon}/{direction}.png' # path to the graphic of the weapon
         self.image = pygame.image.load(block_path).convert_alpha()
+        
+        
+        # in order to make the sheild an obstacle that blocks attacks need to create a hitbox as well 
+        #self.hitbox = self.rect.inflate(0,-10)
+        
+        # what does hitbox do?
