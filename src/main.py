@@ -37,7 +37,7 @@ class Game:
                     sys.exit()
        
             self.screen.fill('light green') # background color
-            self.level.run();
+            self.level.run();   # update the level at each tick
             pygame.display.update()
             self.clock.tick(FPS)
                 

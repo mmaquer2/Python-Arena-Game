@@ -27,16 +27,22 @@ class Level:
         self.cpu_b_attack = None;
         self.cpu_c_attack = None;
         
+        self.ranged_attack_player = None;
+        self.cpu_a__ranged_attack = None;
+        self.cpu_b__ranged_attack = None;
+        self.cpu_c_ranged_attack = None;
+        
+        
+        
         # block and shield attack_sprites
         self.current_block_player = None;
         self.cpu_a_block = None;
         self.cpu_b_block = None;
         self.cpu_c_block = None;
         
-        self.attack_sprites = pygame.sprite.Group(); # create sprite group for attcking objects
-        self.attackable_sprites = pygame.sprite.Group();
-        self.createMap(); # init map starting locations for obstacles and players 
-        
+        self.attack_sprites = pygame.sprite.Group() # create sprite group for attcking objects
+        self.attackable_sprites = pygame.sprite.Group()
+        self.createMap() # init map starting locations for obstacles and players 
         
     def createMap(self):
         # select game map by randomizing what map is being selected from the world maps in the settings 
@@ -96,6 +102,8 @@ class Level:
                 # self.cpu_c.set_location((x,y));
                 # enemy_list = [self.player, self.cpu_a,self.cpu_b]
                 # self.cpu_c.set_opponents(enemy_list)
+
+
     
     
     # handling creating the animations for the game
@@ -198,6 +206,25 @@ class Level:
                                 self.player.is_weapon_destroyed = False;
                             
                     
+    
+    
+    
+    
+    # function to create a sprite for a ranged attack
+    def create_player_ranged_attack(self):
+        pass
+    
+    def create_cpu_a_ranged_attack(self):
+        pass
+    
+    def create_cpu_b_ranged_attack(self):
+        pass
+    
+    
+    def create_cpu_c_ranged_attack(self):
+        pass
+    
+    
                         
     # handlers cpu_ai attacks 
     def cpu_a_attack_logic(self):

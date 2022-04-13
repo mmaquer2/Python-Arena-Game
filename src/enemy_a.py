@@ -343,7 +343,8 @@ class Enemy_A(pygame.sprite.Sprite):
     def check_death(self):
         if self.health <= 0:
             self.death_sound.play() 
-            self.destroy_attack()
+            self.destroy_attack() # remove any sprites from the previous command before dying
+            self.destroy_block()
             self.kill()
     
 
@@ -362,7 +363,6 @@ class Enemy_A(pygame.sprite.Sprite):
             print("cpu ai A is blocking")
             self.blocking = True;
             self.create_block();
-            
             
             
         if self.command == "idle":
