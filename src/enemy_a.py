@@ -49,6 +49,9 @@ class Enemy_A(pygame.sprite.Sprite):
         self.attack_time = None;
         self.attack_cooldown = 800;  
         
+        self.blocking = False;
+        self.block_cooldown = 800;
+        
         
         # action_planning and behavior tree
         strategies = ['ambush','wander','beserk'] # list of possible strategies
@@ -318,7 +321,7 @@ class Enemy_A(pygame.sprite.Sprite):
     
     def get_damage(self,damage,weapon_owner_id):
         
-        if self.blocking == False and weapon_owner_id != self.id:
+        if self.blocking != False and weapon_owner_id != self.id:
             print("cpu a is taking damage")
             self.health = self.health - damage;
             self.damage_sound.play()

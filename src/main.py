@@ -13,7 +13,7 @@ class Game:
         pygame.display.set_caption('Arena Game by Mike Maquera')
         self.screen = pygame.display.set_mode((window_width, window_height))
           
-        # set game icon on window tab
+        # set game icon on window tab 
         icon_path = Path('sprites/characters/player/down_idle/idle_down.png') 
         icon = pygame.image.load(icon_path)
         pygame.display.set_icon(icon)

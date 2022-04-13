@@ -8,8 +8,10 @@ class Weapon(pygame.sprite.Sprite):
         self.sprite_type = 'weapon'
         self.weapon_owner_id = weapon_owner  # set the original owner of the weapon, so the owner cannot be hit by their own weapon
         
+        print("new weapon created owner is: ", self.weapon_owner_id)
+        
         # remove idle type to obtain only player direction 
-        direction = player.status.split('_')[0] # get the current direction of the player to point weapon in correct direction
+        direction = player.status.split('_')[0]  # get the current direction of the player to point weapon in correct direction
         
         # src\sprites\weapons\axe example of folder path to weapon sprite
         weapon_path = f'sprites/weapons/{player.weapon}/{direction}.png' # path to the graphic of the weapon

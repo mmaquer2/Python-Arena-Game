@@ -153,22 +153,28 @@ class Level:
         if self.current_attack_player:
             self.current_attack_player.kill()
             self.player.is_weapon_destroyed = True;
+            self.current_attack_player = None;
     
     def destroy_attack_cpu_a(self):
-        
         if self.cpu_a_attack:
             self.cpu_a_attack.kill()
+            self.cpu_a_attack = None;
             self.cpu_a.is_weapon_destroyed = True;
+          
             
     def destroy_attack_cpu_b(self):      
         if self.cpu_b_attack:
                 self.cpu_b_attack.kill()
+                self.cpu_b_attack = None;
                 self.cpu_b.is_weapon_destroyed = True;
+                
     
     def destroy_attack_cpu_c(self):       
         if self.cpu_c_attack:
                 self.cpu_c_attack.kill()
-        
+                self.cpu_c_attack = None;
+                self.cpu_c.is_weapon_destroyed = True;
+                
     # handles logic for checking collisions between weapons and players 
     def attack_logic(self):
         if self.attack_sprites:
@@ -177,17 +183,18 @@ class Level:
                if collision_sprites:
                    for target_sprite in collision_sprites:
                        if target_sprite.sprite_type == 'cpu_ai':
-                           if self.current_attack_player.weapon_owner_id != target_sprite.id:
-                               
-                            print("player attack logic weapon ID: ", self.current_attack_player.weapon_owner_id)
-                            print("player target ID: ", target_sprite.id)
+                           
+                           if self.current_attack_player != None: # only proceed if there is a valid weapon attack
+                            if self.current_attack_player.weapon_owner_id != target_sprite.id:
+                                
+                                #print("player attack logic weapon ID: ", self.current_attack_player.weapon_owner_id)
+                                #print("player target ID: ", target_sprite.id)
+                                
                             
-                        
-                               
-                            damage = self.player.get_weapon_damage() # get the damage from the current weapon
-                            target_sprite.get_damage(damage, self.current_attack_player.weapon_owner_id)  # pass the damage from
-                            self.player.is_weapon_destroyed = False;
-                        
+                                damage = self.player.get_weapon_damage() # get the damage from the current weapon
+                                target_sprite.get_damage(damage, self.current_attack_player.weapon_owner_id)  # pass the damage from
+                                self.player.is_weapon_destroyed = False;
+                            
                     
                         
     # handlers cpu_ai attacks 
@@ -196,8 +203,11 @@ class Level:
         if self.attack_sprites:
             for attack_sprite in self.attack_sprites:
                 collision_sprites =  pygame.sprite.spritecollide(attack_sprite,self.attackable_sprites,False) # get collisions between sprites and weapons
+                
                 if collision_sprites:
                    for target_sprite in collision_sprites:
+                       
+                
                        if target_sprite.sprite_type == 'cpu_ai' or 'player':
                           
                            if self.cpu_a_attack != None: # only proceed if there is a valid weapon attack
@@ -205,8 +215,8 @@ class Level:
                             if self.cpu_a_attack.weapon_owner_id == self.cpu_a.id:
                                 if self.cpu_a_attack.weapon_owner_id != target_sprite.id:  # check that the owner of a weapon isnt taking damange for its own weapon sprite
                                 
-                                    print("CPU A attack logic weapon ID: ", self.cpu_a_attack.weapon_owner_id)
-                                    print("CPU A Target ID: " , target_sprite.id)
+                                    #print("CPU A attack logic weapon ID: ", self.cpu_a_attack.weapon_owner_id)
+                                    #print("CPU A Target ID: " , target_sprite.id)
                                     
                                     
                                     damage = self.cpu_a.get_weapon_damage() # get the damage from the current weapon
@@ -237,19 +247,37 @@ class Level:
     def isGameOver(self):
         pass
         
-
+    
+    # function for testing to show the stats of the current character weapons
+    def show_weapon_owners(self):
+        
+        if self.current_attack_player != None: # only proceed if there is a valid weapon attack
+            print("player weapon owner: ", self.current_attack_player.weapon_owner_id)
+        
+        if self.cpu_a_attack != None:
+            print("cpu a weapon owner: ", self.cpu_a_attack.weapon_owner_id)
+        
+        #self.cpu_b_attack = None;
+        #self.cpu_c_attack = None;
+                
+    
     # loop to update and draw the game           
     def run(self):
         self.visible_sprites.custom_draw(self.player)
         # handle the attack logic and animations for all characters
-        self.attack_logic()
         
-        if self.health_cpu_a > 0:  # only run attack logic if a cpu player is still alive..
-            self.cpu_a_attack_logic()
+        if self.current_attack_player:
+            self.attack_logic()
+        
+        if self.cpu_a_attack != None:
+            if self.health_cpu_a > 0:  # only run attack logic if a cpu player is still alive..
+                self.cpu_a_attack_logic()
         #self.cpu_b_attack_logic()
         #self.cpu_c_attack_logic()
         self.visible_sprites.update();
-        
+    
+    
+
         
 # small class to create a camera view focused on the player     
 class CameraGroup(pygame.sprite.Group):
@@ -267,5 +295,4 @@ class CameraGroup(pygame.sprite.Group):
         for sprite in sorted(self.sprites(),key = lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image,offset_pos)
-            
             

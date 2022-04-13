@@ -311,19 +311,13 @@ class Player(pygame.sprite.Sprite):
     
     # recieve damage from other units/ obstacles on the map
     def get_damage(self,damage_amount, weapon_owner_id):
-        
-        print("get damage id check", weapon_owner_id )
-        
-        if self.blocking == False and weapon_owner_id != self.id:
-            #print("human player is taking damage!")
+              
+        if self.blocking == False and weapon_owner_id != self.id:    # check if were blocking and the weapon sprite isn't ours
             self.health = self.health - damage_amount;
-            #self.flicker() 
             self.damage_sound.play()
             self.check_death()
         
-            #print("player is blocking not taking damage")
-        
-        print(self.health)
+    
        
     # function to check if the players health has reached zero
     def check_death(self):
