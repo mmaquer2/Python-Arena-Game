@@ -56,7 +56,7 @@ class Level:
         
         # init player and CPU_AI: 
         self.player = Player((1,1), [self.visible_sprites,self.attackable_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack_player, self.create_block_player,self.destroy_block_player)    
-        self.cpu_a = Enemy_A((2,2), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_a, self.destroy_attack_cpu_a)
+        self.cpu_a = Enemy_A((2,2), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_a, self.destroy_attack_cpu_a, self.create_block_cpu_a, self.destroy_block_cpu_a )
         #self.cpu_b = Enemy_B((3,3), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_b, self.destroy_attack_cpu_b)
         #self.cpu_c = Enemy_C((4,4), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
         
@@ -100,17 +100,16 @@ class Level:
     
     # handling creating the animations for the game
     def create_block_player(self):
-        print("calling the create block from level command")
         self.current_block_player = Shield(self.player, [self.visible_sprites, self.attack_sprites])
     
     def create_block_cpu_a(self):
-        pass
-    
+        self.cpu_a_block = Shield(self.cpu_a,[self.visible_sprites, self.attack_sprites]);
+        
     def create_block_cpu_b(self):
-        pass
+        self.cpu_b_block = Shield(self.cpu_b,[self.visible_sprites, self.attack_sprites]);
     
     def create_block_cpu_c(self):
-        pass
+        self.cpu_c_block = Shield(self.cpu_c,[self.visible_sprites, self.attack_sprites]);
     
     
     
@@ -120,7 +119,10 @@ class Level:
             self.player.is_block_destroyed = True;
             
     def destroy_block_cpu_a(self):
-            pass
+        if self.cpu_a_block:
+            self.cpu_a_block.kill()
+            self.cpu_a.is_block_destroyed = True;
+            
     
     def destroy_block_cpu_b(self):
         pass

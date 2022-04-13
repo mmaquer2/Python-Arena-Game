@@ -6,7 +6,7 @@ from pathlib import Path
 from math import sin
 
 class Enemy_A(pygame.sprite.Sprite):
-    def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack):
+    def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack, create_block, destroy_block):
         super().__init__(groups)
         
         # id types
@@ -45,12 +45,16 @@ class Enemy_A(pygame.sprite.Sprite):
         self.obstacles_sprites = obstacle_sprites
         self.attacking = False;
         self.is_weapon_destroyed = True
+        self.is_block_destroyed = True
         
         self.attack_time = None;
         self.attack_cooldown = 800;  
         
         self.blocking = False;
         self.block_cooldown = 800;
+        
+        self.create_block = create_block
+        self.destroy_block = destroy_block
         
         
         # action_planning and behavior tree
@@ -348,8 +352,13 @@ class Enemy_A(pygame.sprite.Sprite):
             self.weapon_sound.play()
         
         if self.command == 'block' and not self.blocking:
+            self.block_time = pygame.time.get_ticks()
+            print("cpu ai A is blocking")
             self.blocking = True;
-        
+            self.create_block();
+            
+            
+            
         if self.command == "idle":
             pass
         
@@ -380,7 +389,7 @@ class Enemy_A(pygame.sprite.Sprite):
     def get_status(self):   
         # handle move to idle
         if self.direction.x == 0 and self.direction.y == 0:
-            if not 'idle' in self.status and not 'attack' in self.status:
+            if not 'idle' in self.status and not 'attack' in self.status and not 'block' in self.status:
                 self.status = self.status + '_idle'
                 
          # handle attack then idle transition
@@ -397,7 +406,24 @@ class Enemy_A(pygame.sprite.Sprite):
         else:
             if 'attack' in self.status:
                 self.status = self.status.replace('_attack', '')
-                
+        
+        
+        # handle block to idle transition
+        if self.blocking:
+            self.direction.x = 0;
+            self.direction.y = 0;
+            if not 'block' in self.status:
+                if 'idle' in self.status:
+                    self.status = self.status.replace('_idle', '_block')
+                    
+                else:
+                    self.status = self.status + "_block"
+        
+        else:
+            if 'block' in self.status:
+                self.status = self.status.replace('_block', '')
+        
+        
                 
     def collision(self,direction):
          # handle horizontal collisions
@@ -429,6 +455,7 @@ class Enemy_A(pygame.sprite.Sprite):
     def animate(self):
         animation = self.animations[self.status];
         self.frame_index += self.animation_speed
+        
         # get the frame index to select the current animation
         #print(self.status)
         #print("new animation" , animation)
@@ -444,6 +471,11 @@ class Enemy_A(pygame.sprite.Sprite):
             if current_time - self.attack_time >= self.attack_cooldown + self.weapon_cool_down: 
                 self.attacking = False;
                 self.destroy_attack()
+                
+        if self.blocking:
+            if current_time - self.block_time >= self.block_cooldown:
+                self.destroy_block();
+                self.blocking = False;
 
     
     def flicker(self):
