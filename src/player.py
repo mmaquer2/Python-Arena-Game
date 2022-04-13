@@ -69,7 +69,7 @@ class Player(pygame.sprite.Sprite):
         self.blocking = False
         self.attack_cooldown = 800
         self.attack_time = None
-        self.block_cooldown = 400
+        self.block_cooldown = 800
         self.obstacles_sprites = obstacle_sprites
         
         # randomize player stats
@@ -128,6 +128,8 @@ class Player(pygame.sprite.Sprite):
             'death': player_death_folder
         }
         
+        
+        
         for animation in self.animations.keys():
             currentPath = self.animations[animation]
             self.animations[animation] = self.import_folder(currentPath)
@@ -149,7 +151,7 @@ class Player(pygame.sprite.Sprite):
     def input(self):
         keys = pygame.key.get_pressed()
     
-        if not self.attacking:
+        if not self.attacking and not self.blocking:   # this line prevents player from moving and blocking at the same time
             # y axis
             #moving up
             if keys[pygame.K_UP] and not self.attacking:
@@ -192,26 +194,20 @@ class Player(pygame.sprite.Sprite):
                 self.create_attack()   
                 # play attack sound
              
-        #secondary attack    
-        #if keys[pygame.K_LSHIFT] and not self.attacking:
-        #    self.attack_time = pygame.time.get_ticks();
-        #    self.secondary_attack = True;
-        #    self.attacking = True
-        #    self.create_attack()
-        #    print("Player is attacking w/ sec")
         
-        # blocking    
-        if keys[pygame.K_b] and not self.attacking:
-            print("player is blocking")
-            self.blocking = True;
-            self.create_block()
+            # blocking    
+            if keys[pygame.K_b] and not self.blocking:
+                self.block_time = pygame.time.get_ticks();
+                print("player is blocking")
+                self.blocking = True;
+                self.create_block()
            
         
     def get_status(self):
               
         # handle idle animation 
         if self.direction.x == 0 and self.direction.y == 0:
-            if not 'idle' in self.status and not 'attack' in self.status:
+            if not 'idle' in self.status and not 'attack' in self.status and not 'block' in self.status:
                 self.status = self.status + '_idle'
                     
         
@@ -244,6 +240,7 @@ class Player(pygame.sprite.Sprite):
         else:
             if 'block' in self.status:
                 self.status = self.status.replace('_block', '')
+            
         
     
     def cool_down(self):
@@ -252,7 +249,13 @@ class Player(pygame.sprite.Sprite):
             if current_time - self.attack_time >= self.attack_cooldown + self.weapon_cool_down: 
                 self.destroy_attack()
                 self.attacking = False;
-                
+
+        
+        if self.blocking:
+            if current_time - self.block_time >= self.block_cooldown:
+                self.destory_block();
+                self.blocking = False;
+        
     # handling player movement across the map including physics
     def move(self,speed):
         if self.direction.magnitude() != 0:
@@ -308,11 +311,17 @@ class Player(pygame.sprite.Sprite):
     
     # recieve damage from other units/ obstacles on the map
     def get_damage(self,damage_amount):
-        print("human player is taking damage!")
-        self.health = self.health - damage_amount;
-        #self.flicker() 
-        self.damage_sound.play()
-        self.check_death()
+        
+        if self.blocking == False:
+            #print("human player is taking damage!")
+            self.health = self.health - damage_amount;
+            #self.flicker() 
+            self.damage_sound.play()
+            self.check_death()
+        
+            #print("player is blocking not taking damage")
+        
+        print(self.health)
        
     # function to check if the players health has reached zero
     def check_death(self):
@@ -335,10 +344,11 @@ class Player(pygame.sprite.Sprite):
             return 0;
     
     def update(self):
+        
         self.get_status(); # get the current status of the player
         #print("player status: ", self.status)
-        
         self.input();
+       
         self.animate()
         self.cool_down();
         self.move(self.speed)

@@ -460,9 +460,6 @@ class Enemy_A(pygame.sprite.Sprite):
         self.cpu_input(); # animate based on the command and change cpu status
         self.get_status()
         
-        
-        
-        
         self.cool_down();
         self.move(self.speed);
         self.animate();

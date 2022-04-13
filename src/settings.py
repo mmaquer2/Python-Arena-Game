@@ -5,29 +5,12 @@ tileSize = 64;
 
 # weapon stats
 weapon_data = {
-    'axe': { 'cooldown': 300, 'damage': 20},
-    'rapier': { 'cooldown': 100, 'damage': 15},
-    'lance': { 'cooldown': 200, 'damage': 25},
-    'sword': { 'cooldown': 100, 'damage': 15},
-    'knife': { 'cooldown': 50, 'damage': 15},
-    
+    'axe': { 'cooldown': 300, 'damage': 22},
+    'rapier': { 'cooldown': 175, 'damage': 10},
+    'lance': { 'cooldown': 250, 'damage': 15},
+    'sword': { 'cooldown': 175, 'damage': 10},
+    'knife': { 'cooldown': 100, 'damage': 5},
 }
-
-#'trap': { 'cooldown': 100, 'damage': 15, 'graphic' : ''}
-
-magic_data = {
-    
-    'fireBolt': { 'energy': 100, 'cost': 15, },
-    'iceBolt': { 'energy': 100, 'cost': 15, },
-
-}
-
-item_data = {
-    
-    'health_potion': { 'energy': 100, 'cost': 15},
-    
-}
-
 
 # map legend:
 # p = player starting location

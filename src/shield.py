@@ -16,7 +16,7 @@ class Shield(pygame.sprite.Sprite):
         block_path = f'sprites/shield/{direction}.png'
         
         self.image_import = pygame.image.load(block_path) # import image 
-        self.image = pygame.transform.scale(self.image_import,(32,32))
+        self.image = pygame.transform.scale(self.image_import,(40,40))
      
         
         # in order to make the sheild an obstacle that blocks attacks need to create a hitbox as well 
@@ -26,11 +26,11 @@ class Shield(pygame.sprite.Sprite):
         
         if direction == 'right':
             print("blocking right")    
-            self.rect = self.image.get_rect(midleft = player.rect.midright + pygame.math.Vector2(0,16))
+            self.rect = self.image.get_rect(midleft = player.rect.midright)
         
         elif direction == 'left':
             print("blocking left")    
-            self.rect = self.image.get_rect(midright = player.rect.midleft + pygame.math.Vector2(0,16)) 
+            self.rect = self.image.get_rect(midright = player.rect.midleft )
             
         elif direction == 'down':
             

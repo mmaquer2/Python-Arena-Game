@@ -177,7 +177,7 @@ class Level:
                if collision_sprites:
                    for target_sprite in collision_sprites:
                        if target_sprite.sprite_type == 'cpu_ai':
-                            #target_sprite.kill() # kill the target without damage, testing only
+                           
                             damage = self.player.get_weapon_damage() # get the damage from the current weapon
                             target_sprite.get_damage(damage)  # pass the damage from
                             self.player.is_weapon_destroyed = False;
@@ -193,6 +193,7 @@ class Level:
                 if collision_sprites:
                    for target_sprite in collision_sprites:
                        if target_sprite.sprite_type == 'cpu_ai' or 'player':
+                          
                            if self.cpu_a_attack != None: # only proceed if there is a valid weapon attack
                             if self.cpu_a_attack.weapon_owner_id != target_sprite.id:  # check that the owner of a weapon isnt taking damange for its own weapon sprite
                                 damage = self.cpu_a.get_weapon_damage() # get the damage from the current weapon

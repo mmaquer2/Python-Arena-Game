@@ -302,7 +302,7 @@ class Enemy_B(pygame.sprite.Sprite):
     # check if health is 0 and character has died
     def check_death(self):
         if self.health <= 0:
-            self.destroy_attack
+
             self.death_sound.play() 
             self.destroy_attack()
             self.kill()
