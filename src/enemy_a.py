@@ -168,21 +168,21 @@ class Enemy_A(pygame.sprite.Sprite):
             
             if self.direction.x > self.direction.y:
                 
-                if self.direction.x > 0:
-                    self.status = "left"
+                if self.direction.x > 0.5:
+                    self.status = "right"
                 
                 else: 
-                    self.status = "right"
+                    self.status = "left"
             
             else: 
                 
-                if self.direction.y > 0:
-                    self.status = "up"
+                if self.direction.y > 0.5:
+                    self.status = "down"
                 
                 else:
-                    self.status = "down"
+                    self.status = "up"
             
-            
+            print(self.status)
         
         self.hitbox.x += self.direction.x * speed
         self.collision('horizontal')
@@ -281,13 +281,11 @@ class Enemy_A(pygame.sprite.Sprite):
             temp_distance = (opponentVec - myVec).magnitude()
             if temp_distance < self.view_radius:  
                 
-                print("there is an enemy within view")  # if the distance between ai and other character is within my visitable range return true
-               
-               
+                #print("there is an enemy within view")  # if the distance between ai and other character is within my visitable range return true
                 return opp
             else:
-                print("there is not an enemy within view")  # print(opp.rect[0], opp.rect[1]) # get the x,y coordinates of an opponent
-            
+                #print("there is not an enemy within view")  # print(opp.rect[0], opp.rect[1]) # get the x,y coordinates of an opponent
+                pass
             
     # determine if an enemy is within the attack range
     def is_enemy_within_attack_range(self):
@@ -331,25 +329,7 @@ class Enemy_A(pygame.sprite.Sprite):
 
     # change the status of the cpu AI to actually animate and execute the action
     def cpu_input(self):
-        if self.command == 'wait':
-            self.status = 'idle_down'
-
-        if self.command == "move_up":
-            self.direction.y = -1;
-            self.status = "up"
-        
-        if self.command == "move_down":
-            self.direction.y = 1;
-            self.status = "down"
-        
-        if self.command == "move_left":
-            self.direction.x = -1;
-            self.status = 'left'
-        
-        if self.command == "move_right":
-            self.direction.x = 1
-            self.status = 'right'
-        
+     
         if self.command == 'attack' and not self.attacking:
             self.attack_time = pygame.time.get_ticks();
             print("command has been issued to attack")
@@ -385,11 +365,6 @@ class Enemy_A(pygame.sprite.Sprite):
         total_damage = self.ai_stats['attack'] + weapon_data[self.weapon]['damage']
         return total_damage
     
-    
-    def rotate(self):
-        misc_dirs = ['left','right','up','down']
-        random_dir = random.randint(0,3);
-        self.status = misc_dirs[random_dir]
     
     
     def get_status(self):   
@@ -480,13 +455,13 @@ class Enemy_A(pygame.sprite.Sprite):
         self.cpu_input(); # animate based on the command and change cpu status
         self.get_status()
         
-        # what direction is the AI facing here...
+        
         
         
         self.cool_down();
         self.move(self.speed);
         self.animate();
-        print("cpu a direction: ", self.direction)
+       # print("cpu a direction: ", self.direction)
         
         #print("cpu status: ", self.status)
         #print("is cpu attacking: ", self.attacking)
