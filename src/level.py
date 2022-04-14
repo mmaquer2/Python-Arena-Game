@@ -9,6 +9,10 @@ from enemy_b import Enemy_B
 from enemy_c import Enemy_C
 from weapon import Weapon
 from shield import Shield
+import pathfinding
+from pathfinding.core.diagonal_movement import DiagonalMovement
+from pathfinding.core.grid import Grid
+from pathfinding.finder.a_star import AStarFinder
 
 # class to handle running the level for the game state
 class Level:
@@ -30,32 +34,39 @@ class Level:
         self.cpu_b_block = None;
         self.cpu_c_block = None;
         
+        #stores the nav_grid for pathfinding
+        self.nav_grid = None
+        
         self.attack_sprites = pygame.sprite.Group() # create sprite group for attcking objects
         self.attackable_sprites = pygame.sprite.Group()
         self.createMap() # init map starting locations for obstacles and players 
         
     def createMap(self):
         # select game map by randomizing what map is being selected from the world maps in the settings 
-        mapNum = random.randint(0, 3)
+        mapNum = random.randint(0, 1)
         if(mapNum == 0):
             self.levelMap = WORLD_MAP_ONE
+            self.nav_grid = NAV_GRID_ONE
         if(mapNum == 1):
             self.levelMap = WORLD_MAP_TWO
-        if(mapNum == 2):
-            self.levelMap = WORLD_MAP_THREE
-        if(mapNum == 3):
-            self.levelMap = WORLD_MAP_FOUR
+            self.nav_grid = NAV_GRID_TWO
+        
+        #if(mapNum == 2):
+            #self.levelMap = WORLD_MAP_THREE
+        #if(mapNum == 3):
+            #self.levelMap = WORLD_MAP_FOUR
     
-        # Randomize starting locations, there are 4 possible starting points on each map
-        players = ["p", "a", "b", "c"]
-        random.shuffle(players)  # shuffle players for different locations
+    
+
+        # create nav mesh grid
+        self.nav_mesh_grid = Grid(matrix = self.nav_grid)
+        
         
         # init player and CPU_AI: 
         self.player = Player((1,1), [self.visible_sprites,self.attackable_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack_player, self.create_block_player,self.destroy_block_player)    
-        self.cpu_a = Enemy_A((2,2), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_a, self.destroy_attack_cpu_a, self.create_block_cpu_a, self.destroy_block_cpu_a )
-        #self.cpu_b = Enemy_B((3,3), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_b, self.destroy_attack_cpu_b)
-        #self.cpu_c = Enemy_C((4,4), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack, self.destroy_attack)
-        
+        self.cpu_a = Enemy_A((2,2), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_a, self.destroy_attack_cpu_a, self.create_block_cpu_a, self.destroy_block_cpu_a, self.nav_mesh_grid )
+        #self.cpu_b = Enemy_B((3,3), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_b, self.destroy_attack_cpu_b, self.nav_mesh_grid)
+        #self.cpu_c = Enemy_C((4,4), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_c, self.destroy_attack_cpu_c, self.nav_mesh_grid)
         
         # create holder variables for the health of each player, these will be checked to determine when the game is over
         self.health_player = self.player.health

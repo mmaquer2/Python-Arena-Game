@@ -4,9 +4,13 @@ from settings import *
 from os import walk
 from pathlib import Path
 from math import sin
+import pathfinding
+from pathfinding.core.diagonal_movement import DiagonalMovement
+from pathfinding.core.grid import Grid
+from pathfinding.finder.a_star import AStarFinder
 
 class Enemy_A(pygame.sprite.Sprite):
-    def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack, create_block, destroy_block):
+    def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack, create_block, destroy_block, nav_mesh):
         super().__init__(groups)
         
         # id types
@@ -56,6 +60,8 @@ class Enemy_A(pygame.sprite.Sprite):
         self.create_block = create_block
         self.destroy_block = destroy_block
         
+        # declare the nav_grid for pathfinding
+        self.nav_mesh = nav_mesh;
         
         # action_planning and behavior tree
         strategies = ['ambush','wander','beserk'] # list of possible strategies
@@ -318,38 +324,25 @@ class Enemy_A(pygame.sprite.Sprite):
                 self.target = None
                 self.command = ''
             
-            
-    def get_waypoint(self):
-        # plan path to this new waypoint
-        waypoint = 1;
-        return waypoint;
-    
-    
-    ADJ = [
-    [-1, -1],
-    [-1, 0],
-    [-1, 1],
-    [0, -1],
-    [0, 1],
-    [1, -1],
-    [1, 0],
-    [1, 1]
-    ]
-    
-    
-    def plan_path(self):
-        pass
-    
-    def get_damage(self,damage,weapon_owner_id):
+    # plan a path using the Astar package       
+    def plan_path(self,start,end):
+        start_node = self.nav_mesh.node(start[0],start[1])
+        end_node = self.nav_mesh.node(end[0],end[1])
+        finder = AStarFinder(diagonal_movement = DiagonalMovement.always)
+        path = finder.find_path(start_node,end_node,self.nav_mesh)
         
+        print("calculated path: ", path)
+        return path
+    
+    # get damage total from an attacking weapon
+    def get_damage(self,damage,weapon_owner_id):
         if self.blocking == False and weapon_owner_id != self.id:
             print("cpu a is taking damage")
             self.health = self.health - damage;
             self.damage_sound.play()   
             self.check_death()
             
-                    
-    
+        
     # check if health is 0 and character has died
     def check_death(self):
         if self.health <= 0:
