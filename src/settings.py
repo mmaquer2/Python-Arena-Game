@@ -10,6 +10,7 @@ weapon_data = {
     'lance': { 'cooldown': 250, 'damage': 15},
     'sword': { 'cooldown': 175, 'damage': 10},
     'knife': { 'cooldown': 100, 'damage': 5},
+    'bow': {'cooldown': 500, 'damage': 1000}
 }
 
 # map legend:

@@ -59,10 +59,15 @@ class Player(pygame.sprite.Sprite):
         weaponRandomAssignment = random.randint(0,len(weapon_data) - 1)  # assign a random weapon to the player 
         self.weapon_index = weaponRandomAssignment
         
-        self.weapon = list(weapon_data.keys())[self.weapon_index]; # assign the random weapon to the player
-        self.local_weapon_data= weapon_data.get(self.weapon)
-        self.weapon_cool_down = self.local_weapon_data['cooldown'];
-        self.secondary_weapon = ""
+        #self.weapon = list(weapon_data.keys())[self.weapon_index] # assign the random weapon to the player
+        #self.local_weapon_data= weapon_data.get(self.weapon)
+        #self.weapon_cool_down = self.local_weapon_data['cooldown']
+        
+        
+        #testing for bow ->
+        self.weapon = 'bow'
+        self.weapon_cool_down = 100
+        
         
         # attacking and blocking cooldown status vars
         self.attacking = False
