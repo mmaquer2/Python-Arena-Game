@@ -10,7 +10,7 @@ from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 
 class Enemy_A(pygame.sprite.Sprite):
-    def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack, create_block, destroy_block, nav_mesh):
+    def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack, create_block, destroy_block, nav_grid):
         super().__init__(groups)
         
         # id types
@@ -61,7 +61,9 @@ class Enemy_A(pygame.sprite.Sprite):
         self.destroy_block = destroy_block
         
         # declare the nav_grid for pathfinding
-        self.nav_mesh = nav_mesh;
+        self.nav_mesh = Grid(matrix = nav_grid)
+        self.current_path = None
+        
         
         # action_planning and behavior tree
         strategies = ['ambush','wander','beserk'] # list of possible strategies
@@ -72,9 +74,9 @@ class Enemy_A(pygame.sprite.Sprite):
         # run = move to another waypoint, after a certain period of health has been lost
         
         #set the current strategy of the cpu AI
-        #self.goal = "wander"  # have the enemy cpu ai
+        self.goal = "wander"  # have the enemy cpu ai
         #self.goal = "beserk" # this  currently works, find the nearest enemy and attack 
-        self.goal = "ambush"
+        #self.goal = "ambush"
         
         self.command = ""
         self.inCollision = False; # status in if in a collision or not
@@ -120,8 +122,8 @@ class Enemy_A(pygame.sprite.Sprite):
         
     # function to get the characters x and y coordinate
     def get_location(self):
-        print(self.rect.x, self.rect.y);
-        return self.rect.x , self.rect.y
+        current_loc = [self.rect.x , self.rect.y]
+        return current_loc
       
     
     def set_opponents(self,opponents):
@@ -200,7 +202,7 @@ class Enemy_A(pygame.sprite.Sprite):
                 else:
                     self.status = "up"
             
-            print(self.status)
+            
         
         self.hitbox.x += self.direction.x * speed
         self.collision('horizontal')
@@ -212,15 +214,15 @@ class Enemy_A(pygame.sprite.Sprite):
     # plan action and set command for the ai to execute
     def action_controller(self):
         
+        # Strategy: Beserk
         if self.goal == "beserk":
             self.target = self.find_nearest_enemy() # find nearest enemy
-            self.direction = self.target[1] # move toward enemy location
-            #self.status = self.determine_movement_status(self.direction); 
-            #print(self.direction)
-              
+            self.direction = self.target[1] # move toward enemy location    
             self.is_enemy_within_attack_range()  # attack if you are in range
             return;
-         
+        
+        
+        # Strategy: Ambush      
         if self.goal == "ambush":
             self.target = self.is_enemy_within_visible_range()
             
@@ -233,19 +235,41 @@ class Enemy_A(pygame.sprite.Sprite):
                 self.direction = self.previous_direction;
              
             return
-                 
+        
+        
+        # Strategy: Wander        
         if self.goal == 'wander':
-            new_movement = self.get_waypoint();  # if i'm not in a collision move in a direction
-            self.target = self.is_enemy_within_visible_range();
-            if self.target is not None:
-                pass # continue wandering
+            
+            #self.target = self.is_enemy_within_visible_range();
+            # perhaps change route if an enemy is found along the path
+            #self.is_enemy_within_attack_range()  # attack if you are in range
+            
+            #if self.target is not None:
+            #    pass # continue wandering
             
             
+            if self.current_path is None:
             
-        # run and hide from enemy players
+                # create tuple for the start and end destinations of the path
+                start_loc = (self.rect.y, self.rect.x)        
+                end_loc = (185, 165)
+                
+                # plan a path to that destination
+                self.current_path = self.plan_path(start_loc,end_loc)
+                        
+            # move along that path
+                # current_path.pop_front[0]
+            
+            # check for enemies along that current path...
+            
+              
+        # Strategy: Hide
         if self.goal == 'hide':
             if self.is_enemy_within_visible_range(self): # check if there is an enemy unit within visible range 
-               
+                # plan a path to run away to...
+                
+                # check if i have taken damage...
+                # block
                 pass
     
     def does_target_have_health(self):
@@ -262,9 +286,7 @@ class Enemy_A(pygame.sprite.Sprite):
         if displacement:
             pass
         
-        # my current direction is...
-        
-        #print("displacement: ", displacement)
+    
         
         
     # get the location of the nearest enemy character
@@ -326,12 +348,19 @@ class Enemy_A(pygame.sprite.Sprite):
             
     # plan a path using the Astar package       
     def plan_path(self,start,end):
-        start_node = self.nav_mesh.node(start[0],start[1])
-        end_node = self.nav_mesh.node(end[0],end[1])
-        finder = AStarFinder(diagonal_movement = DiagonalMovement.always)
-        path = finder.find_path(start_node,end_node,self.nav_mesh)
         
-        print("calculated path: ", path)
+        
+        #start_loc = self.nav_mesh.node(start_y,start_x)
+        #end_loc = self.nav_mesh.node(end[0],end[1])
+        
+        test_start = self.nav_mesh.node(2,2)
+        test_end = self.nav_mesh.node(2,3)
+        
+        finder = AStarFinder(diagonal_movement = DiagonalMovement.always)
+        path, runs = finder.find_path(test_start,test_end,self.nav_mesh)
+        
+        print("calculated path: ")
+        print(path)
         return path
     
     # get damage total from an attacking weapon

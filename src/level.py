@@ -35,7 +35,7 @@ class Level:
         self.cpu_c_block = None;
         
         #stores the nav_grid for pathfinding
-        self.nav_grid = None
+        
         
         self.attack_sprites = pygame.sprite.Group() # create sprite group for attcking objects
         self.attackable_sprites = pygame.sprite.Group()
@@ -64,7 +64,7 @@ class Level:
         
         # init player and CPU_AI: 
         self.player = Player((1,1), [self.visible_sprites,self.attackable_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack_player, self.create_block_player,self.destroy_block_player)    
-        self.cpu_a = Enemy_A((2,2), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_a, self.destroy_attack_cpu_a, self.create_block_cpu_a, self.destroy_block_cpu_a, self.nav_mesh_grid )
+        self.cpu_a = Enemy_A((2,2), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_a, self.destroy_attack_cpu_a, self.create_block_cpu_a, self.destroy_block_cpu_a, self.nav_grid )
         #self.cpu_b = Enemy_B((3,3), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_b, self.destroy_attack_cpu_b, self.nav_mesh_grid)
         #self.cpu_c = Enemy_C((4,4), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_c, self.destroy_attack_cpu_c, self.nav_mesh_grid)
         
