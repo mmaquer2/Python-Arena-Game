@@ -5,12 +5,12 @@ tileSize = 64;
 
 # weapon stats
 weapon_data = {
-    'axe': { 'cooldown': 300, 'damage': 22},
-    'rapier': { 'cooldown': 175, 'damage': 10},
-    'lance': { 'cooldown': 250, 'damage': 15},
-    'sword': { 'cooldown': 175, 'damage': 10},
-    'knife': { 'cooldown': 100, 'damage': 5},
-    'bow': {'cooldown': 500, 'damage': 1000}
+    'axe': { 'cooldown': 300, 'damage': 22, 'attack_radius': 50},
+    'rapier': { 'cooldown': 175, 'damage': 10, 'attack_radius': 50},
+    'lance': { 'cooldown': 250, 'damage': 15, 'attack_radius': 50},
+    'sword': { 'cooldown': 175, 'damage': 10, 'attack_radius': 50},
+    'knife': { 'cooldown': 100, 'damage': 5 , 'attack_radius': 50},
+    'bow': {'cooldown': 500, 'damage': 1000 , 'attack_radius': 500}
 }
 
 # map legend:

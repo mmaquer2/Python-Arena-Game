@@ -27,29 +27,21 @@ class Arrow(pygame.sprite.Sprite):
         
         # update veloicty direction and direction
         if self.direction == 'left': 
-            print("arrow left")
-            
             self.rect.x -= 5;
             
         if self.direction == 'right': 
-            
-            print("arrow right")
-            
             self.rect.x += 5;
         
         if self.direction == 'down': 
-            print('arrow down')
             self.rect.y += 5;
         
         if self.direction == 'up': 
-            print('arrow up')
             self.rect.y -= 5;
         
         
         # once the arrow moves far outside of the 
         if self.rect.x >= window_height + 100:
             self.kill()
-        
         
         elif self.rect.x >= window_width + 100:
             self.kill()

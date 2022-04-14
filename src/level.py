@@ -24,11 +24,6 @@ class Level:
         self.cpu_b_attack = None;
         self.cpu_c_attack = None;
         
-        self.ranged_attack_player = None;
-        self.cpu_a__ranged_attack = None;
-        self.cpu_b__ranged_attack = None;
-        self.cpu_c_ranged_attack = None;
-        
         # block and shield attack_sprites
         self.current_block_player = None;
         self.cpu_a_block = None;
@@ -196,27 +191,7 @@ class Level:
                                 target_sprite.get_damage(damage, self.current_attack_player.weapon_owner_id)  # pass the damage from
                                 self.player.is_weapon_destroyed = False;
                             
-                    
-    
-    
-    
-    
-    # function to create a sprite for a ranged attack
-    def create_player_ranged_attack(self):
-        pass
-    
-    def create_cpu_a_ranged_attack(self):
-        pass
-    
-    def create_cpu_b_ranged_attack(self):
-        pass
-    
-    
-    def create_cpu_c_ranged_attack(self):
-        pass
-    
-    
-                        
+                                      
     # handlers cpu_ai attacks 
     def cpu_a_attack_logic(self):
         
@@ -297,9 +272,7 @@ class Level:
         self.visible_sprites.update();
     
     
-
-        
-# small class to create a camera view focused on the player     
+# class to create a camera view focused on the player     
 class CameraGroup(pygame.sprite.Group):
     def __init__(self):
         super().__init__()

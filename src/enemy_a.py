@@ -83,12 +83,11 @@ class Enemy_A(pygame.sprite.Sprite):
         self.weapon_cool_down = self.local_weapon_data['cooldown'];
         self.destroy_attack = destroy_attack;
         
+        # the ranage in which being able to attack another unit
+        self.attack_radius = self.local_weapon_data['attack_radius'];
         
         # the ranage/raidus of which being able to detect or "see" other units
         self.view_radius = 200;
-        
-        # the ranage in which being able to attack another unit
-        self.attack_radius = 50;
         
         # the radius at which it is acceptable to move from our ambush location and attack another character
         self.ambush_radius = 400;
