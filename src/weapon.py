@@ -34,25 +34,8 @@ class Weapon(pygame.sprite.Sprite):
 
         # if the weapon is a bow, create an arrow
         if player.weapon == "bow":
-            
-            x,y = player.get_location()
-            if direction == "right":
-                print("fire right")
-                Arrow(groups,player,"right")
-                
-            
-            if direction == "left":
-                print("fire left")
-                Arrow(groups,player,'left')
-                
-            
-            if direction == "down":
-                print("fire down")
-                Arrow(groups,player,'down')
-            
-            if direction == "up":
-                print("fire up")
-                Arrow(groups,player,"up")
+            Arrow(groups,player,direction)
+          
             
             
             
