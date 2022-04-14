@@ -38,13 +38,13 @@ class Level:
         # select game map by randomizing what map is being selected from the world maps in the settings 
         mapNum = random.randint(0, 3)
         if(mapNum == 0):
-            levelMap = WORLD_MAP_ONE
+            self.levelMap = WORLD_MAP_ONE
         if(mapNum == 1):
-            levelMap = WORLD_MAP_TWO
+            self.levelMap = WORLD_MAP_TWO
         if(mapNum == 2):
-            levelMap = WORLD_MAP_THREE
+            self.levelMap = WORLD_MAP_THREE
         if(mapNum == 3):
-            levelMap = WORLD_MAP_FOUR
+            self.levelMap = WORLD_MAP_FOUR
     
         # Randomize starting locations, there are 4 possible starting points on each map
         players = ["p", "a", "b", "c"]
@@ -64,7 +64,7 @@ class Level:
         #self.health_cpu_c = self.cpu_c.health
         
     # place objects on the world map   
-        for row_ind, row in enumerate(levelMap): 
+        for row_ind, row in enumerate(self.levelMap): 
             for col_ind, col in enumerate(row):
                 x = col_ind * tileSize;
                 y = row_ind * tileSize
@@ -258,6 +258,7 @@ class Level:
     
     # loop to update and draw the game           
     def run(self):
+        
         self.visible_sprites.custom_draw(self.player)
         # handle the attack logic and animations for all characters
         

@@ -18,9 +18,8 @@ class Weapon(pygame.sprite.Sprite):
         weapon_path = f'sprites/weapons/{player.weapon}/{direction}.png' # path to the graphic of the weapon
         self.image = pygame.image.load(weapon_path).convert_alpha()
         
-        
         if player.weapon == 'bow':
-            self.image = pygame.transform.scale(self.image,(32,32));  
+            self.image = pygame.transform.scale(self.image,(32,32))  
         
         # create the weapon sprite based on the current direction
         if direction == 'right':

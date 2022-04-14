@@ -325,6 +325,18 @@ class Enemy_A(pygame.sprite.Sprite):
         return waypoint;
     
     
+    ADJ = [
+    [-1, -1],
+    [-1, 0],
+    [-1, 1],
+    [0, -1],
+    [0, 1],
+    [1, -1],
+    [1, 0],
+    [1, 1]
+    ]
+    
+    
     def plan_path(self):
         pass
     
