@@ -1,10 +1,13 @@
 import pygame
 
+from arrow import Arrow
+
 # class to handle the dirction and animations for the different weapon types
 class Weapon(pygame.sprite.Sprite):
     def __init__(self,player,groups,weapon_owner):
         super().__init__(groups)
         
+       
         self.sprite_type = 'weapon'
         self.weapon_owner_id = weapon_owner  # set the original owner of the weapon, so the owner cannot be hit by their own weapon
         
@@ -15,6 +18,7 @@ class Weapon(pygame.sprite.Sprite):
         weapon_path = f'sprites/weapons/{player.weapon}/{direction}.png' # path to the graphic of the weapon
         self.image = pygame.image.load(weapon_path).convert_alpha()
         
+        # create the weapon sprite based on the current direction
         if direction == 'right':
             self.rect = self.image.get_rect(midleft = player.rect.midright + pygame.math.Vector2(0,16)) # move weapon image down to players hand
         
@@ -27,7 +31,26 @@ class Weapon(pygame.sprite.Sprite):
         elif direction == 'up':
                 self.rect = self.image.get_rect(midbottom = player.rect.midtop + pygame.math.Vector2(0,16)) 
         
-      
+
+        # if the weapon is a bow, create an arrow
+        if player.weapon == "bow":
+            
+            if direction == "right":
+                Arrow("right",,player.get_location())
+                
+            
+            if direction == "left":
+                pass
+            
+            if direction == "down":
+                pass
+            
+            if direction == "up":
+                pass
+            
+            
+            
+            
         
         
         

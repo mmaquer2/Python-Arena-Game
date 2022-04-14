@@ -12,10 +12,7 @@ from shield import Shield
 
 # class to handle running the level for the game state
 class Level:
-    
-    
     def __init__(self):
-        
         #init visual surfaces
         self.display_surface = pygame.display.get_surface()  # create game sprites
         self.visible_sprites = CameraGroup()  # create the camera view to focus on the player 
@@ -31,8 +28,6 @@ class Level:
         self.cpu_a__ranged_attack = None;
         self.cpu_b__ranged_attack = None;
         self.cpu_c_ranged_attack = None;
-        
-        
         
         # block and shield attack_sprites
         self.current_block_player = None;
@@ -104,8 +99,6 @@ class Level:
                 # self.cpu_c.set_opponents(enemy_list)
 
 
-    
-    
     # handling creating the animations for the game
     def create_block_player(self):
         self.current_block_player = Shield(self.player, [self.visible_sprites, self.attack_sprites])
@@ -118,8 +111,6 @@ class Level:
     
     def create_block_cpu_c(self):
         self.cpu_c_block = Shield(self.cpu_c,[self.visible_sprites, self.attack_sprites]);
-    
-    
     
     def destroy_block_player(self):
         if self.current_block_player:
