@@ -18,9 +18,8 @@ weapon_data = {
 # a = NPC cpu 1
 # b = NPC cpu 2
 # c = NPC cpu 3
-
 # x = wall/obstacle 
-# t = trap/ damage obstacle
+
 
 WORLD_MAP_ONE = [
 ['x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x'],
