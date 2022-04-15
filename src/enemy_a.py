@@ -64,6 +64,7 @@ class Enemy_A(pygame.sprite.Sprite):
         self.nav_mesh = Grid(matrix = nav_grid)
         self.current_path = []
         self.converted_path = []
+        self.goal_position = None
         
         
         # action_planning and behavior tree
@@ -238,27 +239,31 @@ class Enemy_A(pygame.sprite.Sprite):
             return
         
         
-        print("wander: ")
         
         # Strategy: Wander        
         if self.goal == 'wander':
             
-            #self.target = self.is_enemy_within_visible_range();
+            # if an enemy is spotted while wandering, lock on to their location and attack
+            self.target = self.is_enemy_within_visible_range();
+            if self.target is not None:
+                temp_dir = self.find_opponent_distance_direction(self.target)
+                self.direction = temp_dir[1]
+                self.is_enemy_within_attack_range() 
             
-            print(len(self.converted_path))
-            if len(self.converted_path) ==  0:
+            
+            if len(self.converted_path) == 0 or self.rect.center == self.goal_position:
+                
                 # get start and end destinations for a new path
                 start_loc = (self.rect.y, self.rect.x)  
-                #end_loc = self.get_waypoint();
-                end_loc = [4,4]
                 
+                end_loc = self.get_waypoint(); 
+                print("end loc:", end_loc)
                 self.plan_path(start_loc,end_loc) # plan a path to that destination
                 self.convert_path_to_pixels() # convert the nav_mesh grid to surface coordinates
+               
             
-            # if a path already exists, move character along that way
-            else:
-                #self.is_enemy_within_attack_range()  # attack if you are in range
-                self.get_direction();
+           
+            self.get_direction();
                
                   
         # Strategy: Hide
@@ -321,18 +326,19 @@ class Enemy_A(pygame.sprite.Sprite):
                 self.command = ''
     
     
-    
-    
     # select a random waypoint to be used as a destination
     def get_waypoint(self):
-        #waypoints = [[4,2], [13,4], [10,8],[1,17],[13,13],[7,8]]
-        #random_int = random.randint(0,4)
-        
-        #return [3,4]
-        
+        waypoints = [[4,2], [13,4], [10,8],[1,17],[13,13],[7,8]]
+        random_int = random.randint(0,4)
         #print(" random location is: ",waypoints[random_int])
-        #return waypoints[random_int]
-        pass
+        goal = waypoints[random_int]
+        goal_x = goal[0] * 32
+        goal_y = goal[1] * 32
+        
+        self.goal_position = [goal_x, goal_y]
+        
+        return goal 
+        
     
     
     # plan a path using the Astar package       
@@ -343,6 +349,9 @@ class Enemy_A(pygame.sprite.Sprite):
         start_y = start[1]  // 32
         end_x = end[0] 
         end_y = end[1] 
+        
+        
+        
         start_node = self.nav_mesh.node(start_y,start_x,)
         end_node = self.nav_mesh.node(end_y, end_x)
         
@@ -350,9 +359,7 @@ class Enemy_A(pygame.sprite.Sprite):
         finder = AStarFinder(diagonal_movement = DiagonalMovement.always)
         self.current_path, runs = finder.find_path(start_node,end_node,self.nav_mesh)  
         
-    
-    
-    # move to the next location in the current_path list
+    # convert the Astar generated path to pixels related to the actual map sprite surface
     def convert_path_to_pixels(self):
         
         while len(self.current_path) > 0:      
@@ -369,19 +376,17 @@ class Enemy_A(pygame.sprite.Sprite):
     
     # get the current direction the player is facing based on where the next node in the path is
     def get_direction(self):
-        start = pygame.math.Vector2(self.rect.center)
-        next_move = self.converted_path[0]
-        end = pygame.math.Vector2(next_move.center)
-        self.direction = (end - start).normalize()
         
+        if len(self.converted_path) > 1:
+            start = pygame.math.Vector2(self.rect.center)
+            next_move = self.converted_path.pop(0)
+            end = pygame.math.Vector2(next_move.center)
+            self.direction = (end - start).normalize()
+            print(self.direction)
         
-        #if len(self.converted_path) > 0:
-        #    start = pygame.math.Vector2(self.rect.center)
-        #    next_move = self.converted_path.pop(0)
-        #    end = pygame.math.Vector2(next_move.center)
-        #    self.direction = (end - start).normalize()
-
         # create a new waypoint and new path once the
+        else:
+            pass
         
     
     
@@ -553,18 +558,12 @@ class Enemy_A(pygame.sprite.Sprite):
     
         
     def update(self):
-        
         self.action_controller(); # determine the next action for the CPU AI
         self.cpu_input(); # animate based on the command and change cpu status
-        self.get_status()
-        
+        self.get_status()        
         self.cool_down();
         self.move(self.speed);
         self.animate();
-       # print("cpu a direction: ", self.direction)
-        
-        #print("cpu status: ", self.status)
-        #print("is cpu attacking: ", self.attacking)
-        
+
         self.previous_direction = self.direction # save the previous direction 
-        print("cpu A current location: ",self.rect.center)
+   
