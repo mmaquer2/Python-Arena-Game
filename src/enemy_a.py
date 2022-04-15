@@ -21,7 +21,7 @@ class Enemy_A(pygame.sprite.Sprite):
         # import starting sprite
         idle_down_folder = Path('sprites/characters/cpu_a/down_idle/idle_down.png')
         self.image_import = pygame.image.load(idle_down_folder) # import image 
-        self.image = pygame.transform.scale(self.image_import,(64,64));   # scale sprite sheet
+        self.image = pygame.transform.scale(self.image_import,(60,60));   # scale sprite sheet
         self.import_animations();  
         
         # load attack sound
@@ -65,6 +65,7 @@ class Enemy_A(pygame.sprite.Sprite):
         self.current_path = []
         self.converted_path = []
         self.goal_position = None
+        self.previous_goal = None # holder to verify we aren't moving to our current location
         
         
         # action_planning and behavior tree
@@ -210,7 +211,7 @@ class Enemy_A(pygame.sprite.Sprite):
         self.collision('horizontal')
         self.hitbox.y += self.direction.y * speed
         self.collision('vertical')
-        self.rect.center = self.hitbox.center;
+        self.rect.center = self.hitbox.center;   # describes the hitbox for the character
     
     
     # plan action and set command for the ai to execute
@@ -250,41 +251,41 @@ class Enemy_A(pygame.sprite.Sprite):
                 self.direction = temp_dir[1]
                 self.is_enemy_within_attack_range() 
             
-            
-            if len(self.converted_path) == 0 or self.rect.center == self.goal_position:
+            # conditions of when to create a new path
+            if len(self.converted_path) == 0 or self.rect.center == self.goal_position or self.inCollision:
+                self.inCollision = False
                 
                 # get start and end destinations for a new path
-                start_loc = (self.rect.y, self.rect.x)  
-                
+                start_loc = (self.rect.centerx, self.rect.centery)  # this may cause some positions to be out of bounds
+                print("center vars: ",self.rect.centerx, self.rect.centery)
+        
                 end_loc = self.get_waypoint(); 
-                print("end loc:", end_loc)
+                #print("end loc:", end_loc)
                 self.plan_path(start_loc,end_loc) # plan a path to that destination
                 self.convert_path_to_pixels() # convert the nav_mesh grid to surface coordinates
                
-            
-           
             self.get_direction();
                
                   
         # Strategy: Hide
         if self.goal == 'hide':
             if self.is_enemy_within_visible_range(self): # check if there is an enemy unit within visible range 
-                # plan a path to run away to...
-                
-                # check if i have taken damage...
-                # block
-                pass
+                #block the from an attack, then plan a route to run away
+                start_loc = (self.rect.y, self.rect.x)  # this may cause some positions to be out of bounds
+                end_loc = self.get_waypoint(); 
+                self.plan_path(start_loc,end_loc)
+            else:
+                self.get_direction();
+                # block the enemy from attacking me
     
     # get the location of the nearest enemy character
     def find_nearest_enemy(self):
         nearest_target_distance = 100000;
         nearest_target = ''
-        
         # scan through all opponent players for the one with the shortest distance
         for opp in self.opponents:
             myVec = pygame.math.Vector2(self.rect.center)
             opponentVec = pygame.math.Vector2(opp.rect.center)  #calculate the vector between each opp and ai
-        
             temp_distance = (opponentVec - myVec).magnitude()
             if temp_distance < nearest_target_distance:
                 nearest_target = opp;
@@ -299,12 +300,8 @@ class Enemy_A(pygame.sprite.Sprite):
             opponentVec = pygame.math.Vector2(opp.rect.center)  #calculate the vector between each opp and ai
             temp_distance = (opponentVec - myVec).magnitude()
             if temp_distance < self.view_radius:  
-                
-                #print("there is an enemy within view")  # if the distance between ai and other character is within my visitable range return true
-                return opp
-            else:
-                #print("there is not an enemy within view") # get the x,y coordinates of an opponent
-                pass
+                return opp  # if the distance between ai and other character is within my visitable range return true
+        
             
     # determine if an enemy is within the attack range
     def is_enemy_within_attack_range(self):
@@ -336,6 +333,11 @@ class Enemy_A(pygame.sprite.Sprite):
         goal_y = goal[1] * 32
         
         self.goal_position = [goal_x, goal_y]
+        if self.goal_position == self.previous_goal:
+            self.get_waypoint()
+        else:
+            self.previous_goal = self.goal_position
+        
         
         return goal 
         
@@ -345,19 +347,21 @@ class Enemy_A(pygame.sprite.Sprite):
     def plan_path(self,start,end):
         
         self.current_path = [] # reset the current_path to empty
-        start_x = start[0] // 32 # convert game_space coordinates to nav_mesh coordinates
-        start_y = start[1]  // 32
+        start_x = start[0] // 32  # convert game_space coordinates to nav_mesh coordinates
+        start_y = start[1]  // 32 
         end_x = end[0] 
         end_y = end[1] 
         
-        
-        
+        print("starting convert values: ",start_x, start_y)
         start_node = self.nav_mesh.node(start_y,start_x,)
         end_node = self.nav_mesh.node(end_y, end_x)
         
         # calculate the actual path
         finder = AStarFinder(diagonal_movement = DiagonalMovement.always)
+        
         self.current_path, runs = finder.find_path(start_node,end_node,self.nav_mesh)  
+        self.nav_mesh.cleanup(); 
+        
         
     # convert the Astar generated path to pixels related to the actual map sprite surface
     def convert_path_to_pixels(self):
@@ -370,7 +374,6 @@ class Enemy_A(pygame.sprite.Sprite):
             new_rect = pygame.Rect((new_x - 2, new_y - 2),( 4, 4 ))
             self.converted_path.append(new_rect)
         
-        
         print("converted_path: ")
         print(self.converted_path)
     
@@ -382,7 +385,7 @@ class Enemy_A(pygame.sprite.Sprite):
             next_move = self.converted_path.pop(0)
             end = pygame.math.Vector2(next_move.center)
             self.direction = (end - start).normalize()
-            print(self.direction)
+            
         
         # create a new waypoint and new path once the
         else:
@@ -423,8 +426,7 @@ class Enemy_A(pygame.sprite.Sprite):
             print("cpu ai A is blocking")
             self.blocking = True;
             self.create_block();
-            
-            
+             
         if self.command == "idle":
             pass
         
@@ -433,9 +435,7 @@ class Enemy_A(pygame.sprite.Sprite):
     def find_opponent_distance_direction(self,enemy):
         myVec = pygame.math.Vector2(self.rect.center)
         opponentVec = pygame.math.Vector2(enemy.rect.center)
-        
         distance = (opponentVec - myVec).magnitude()
-        
         if distance > 0:
             direction = (opponentVec - myVec).normalize();
         else:
@@ -498,11 +498,9 @@ class Enemy_A(pygame.sprite.Sprite):
                 if sprite.hitbox.colliderect(self.hitbox):
                     if self.direction.x > 0:
                         self.hitbox.right = sprite.hitbox.left
-                        #print("cpu in collision right")
                         self.inCollision = True
                     if self.direction.x < 0:
                         self.hitbox.left = sprite.hitbox.right
-                        #print("cpu in collision left")
                         self.inCollision = True
                         
         # handle vertical collisions
@@ -511,21 +509,14 @@ class Enemy_A(pygame.sprite.Sprite):
                 if sprite.hitbox.colliderect(self.hitbox):
                     if self.direction.y > 0:
                         self.hitbox.bottom = sprite.hitbox.top
-                        #print("in collision bot")
                         self.inCollision = True
                     if self.direction.y < 0:
                         self.hitbox.top = sprite.hitbox.bottom
-                        #print("in collision bot")
                         self.inCollision = True
                          
     def animate(self):
         animation = self.animations[self.status];
         self.frame_index += self.animation_speed
-        
-        # get the frame index to select the current animation
-        #print(self.status)
-        #print("new animation" , animation)
-        
         if self.frame_index >= len(animation): # get the len of the number of the items in the sprite sub folder
             self.frame_index = 0;
         self.image = animation[int(self.frame_index)]; # set curent image

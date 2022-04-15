@@ -12,6 +12,7 @@ class Game:
         pygame.init()
         pygame.display.set_caption('Arena Game by Mike Maquera')
         self.screen = pygame.display.set_mode((window_width, window_height))
+        
           
         # set game icon on window tab 
         icon_path = Path('sprites/characters/player/down_idle/idle_down.png') 
@@ -43,6 +44,7 @@ class Game:
                         sys.exit()
        
             self.screen.fill('light green') # background color
+            
             self.level.run();   # update the level at each tick
             pygame.display.update()
             self.clock.tick(FPS)
