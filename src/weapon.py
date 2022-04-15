@@ -6,15 +6,11 @@ from arrow import Arrow
 class Weapon(pygame.sprite.Sprite):
     def __init__(self,player,groups,weapon_owner):
         super().__init__(groups)
-        
-       
         self.sprite_type = 'weapon'
         self.weapon_owner_id = weapon_owner  # set the original owner of the weapon, so the owner cannot be hit by their own weapon
         
         # remove idle type to obtain only player direction 
         direction = player.status.split('_')[0]  # get the current direction of the player to point weapon in correct direction
-        
-        # src\sprites\weapons\axe example of folder path to weapon sprite
         weapon_path = f'sprites/weapons/{player.weapon}/{direction}.png' # path to the graphic of the weapon
         self.image = pygame.image.load(weapon_path).convert_alpha()
         

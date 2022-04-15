@@ -240,27 +240,19 @@ class Enemy_A(pygame.sprite.Sprite):
         # Strategy: Wander        
         if self.goal == 'wander':
             
-            #self.target = self.is_enemy_within_visible_range();
-            # perhaps change route if an enemy is found along the path
-            #self.is_enemy_within_attack_range()  # attack if you are in range
-            
-            #if self.target is not None:
-            #    pass # continue wandering
-            
-            
-            if self.current_path is None:
-            
+            self.target = self.is_enemy_within_visible_range();
+            if self.current_path is None or len(self.current_path) == 0:
                 # create tuple for the start and end destinations of the path
                 start_loc = (self.rect.y, self.rect.x)        
                 end_loc = (185, 165)
-                
                 # plan a path to that destination
-                self.current_path = self.plan_path(start_loc,end_loc)
+                self.plan_path(start_loc,end_loc)
                         
-            # move along that path
-                # current_path.pop_front[0]
+            else:
+                self.move_along_path();
+                self.is_enemy_within_attack_range()  # attack if you are in range
             
-            # check for enemies along that current path...
+            
             
               
         # Strategy: Hide
@@ -272,22 +264,8 @@ class Enemy_A(pygame.sprite.Sprite):
                 # block
                 pass
     
-    def does_target_have_health(self):
-        if self.target is not None and self.target.health > 0:
-            return True;
-        else:
-            return False
-    
-    
-    # function to calculate what is the current direction of movement for animation purposes
-    def determine_movement_status(self,dir):
-        displacement =  dir - self.previous_direction;
-        
-        if displacement:
-            pass
-        
-    
-        
+
+   
         
     # get the location of the nearest enemy character
     def find_nearest_enemy(self):
@@ -303,18 +281,12 @@ class Enemy_A(pygame.sprite.Sprite):
             if temp_distance < nearest_target_distance:
                 nearest_target = opp;
                 
-            # print(opp.rect[0], opp.rect[1]) # get the x,y coordinates of an opponent
-            
-        #print("target is unit id: " + nearest_target.id) # test to see what the target is
-        temp_target = self.find_opponent_distance_direction(nearest_target);
+        return self.find_opponent_distance_direction(nearest_target);
         
-        return temp_target
     
     # iterate through enemy oppoenents and their locations
     def is_enemy_within_visible_range(self):
-        nearest_target_distance = 100000
         myVec = pygame.math.Vector2(self.rect.center)
-        
         for opp in self.opponents:
             opponentVec = pygame.math.Vector2(opp.rect.center)  #calculate the vector between each opp and ai
             temp_distance = (opponentVec - myVec).magnitude()
@@ -323,7 +295,7 @@ class Enemy_A(pygame.sprite.Sprite):
                 #print("there is an enemy within view")  # if the distance between ai and other character is within my visitable range return true
                 return opp
             else:
-                #print("there is not an enemy within view")  # print(opp.rect[0], opp.rect[1]) # get the x,y coordinates of an opponent
+                #print("there is not an enemy within view") # get the x,y coordinates of an opponent
                 pass
             
     # determine if an enemy is within the attack range
@@ -332,15 +304,14 @@ class Enemy_A(pygame.sprite.Sprite):
         for opp in self.opponents:
             opponentVec = pygame.math.Vector2(opp.rect.center)
             temp_distance = (opponentVec - myVec).magnitude()
-            if temp_distance < self.attack_radius:                  # if the distance between ai and other character is within my visitable range return true
-                # print("AI is close enough to attack")   # if there is an opponent within my range, attack in a certain direction...
+            if temp_distance < self.attack_radius:  # if the distance between ai and other character is within my visitable range return true
+               # if there is an opponent within my range, attack in a certain direction...
                 if self.target is not None and self.target.health > 0: # check if the target is still alive
                     
                     # the command to attack is given here, perhaps use a random int to determine whether to block first or attack? 
                     
                     self.command = 'attack'; # give the command to attack the unit
                     #self.command = 'block'
-            
             
             else:
                 self.target = None
@@ -363,17 +334,22 @@ class Enemy_A(pygame.sprite.Sprite):
         
         # calculate the actual path
         finder = AStarFinder(diagonal_movement = DiagonalMovement.always)
-        path, runs = finder.find_path(test_start,test_end,self.nav_mesh)
+        self.current_path, runs = finder.find_path(test_start,test_end,self.nav_mesh)
+        self.current_path.reverse() # reverse the list to be accessed later as a stack
         
         print("calculated path: ")
-        print(path)
-        return path
+        print(self.current_path)
+        
     
+
     
     
     # move to the next location in the current_path list
     def move_along_path(self):
-        pass
+        move = self.current_path.pop()
+        new_x = move[0] * 32
+        new_y = move[1] * 32
+        
     
     
     # get damage total from an attacking weapon

@@ -56,11 +56,8 @@ class Level:
         #if(mapNum == 3):
             #self.levelMap = WORLD_MAP_FOUR
     
-    
-
         # create nav mesh grid
         self.nav_mesh_grid = Grid(matrix = self.nav_grid)
-        
         
         # init player and CPU_AI: 
         self.player = Player((1,1), [self.visible_sprites,self.attackable_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack_player, self.create_block_player,self.destroy_block_player)    

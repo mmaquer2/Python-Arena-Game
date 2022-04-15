@@ -1,14 +1,17 @@
 # 2d Zelda-like arena game with randomly assinged NPC AI personalities and behavior 
 
+
+[Image]
+
 ## Description: 
 - This served as a final Project for CS5150 (Game AI) at Northeastern University, Spring 2022. The project is a 2d arena fighting game with action rpg mechanics. The game contains 3 NPC characters and one human player. Each is randomly assigned a weapon and stats, and is placed in the map all to fight each other until a single victor emerges.
 
-- **Note** This program will only work on a windows system due to file path constraints, I have not yet transferred the code to a common fil epath system
+- **Note** This program will only work on a windows system due to file path constraints, I have not yet transferred the code to a common file path system
 
 ## CPU AI Behavior: 
 
-- Random Behavior: 
-    - The behavior and strategy of the AI is generated randomally, created by a collection of different prebuilt strategies and actions 
+- Randomly Selected Personalities: 
+    - The behavior and strategy of the AI is selected at random from a collection of different prebuilt strategies and actions. 
 
 - Possible AI Strategies and Personalities:
     - bersek mode, enemy will find the nearest target lock and and might until destoryed and victory is reached 
@@ -16,7 +19,7 @@
     - patrol area, wander around a set path with waypoints, and attack units when they are found
     - flee and hide, avoid being attacked at all costs, will use block a lot.
 
-- pathfinding,
+- Pathfinding:
     - Pathfinding was implemented using the python core libraries 
 
 ## Setup and Settings
@@ -49,7 +52,7 @@ python main.py
 
 - movement, arrow keys
 - primary attack, space bar
-- block/defend, left shift key
+- block/defend, b letter key
 
 
 ## Resources and Credits

@@ -40,14 +40,12 @@ class Arrow(pygame.sprite.Sprite):
         if self.direction == 'up': 
             self.rect.y -= 5;
         
-        
-        # once the arrow moves far outside of the 
+        # once the arrow moves far outside of the map, destroy the sprite
         if self.rect.x >= window_height + 100:
             self.kill()
         
         elif self.rect.x >= window_width + 100:
             self.kill()
         
-            
         elif self.rect.x >= window_width + 100:
             self.kill()

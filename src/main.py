@@ -35,6 +35,12 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                    
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        print("Escape Key Pressed Quitting Game...")
+                        pygame.quit()
+                        sys.exit()
        
             self.screen.fill('light green') # background color
             self.level.run();   # update the level at each tick
