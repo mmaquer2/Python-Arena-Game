@@ -16,6 +16,9 @@
     - patrol area, wander around a set path with waypoints, and attack units when they are found
     - flee and hide, avoid being attacked at all costs, will use block a lot.
 
+- pathfinding,
+    - Pathfinding was implemented using the python core libraries 
+
 ## Setup and Settings
 - Download the source directory onto your machine 
 - Ensure python 3.0x in installed on your machine 
@@ -51,10 +54,12 @@ python main.py
 
 ## Resources and Credits
 - https://www.pygame.org/docs/
+- https://pypi.org/project/pathfinding/
 - Special Thanks to the clear code youtube channel, for providing starter code and boilerplate for the game main loop 
 - Pixel ninja on itch.io ( https://pixel-boy.itch.io/ninja-adventure-asset-pack ) for providing free art assets used for the game's characters and environment 
 - Procedural Content Generation using Behavior Trees (PCGBT) by 
 Anurag Sarkar and Seth Cooper
+
 
 
 ## License 
