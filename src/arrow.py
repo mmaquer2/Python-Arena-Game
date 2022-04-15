@@ -9,7 +9,7 @@ class Arrow(pygame.sprite.Sprite):
         self.player = player
         
         arrow_path = f'sprites/weapons/arrow/{direction}.png' # path to the graphic of the weapon
-        self.image_import = pygame.image.load(arrow_path) # import image 
+        self.image_import = pygame.image.load(arrow_path).convert_alpha() # import image 
         self.image = pygame.transform.scale(self.image_import,(32,32));  
         
         

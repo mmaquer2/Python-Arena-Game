@@ -349,19 +349,32 @@ class Enemy_A(pygame.sprite.Sprite):
     # plan a path using the Astar package       
     def plan_path(self,start,end):
         
+        # convert game_space coordinates to nav_mesh coordinates
+        start_x = start[0] // 32
+        start_y = start[1]  // 32
+        print( start_y, start_x)
         
-        #start_loc = self.nav_mesh.node(start_y,start_x)
-        #end_loc = self.nav_mesh.node(end[0],end[1])
+        end_x = end[0] // 32
+        end_y = end[1]  // 32
+        
         
         test_start = self.nav_mesh.node(2,2)
         test_end = self.nav_mesh.node(2,3)
         
+        # calculate the actual path
         finder = AStarFinder(diagonal_movement = DiagonalMovement.always)
         path, runs = finder.find_path(test_start,test_end,self.nav_mesh)
         
         print("calculated path: ")
         print(path)
         return path
+    
+    
+    
+    # move to the next location in the current_path list
+    def move_along_path(self):
+        pass
+    
     
     # get damage total from an attacking weapon
     def get_damage(self,damage,weapon_owner_id):
