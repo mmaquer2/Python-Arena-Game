@@ -58,7 +58,7 @@ class Enemy_B(pygame.sprite.Sprite):
         self.view_radius = 200
         
         # the ranage in which being able to attack another unit
-        self.attack_radius = 50
+        self.attack_radius = 100
         
         # the radius at which it is acceptable to move from our ambush location and attack another character
         self.ambush_radius = 400
@@ -160,8 +160,8 @@ class Enemy_B(pygame.sprite.Sprite):
             
             temp_dir = self.find_opponent_distance_direction(self.target)
             self.direction = temp_dir[1]
-            self.is_enemy_within_attack_range();
-        
+            
+        self.is_enemy_within_attack_range();
         
         
     #get the location of the nearest enemy character

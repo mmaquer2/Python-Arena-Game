@@ -11,7 +11,7 @@ from pathfinding.finder.a_star import AStarFinder
 
 class Enemy_C(pygame.sprite.Sprite):
     def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack, create_block, destroy_block, nav_grid):
-        
+        super().__init__(groups)
         self.id = '4'
         self.sprite_type = "cpu_ai"    
         
@@ -305,7 +305,6 @@ class Enemy_C(pygame.sprite.Sprite):
     # check if health is 0 and character has died
     def check_death(self):
         if self.health <= 0:
-            self.death_sound.play() 
             self.destroy_attack() # remove any sprites from the previous command before dying
             self.destroy_block()
             self.kill()
