@@ -15,14 +15,16 @@ class Enemy_A(pygame.sprite.Sprite):
         
         # id types
         self.id = '2'
-        self.sprite_type = "cpu_ai"       
-        
-        
+        self.sprite_type = "cpu_ai"     
+          
+         
         # import starting sprite
         idle_down_folder = Path('sprites/characters/cpu_a/down_idle/idle_down.png')
         self.image_import = pygame.image.load(idle_down_folder) # import image 
         self.image = pygame.transform.scale(self.image_import,(60,60));   # scale sprite sheet
-        self.import_animations();  
+        self.rect = self.image.get_rect(center = (60,60))
+        
+        self.import_animations()  # load animations
         
         # load attack sound
         weapon_sound_file = Path('music/slash.wav')
@@ -71,12 +73,8 @@ class Enemy_A(pygame.sprite.Sprite):
         # action_planning and behavior tree
         strategies = ['ambush','wander','beserk'] # list of possible strategies
         strat_ind = random.randint(0, len(strategies)-1)
-        random_strat = strategies[strat_ind]
+        random_strat = strategies[strat_ind]  #set the current strategy of the cpu AI
         
-        # search = move to a waypoint on the map, if an opponent is seen, run away
-        # run = move to another waypoint, after a certain period of health has been lost
-        
-        #set the current strategy of the cpu AI
         self.goal = "wander"  # have the enemy cpu ai
         #self.goal = "beserk" # this  currently works, find the nearest enemy and attack 
         #self.goal = "ambush"
@@ -103,18 +101,8 @@ class Enemy_A(pygame.sprite.Sprite):
         # the radius at which it is acceptable to move from our ambush location and attack another character
         self.ambush_radius = 400;
         
-        
-        # randomize stats
-        random_health = random.randint(80,100);   
-        random_energy = random.randint(80,100); 
-        random_attack = random.randint(2,10); 
-        random_magic = random.randint(80,100); 
-        random_speed = random.randint(3,10);
-          
-
         self.ai_stats = {'health': 5000, 'energy': 100, 'attack': 2, 'magic': 5, "speed": 5 }
         self.health = self.ai_stats['health']
-        #print("cpu a starting health:" , self.health)
         self.speed = self.ai_stats['speed'];
     
     
@@ -188,7 +176,7 @@ class Enemy_A(pygame.sprite.Sprite):
     def move(self,speed):
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize();
-            
+
             if self.direction.x > self.direction.y:
                 
                 if self.direction.x > 0.5:
