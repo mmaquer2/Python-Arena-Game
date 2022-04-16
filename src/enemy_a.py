@@ -544,5 +544,7 @@ class Enemy_A(pygame.sprite.Sprite):
         self.move(self.speed);
         self.animate();
 
+        print(self.rect.x // 32 , self.rect.y // 32)
+        
         self.previous_direction = self.direction # save the previous direction 
    
