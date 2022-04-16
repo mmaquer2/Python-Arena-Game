@@ -7,7 +7,7 @@ from math import sin
 
 
 class Enemy_B(pygame.sprite.Sprite):
-    def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack):
+    def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack, create_block, destroy_block, nav_grid):
         super().__init__(groups)
         
         self.id = '3'
