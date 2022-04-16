@@ -240,8 +240,7 @@ class Enemy_A(pygame.sprite.Sprite):
                 self.is_enemy_within_attack_range() 
             
             # conditions of when to create a new path
-            if len(self.converted_path) == 0 or self.rect.center == self.goal_position or self.inCollision:
-                self.inCollision = False
+            if len(self.converted_path) == 0 or self.rect.center == self.goal_position :
                 
                 # get start and end destinations for a new path
                 start_loc = (self.rect.centerx, self.rect.centery)  # this may cause some positions to be out of bounds
@@ -313,7 +312,7 @@ class Enemy_A(pygame.sprite.Sprite):
     
     # select a random waypoint to be used as a destination
     def get_waypoint(self):
-        waypoints = [[4,2], [13,4], [10,8],[1,17],[13,13],[7,8]]
+        waypoints = [[2,1], [2,34], [32,34],[34,1],[17,9]]
         random_int = random.randint(0,4)
         #print(" random location is: ",waypoints[random_int])
         goal = waypoints[random_int]
@@ -358,12 +357,9 @@ class Enemy_A(pygame.sprite.Sprite):
             move = self.current_path.pop(0)
             new_x = (move[0] * 32) + 16
             new_y = (move[1] * 32) + 16
-            
             new_rect = pygame.Rect((new_x - 2, new_y - 2),( 4, 4 ))
             self.converted_path.append(new_rect)
         
-        print("converted_path: ")
-        print(self.converted_path)
     
     # get the current direction the player is facing based on where the next node in the path is
     def get_direction(self):
@@ -379,7 +375,6 @@ class Enemy_A(pygame.sprite.Sprite):
         else:
             pass
         
-    
     
     # get damage total from an attacking weapon
     def get_damage(self,damage,weapon_owner_id):

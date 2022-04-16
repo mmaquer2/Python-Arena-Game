@@ -30,12 +30,6 @@ class Enemy_B(pygame.sprite.Sprite):
         self.damage_sound = pygame.mixer.Sound(damage_sound_file)
         self.damage_sound.set_volume(0.05)
         
-        
-        # load death sound
-        death_sound_file = Path('music/death.wav')
-        self.death_sound = pygame.mixer.Sound(death_sound_file)
-        self.death_sound.set_volume(0.05)
-        
         # direction and status vars
         self.status = 'down'
         self.frame_index = 0
@@ -302,8 +296,6 @@ class Enemy_B(pygame.sprite.Sprite):
     # check if health is 0 and character has died
     def check_death(self):
         if self.health <= 0:
-
-            self.death_sound.play() 
             self.destroy_attack()
             self.kill()
     

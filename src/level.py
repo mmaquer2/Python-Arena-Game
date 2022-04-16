@@ -44,12 +44,12 @@ class Level:
     def createMap(self):
         # select game map by randomizing what map is being selected from the world maps in the settings 
         mapNum = random.randint(0, 1)
-        if(mapNum == 0):
-            self.levelMap = WORLD_MAP_ONE
-            self.nav_grid = NAV_GRID_ONE
-        if(mapNum == 1):
-            self.levelMap = WORLD_MAP_TWO
-            self.nav_grid = NAV_GRID_TWO
+        
+        self.levelMap = WORLD_MAP_ONE
+        self.nav_grid = NAV_GRID_ONE
+        #if(mapNum == 1):
+        #    self.levelMap = WORLD_MAP_TWO
+        #    self.nav_grid = NAV_GRID_TWO
         
         #if(mapNum == 2):
             #self.levelMap = WORLD_MAP_THREE
