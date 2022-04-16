@@ -152,12 +152,17 @@ class Enemy_B(pygame.sprite.Sprite):
     
     # plan action and set command for the ai to execute
     def action_controller(self):
-        nearest_opp_dist, self.nearest_azimuth = self.find_nearest_enemy() # find nearest enemy
-        self.direction = self.nearest_azimuth # move toward enemy location    
-        self.target = self.is_enemy_within_attack_range()
-        #self.is_enemy_within_attack_range()  # attack if you are in range
+        self.nearest_opp_dist, self.nearest_azimuth = self.find_nearest_enemy() # find nearest enemy
+        self.direction = self.nearest_azimuth # move toward the nearest enemy location    
+        self.target = self.is_enemy_within_visible_range() # see if a target is within range
         
+        if self.target is not None: # if we can see a target, lock on and attack
             
+            temp_dir = self.find_opponent_distance_direction(self.target)
+            self.direction = temp_dir[1]
+            self.is_enemy_within_attack_range();
+        
+        
         
     #get the location of the nearest enemy character
     def find_nearest_enemy(self):
@@ -171,7 +176,7 @@ class Enemy_B(pygame.sprite.Sprite):
             if temp_distance < nearest_target_distance:
                 nearest_target = opp;
                 
-        return self.find_opponent_distance_direction(nearest_target);
+        return self.find_opponent_distance_direction(nearest_target); # return the distance, direction of the nearest enemy
     
     # iterate through enemy oppoenents and their locations
     def is_enemy_within_visible_range(self):
