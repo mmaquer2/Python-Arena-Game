@@ -18,6 +18,7 @@ class Enemy_C(pygame.sprite.Sprite):
         idle_down_folder = Path('sprites/characters/cpu_c/down_idle/idle_down.png')
         self.image_import = pygame.image.load(idle_down_folder) # import image 
         self.image = pygame.transform.scale(self.image_import,(64,64));   # scale sprite sheet
+        self.rect = self.image.get_rect(center = (60,60))
         
         self.import_animations()  # load animations
         
@@ -55,14 +56,7 @@ class Enemy_C(pygame.sprite.Sprite):
         self.converted_path = []
         self.goal_position = None
         self.previous_goal = None # holder to verify we aren't moving to our current location
-        
-        
-        # action_planning and behavior tree
-        strategies = ['ambush','wander','beserk'] # list of possible strategies
-        strat_ind = random.randint(0, len(strategies)-1)
-        random_strat = strategies[strat_ind]
-        
-        self.command = ""
+        self.command = "" 
         self.inCollision = False; # status in if in a collision or not
         self.target = None; # this is the current target unit of the AI
         
@@ -86,12 +80,12 @@ class Enemy_C(pygame.sprite.Sprite):
         
         self.ai_stats = {'health': 5000, 'energy': 100, 'attack': 2, 'magic': 5, "speed": 5 }
         self.health = self.ai_stats['health']
-        #print("cpu a starting health:" , self.health)
         self.speed = self.ai_stats['speed'];
     
     
     
     def set_location(self,pos):
+        print("cpu c location: " , pos)
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-5);
         
@@ -458,6 +452,7 @@ class Enemy_C(pygame.sprite.Sprite):
         self.cpu_input(); # animate based on the command and change cpu status
         self.get_status()        
         self.cool_down();
+        print("cpu c: ",self.status)
         self.move(self.speed);
         self.animate();        
         self.previous_direction = self.direction # save the previous direction 

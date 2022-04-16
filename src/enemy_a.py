@@ -78,8 +78,7 @@ class Enemy_A(pygame.sprite.Sprite):
         self.target = None; # this is the current target unit of the AI
         self.tracking_enemy = False;
         
-        
-        
+
         # weapon assignment and selection
         self.create_attack = create_attack;
         weaponRandomAssignment = random.randint(0,len(weapon_data) - 1);
@@ -493,6 +492,7 @@ class Enemy_A(pygame.sprite.Sprite):
         self.get_status()        
         self.cool_down();
         self.move(self.speed);
-        self.animate();        
+        self.animate(); 
+        #print("cpu a: ", self.status)       
         self.previous_direction = self.direction # save the previous direction 
    

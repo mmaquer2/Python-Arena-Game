@@ -43,21 +43,6 @@ class Enemy_B(pygame.sprite.Sprite):
         self.attack_cooldown = 800  
         self.blocking = False;
         self.block_cooldown = 800;
-        
-        
-        # action_planning and behavior tree
-        strategies = ['ambush','wander','beserk'] # list of possible strategies
-        strat_ind = random.randint(0, len(strategies)-1)
-        random_strat = strategies[strat_ind]
-        
-        # search = move to a waypoint on the map, if an opponent is seen, run away
-        # run = move to another waypoint, after a certain period of health has been lost
-        
-        #set the current strategy of the cpu AI
-        #self.goal = "wander"  # have the enemy cpu ai
-        self.goal = "beserk" # this  currently works, find the nearest enemy and attack 
-        #self.goal = "ambush"
-        
         self.command = ""
         self.inCollision = False; # status in if in a collision or not
         self.target = None; # this is the current target unit of the AI
