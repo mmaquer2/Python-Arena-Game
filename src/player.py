@@ -8,7 +8,7 @@ from math import sin
 # class to represent the human controller player
 class Player(pygame.sprite.Sprite):
     # init human controlled player      
-    def __init__(self,pos,groups,obstacle_sprites,create_attack, destroy_attack, create_block, destroy_block):   
+    def __init__(self,pos,groups, obstacle_sprites,create_attack, destroy_attack, create_block, destroy_block):   
         super().__init__(groups) 
         self.id = '1'
         self.sprite_type = 'player'
@@ -30,10 +30,6 @@ class Player(pygame.sprite.Sprite):
         self.damage_sound = pygame.mixer.Sound(damage_sound_file)
         self.damage_sound.set_volume(0.1)
         
-        # load death sound #
-        death_sound_file = Path('music/death.wav')
-        self.death_sound = pygame.mixer.Sound(death_sound_file)
-        self.death_sound.set_volume(0.05)
         
         # load the remaining player animations # 
         self.import_player_animations()
@@ -50,7 +46,7 @@ class Player(pygame.sprite.Sprite):
         self.create_attack = create_attack  # pass the function pointer of create attack to the player class
         self.destroy_attack = destroy_attack  # pass the function pointer of destroy attack
         self.is_weapon_destroyed = True
-        
+        self.opponents = []
         self.create_block = create_block
         self.destory_block = destroy_block
         
@@ -76,14 +72,7 @@ class Player(pygame.sprite.Sprite):
         self.attack_time = None
         self.block_cooldown = 800
         self.obstacles_sprites = obstacle_sprites
-        
-        # randomize player stats
-        random_health = random.randint(80, 100) 
-        random_energy = random.randint(80, 100)
-        random_attack = random.randint(2, 10)
-        random_magic = random.randint(80, 100) 
-        random_speed = random.randint(3, 10) 
-
+       
         # base player stats
         self.player_stats = {'health': 5000, 'energy': 100, 'attack': 5, 'magic': 5, "speed": 5 }
         self.health = self.player_stats['health']
@@ -98,6 +87,11 @@ class Player(pygame.sprite.Sprite):
     def get_location(self):
         print(self.rect.x, self.rect.y);
         return self.rect.x , self.rect.y
+    
+    
+    def set_opponents(self,opponents):
+        self.opponents = opponents
+    
     
     # function to import player animation resources
     def import_player_animations(self):
@@ -268,12 +262,14 @@ class Player(pygame.sprite.Sprite):
         
         self.hitbox.x += self.direction.x * speed
         self.collision('horizontal')
+        self.char_collision('horizontal')
         self.hitbox.y += self.direction.y * speed
         self.collision('vertical')
+        self.char_collision('vertical')
         self.rect.center = self.hitbox.center;
         
             
-    # collision handling             
+    # collision handling for obstacles           
     def collision(self,direction):
         # handle horizontal collisions
         if direction == 'horizontal':
@@ -292,6 +288,26 @@ class Player(pygame.sprite.Sprite):
                         self.hitbox.bottom = sprite.hitbox.top
                     if self.direction.y < 0:
                         self.hitbox.top = sprite.hitbox.bottom
+                        
+    # collision handling for other characters             
+    def char_collision(self,direction):
+        # handle horizontal collisions
+        if direction == 'horizontal':
+            for opp in self.opponents:
+                if opp.hitbox.colliderect(self.hitbox):
+                    if self.direction.x > 0:
+                        self.hitbox.right = opp.hitbox.left
+                    if self.direction.x < 0:
+                        self.hitbox.left = opp.hitbox.right
+                        
+        # handle vertical collisions
+        if direction == 'vertical':
+            for opp in self.opponents:
+                if opp.hitbox.colliderect(self.hitbox):
+                    if self.direction.y > 0:
+                        self.hitbox.bottom = opp.hitbox.top
+                    if self.direction.y < 0:
+                        self.hitbox.top = opp.hitbox.bottom
     
     # iterate through the animation index to obtain the correct character animation
     def animate(self):

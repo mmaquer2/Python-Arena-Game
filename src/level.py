@@ -21,6 +21,7 @@ class Level:
         self.display_surface = pygame.display.get_surface()  # create game sprites
         self.visible_sprites = CameraGroup()  # create the camera view to focus on the player 
         self.obstacle_sprites = pygame.sprite.Group()   # create sprite group for obstacles
+        self.character_sprites = pygame.sprite.Group();
     
         # attack sprites
         self.current_attack_player = None;
@@ -62,9 +63,9 @@ class Level:
         
         # init player and CPU_AI: 
         self.player = Player((1,1), [self.visible_sprites,self.attackable_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack_player, self.create_block_player, self.destroy_block_player)    
-        self.cpu_a = Enemy_A((2,2), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_a, self.destroy_attack_cpu_a, self.create_block_cpu_a, self.destroy_block_cpu_a, self.nav_grid )
-        self.cpu_b = Enemy_B((3,3), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_b, self.destroy_attack_cpu_b, self.create_block_cpu_b, self.destroy_block_cpu_b, self.nav_grid)
-        self.cpu_c = Enemy_C((4,4), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_c, self.destroy_attack_cpu_c, self.create_block_cpu_c, self.destroy_block_cpu_c, self.nav_grid)
+        self.cpu_a = Enemy_A((2,2), [self.visible_sprites,self.attackable_sprites] , self.obstacle_sprites, self.create_attack_cpu_a, self.destroy_attack_cpu_a, self.create_block_cpu_a, self.destroy_block_cpu_a, self.nav_grid )
+        self.cpu_b = Enemy_B((3,3), [self.visible_sprites,self.attackable_sprites], self.obstacle_sprites, self.create_attack_cpu_b, self.destroy_attack_cpu_b, self.create_block_cpu_b, self.destroy_block_cpu_b, self.nav_grid)
+        self.cpu_c = Enemy_C((4,4), [self.visible_sprites,self.attackable_sprites], self.obstacle_sprites, self.create_attack_cpu_c, self.destroy_attack_cpu_c, self.create_block_cpu_c, self.destroy_block_cpu_c, self.nav_grid)
         
         # create holder variables for the health of each player, these will be checked to determine when the game is over
         self.health_player = self.player.health
@@ -85,6 +86,8 @@ class Level:
         #set the player starting location on the map
                 if col == 'p':
                     self.player.set_location((x,y))
+                    enemy_list = [self.cpu_a,self.cpu_b,self.cpu_c]
+                    self.player.set_opponents(enemy_list)
                     
         # place npc characters on the map
                 if col=='a':
