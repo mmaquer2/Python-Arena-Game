@@ -30,6 +30,8 @@ class Game:
   
         # init game level and map   
         self.level = Level()
+        
+        self.paused = False;
     
     # primary game loop
     def run(self):
@@ -44,13 +46,25 @@ class Game:
                         print("Escape Key Pressed Quitting Game...")
                         pygame.quit()
                         sys.exit()
-       
-            self.screen.fill('light green') # background color
-            
-            self.level.run();   # update the level at each tick
-            pygame.display.update()
-            self.clock.tick(FPS)
+
                 
+                if event.type == pygame.KEYDOWN:
+                     if event.key == pygame.K_p:
+                        self.paused = True;
+                
+                if event.type == pygame.KEYDOWN:
+                     if event.key == pygame.K_u:
+                        self.paused = False;
+                
+                
+            if not self.paused:
+                   
+                self.screen.fill('light green') # background color
+                
+                self.level.run();   # update the level at each tick
+                pygame.display.update()
+                self.clock.tick(FPS)
+                    
 
 # Calls the game start and loop
 if __name__ == '__main__':
