@@ -47,6 +47,7 @@ class Level:
         
         self.levelMap = WORLD_MAP_ONE
         self.nav_grid = NAV_GRID_ONE
+        
         #if(mapNum == 1):
         #    self.levelMap = WORLD_MAP_TWO
         #    self.nav_grid = NAV_GRID_TWO
@@ -62,14 +63,14 @@ class Level:
         # init player and CPU_AI: 
         self.player = Player((1,1), [self.visible_sprites,self.attackable_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack_player, self.create_block_player, self.destroy_block_player)    
         self.cpu_a = Enemy_A((2,2), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_a, self.destroy_attack_cpu_a, self.create_block_cpu_a, self.destroy_block_cpu_a, self.nav_grid )
-        #self.cpu_b = Enemy_B((3,3), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_b, self.destroy_attack_cpu_b, self.create_block_cpu_b, self.destroy_block_cpu_b, self.nav_grid)
-        #self.cpu_c = Enemy_C((4,4), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_c, self.destroy_attack_cpu_c, self.create_block_cpu_c, self.destroy_block_cpu_c, self.nav_grid)
+        self.cpu_b = Enemy_B((3,3), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_b, self.destroy_attack_cpu_b, self.create_block_cpu_b, self.destroy_block_cpu_b, self.nav_grid)
+        self.cpu_c = Enemy_C((4,4), [self.visible_sprites,self.attackable_sprites],self.obstacle_sprites, self.create_attack_cpu_c, self.destroy_attack_cpu_c, self.create_block_cpu_c, self.destroy_block_cpu_c, self.nav_grid)
         
         # create holder variables for the health of each player, these will be checked to determine when the game is over
         self.health_player = self.player.health
         self.health_cpu_a = self.cpu_a.health
-        #self.health_cpu_b = self.cpu_b.health
-        #self.health_cpu_c = self.cpu_c.health
+        self.health_cpu_b = self.cpu_b.health
+        self.health_cpu_c = self.cpu_c.health
         
     # place objects on the world map   
         for row_ind, row in enumerate(self.levelMap): 
@@ -88,18 +89,18 @@ class Level:
         # place npc characters on the map
                 if col=='a':
                     self.cpu_a.set_location((x, y)) # set location 
-                    enemy_list = [self.player] #, self.cpu_c self.cpu_b
+                    enemy_list = [self.player,self.cpu_c, self.cpu_b] #, 
                     self.cpu_a.set_opponents(enemy_list) # set list of enemy characters
                 
-                #if col=='b':
-                    #self.cpu_b.set_location((x, y))
-                    #enemy_list = [self.player, self.cpu_a] # , self.cpu_c
-                    #self.cpu_b.set_opponents(enemy_list)
+                if col=='b':
+                    self.cpu_b.set_location((x, y))
+                    enemy_list = [self.player, self.cpu_a, self.cpu_c] # 
+                    self.cpu_b.set_opponents(enemy_list)
                 
-                #if col=='c':
-                # self.cpu_c.set_location((x,y));
-                # enemy_list = [self.player, self.cpu_a,self.cpu_b]
-                # self.cpu_c.set_opponents(enemy_list)
+                if col=='c':
+                    self.cpu_c.set_location((x,y));
+                    enemy_list = [self.player, self.cpu_a,self.cpu_b]
+                    self.cpu_c.set_opponents(enemy_list)
 
 
     # handling creating the animations for the game
@@ -219,21 +220,41 @@ class Level:
                                 
     
     def cpu_b_attack_logic(self):
-        if self.attack_sprites:
+       if self.attack_sprites:
             for attack_sprite in self.attack_sprites:
                 collision_sprites =  pygame.sprite.spritecollide(attack_sprite,self.attackable_sprites,False) # get collisions between sprites and weapons
+                
                 if collision_sprites:
                    for target_sprite in collision_sprites:
                        if target_sprite.sprite_type == 'cpu_ai' or 'player':
-                           if self.cpu_b_attack != None: # only proceed if there is a valid weapon attack
-                            if self.cpu_b_attack.weapon_owner_id != target_sprite.id:  # check that the owner of a weapon isnt taking damange for its own weapon sprite
-                                damage = self.cpu_b.get_weapon_damage() # get the damage from the current weapon
-                                target_sprite.get_damage(damage)  # pass the damage from
-                                self.cpu_b.is_weapon_destroyed = False;
+                          
+                           if self.cpu_a_attack != None: # only proceed if there is a valid weapon attack
+                            
+                            if self.cpu_a_attack.weapon_owner_id == self.cpu_a.id:
+                                if self.cpu_a_attack.weapon_owner_id != target_sprite.id:  # check that the owner of a weapon isnt taking damange for its own weapon sprite 
+                                    damage = self.cpu_a.get_weapon_damage() # get the damage from the current weapon
+                                    
+                                    target_sprite.get_damage(damage, self.cpu_a_attack.weapon_owner_id)  # pass the damage from
+                                    self.cpu_a.is_weapon_destroyed = False;
     
     
     def cpu_c_attack_logic(self):
-        pass
+        if self.attack_sprites:
+            for attack_sprite in self.attack_sprites:
+                collision_sprites =  pygame.sprite.spritecollide(attack_sprite,self.attackable_sprites,False) # get collisions between sprites and weapons
+                
+                if collision_sprites:
+                   for target_sprite in collision_sprites:
+                       if target_sprite.sprite_type == 'cpu_ai' or 'player':
+                          
+                           if self.cpu_a_attack != None: # only proceed if there is a valid weapon attack
+                            
+                            if self.cpu_a_attack.weapon_owner_id == self.cpu_a.id:
+                                if self.cpu_a_attack.weapon_owner_id != target_sprite.id:  # check that the owner of a weapon isnt taking damange for its own weapon sprite 
+                                    damage = self.cpu_a.get_weapon_damage() # get the damage from the current weapon
+                                    
+                                    target_sprite.get_damage(damage, self.cpu_a_attack.weapon_owner_id)  # pass the damage from
+                                    self.cpu_a.is_weapon_destroyed = False;
     
     
     # check the status of the players, is the game over?             
@@ -260,18 +281,15 @@ class Level:
         if self.current_attack_player:
             self.attack_logic()
         
-        if self.cpu_a_attack != None:
-            if self.health_cpu_a > 0:  # only run attack logic if a cpu player is still alive..
+        # only run attack logic if a cpu player is still alive..
+        if self.cpu_a_attack != None and self.health_cpu_a > 0:
                 self.cpu_a_attack_logic()
         
-        #self.cpu_b_attack != None:
-            # if self.health_cpu_b > 0:
-                #self.cpu_b_attack_logic()
-        
-         
-        #self.cpu_c_attack != None:
-            # if self.health_cpu_c > 0:
-                #self.cpu_c_attack_logic()
+        if self.cpu_b_attack != None and self.health_cpu_b > 0:
+                self.cpu_b_attack_logic()
+          
+        if self.cpu_c_attack != None and self.health_cpu_c > 0:
+                self.cpu_c_attack_logic()
         
         
         self.visible_sprites.update();

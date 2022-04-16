@@ -231,16 +231,6 @@ class Enemy_A(pygame.sprite.Sprite):
             self.get_direction();
                
                   
-        # Strategy: Hide
-        if self.goal == 'hide':
-            if self.is_enemy_within_visible_range(self): # check if there is an enemy unit within visible range 
-                #block the from an attack, then plan a route to run away
-                start_loc = (self.rect.y, self.rect.x)  # this may cause some positions to be out of bounds
-                end_loc = self.get_waypoint(); 
-                self.plan_path(start_loc,end_loc)
-            else:
-                self.get_direction();
-                # block the enemy from attacking me
     
     # get the location of the nearest enemy character
     def find_nearest_enemy(self):
