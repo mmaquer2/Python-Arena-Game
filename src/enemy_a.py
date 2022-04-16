@@ -82,6 +82,9 @@ class Enemy_A(pygame.sprite.Sprite):
         self.command = ""
         self.inCollision = False; # status in if in a collision or not
         self.target = None; # this is the current target unit of the AI
+        self.tracking_enemy = False;
+        
+        
         
         # weapon assignment and selection
         self.create_attack = create_attack;
@@ -176,9 +179,7 @@ class Enemy_A(pygame.sprite.Sprite):
     def move(self,speed):
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize();
-
             if self.direction.x > self.direction.y:
-                
                 if self.direction.x > 0.5:
                     self.status = "right"
                 
@@ -186,15 +187,11 @@ class Enemy_A(pygame.sprite.Sprite):
                     self.status = "left"
             
             else: 
-                
                 if self.direction.y > 0.5:
                     self.status = "down"
-                
                 else:
                     self.status = "up"
             
-            
-        
         self.hitbox.x += self.direction.x * speed
         self.collision('horizontal')
         self.hitbox.y += self.direction.y * speed
@@ -204,31 +201,7 @@ class Enemy_A(pygame.sprite.Sprite):
     
     # plan action and set command for the ai to execute
     def action_controller(self):
-        
-        # Strategy: Beserk
-        if self.goal == "beserk":
-            self.target = self.find_nearest_enemy() # find nearest enemy
-            self.direction = self.target[1] # move toward enemy location    
-            self.is_enemy_within_attack_range()  # attack if you are in range
-            return;
-        
-        
-        # Strategy: Ambush      
-        if self.goal == "ambush":
-            self.target = self.is_enemy_within_visible_range()
-            
-            if self.target is not None:
-                temp_dir = self.find_opponent_distance_direction(self.target)
-                self.direction = temp_dir[1] # move towards the enemy 
-                self.is_enemy_within_attack_range()  # attack if you are in range 
-                
-            else:
-                self.direction = self.previous_direction;
              
-            return
-        
-        
-        
         # Strategy: Wander        
         if self.goal == 'wander':
             
@@ -237,10 +210,14 @@ class Enemy_A(pygame.sprite.Sprite):
             if self.target is not None:
                 temp_dir = self.find_opponent_distance_direction(self.target)
                 self.direction = temp_dir[1]
+                self.tracking_enemy = True
+                self.converted_path = []  # empty the path if we decided to attack an enemy
                 self.is_enemy_within_attack_range() 
+            else:
+                self.tracking_enemy = False
             
             # conditions of when to create a new path
-            if len(self.converted_path) == 0 or self.rect.center == self.goal_position :
+            if len(self.converted_path) == 0 and not self.tracking_enemy :
                 
                 # get start and end destinations for a new path
                 start_loc = (self.rect.centerx, self.rect.centery)  # this may cause some positions to be out of bounds
@@ -434,7 +411,6 @@ class Enemy_A(pygame.sprite.Sprite):
         return total_damage
     
     
-    
     def get_status(self):   
         # handle move to idle
         if self.direction.x == 0 and self.direction.y == 0:
@@ -537,9 +513,6 @@ class Enemy_A(pygame.sprite.Sprite):
         self.get_status()        
         self.cool_down();
         self.move(self.speed);
-        self.animate();
-
-        print(self.rect.x // 32 , self.rect.y // 32)
-        
+        self.animate();        
         self.previous_direction = self.direction # save the previous direction 
    

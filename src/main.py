@@ -22,7 +22,7 @@ class Game:
         pygame.display.set_icon(icon)
         self.clock = pygame.time.Clock()
                
-        # load music
+        # load music 
         main_music = Path('music/battle_music.wav')
         main_sound = pygame.mixer.Sound(main_music) # play music   
         main_sound.set_volume(0.1)

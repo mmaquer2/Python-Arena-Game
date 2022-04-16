@@ -156,3 +156,33 @@ class Enemy_C(pygame.sprite.Sprite):
                 items.append(sacled_image) # append surface image to the current item list
             
         return items
+
+    
+    
+    
+    def action_controller(self):
+                  
+        self.target = self.is_enemy_within_visible_range()
+        if self.target is not None:
+            temp_dir = self.find_opponent_distance_direction(self.target)
+            self.direction = temp_dir[1] # move towards the enemy 
+            self.is_enemy_within_attack_range()  # attack if you are in range 
+            
+        else:
+            self.direction = self.previous_direction;
+            
+        return
+    
+    
+    
+    
+    
+    
+    
+    
+    def update(self):
+        pass
+    
+    
+    
+    

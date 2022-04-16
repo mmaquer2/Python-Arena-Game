@@ -168,43 +168,12 @@ class Enemy_B(pygame.sprite.Sprite):
     # plan action and set command for the ai to execute
     def action_controller(self):
         
-        if self.goal == "beserk":
-            self.target = self.find_nearest_enemy() # find nearest enemy
-            self.direction = self.target[1] # move toward enemy location
-            #self.status = self.determine_movement_status(self.direction); 
-            #print(self.direction)
-              
-            self.is_enemy_within_attack_range()  # attack if you are in range
-            return;
-         
-        if self.goal == "ambush":
-            self.target = self.is_enemy_within_visible_range()
+        self.target = self.find_nearest_enemy() # find nearest enemy
+        self.direction = self.target[1] # move toward enemy location    
+        self.is_enemy_within_attack_range()  # attack if you are in range
+        return;
             
-            if self.target is not None:
-                temp_dir = self.find_opponent_distance_direction(self.target)
-                self.direction = temp_dir[1] # move towards the enemy 
-                self.is_enemy_within_attack_range()  # attack if you are in range 
-                
-            else:
-                self.direction = self.previous_direction;
-             
-            return
-                 
-        if self.goal == 'wander':
-            new_movement = self.get_waypoint();  # if i'm not in a collision move in a direction
-            self.target = self.is_enemy_within_visible_range();
-            if self.target is not None:
-                pass # continue wandering
-            
-            
-            
-
-        # run and hide from enemy players
-        if self.goal == 'hide':
-            if self.is_enemy_within_visible_range(self): # check if there is an enemy unit within visible range 
-               
-                pass
-    
+        
     
     # function to calculate what is the current direction of movement for animation purposes
     def determine_movement_status(self,dir):
