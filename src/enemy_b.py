@@ -41,6 +41,8 @@ class Enemy_B(pygame.sprite.Sprite):
         
         self.attack_time = None
         self.attack_cooldown = 800  
+        self.blocking = False;
+        self.block_cooldown = 800;
         
         
         # action_planning and behavior tree
@@ -157,12 +159,24 @@ class Enemy_B(pygame.sprite.Sprite):
     def move(self,speed):
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize();
-        
+            if self.direction.x > self.direction.y:
+                if self.direction.x > 0.5:
+                    self.status = "right"
+                
+                else: 
+                    self.status = "left"
+            
+            else: 
+                if self.direction.y > 0.5:
+                    self.status = "down"
+                else:
+                    self.status = "up"
+            
         self.hitbox.x += self.direction.x * speed
         self.collision('horizontal')
         self.hitbox.y += self.direction.y * speed
         self.collision('vertical')
-        self.rect.center = self.hitbox.center;
+        self.rect.center = self.hitbox.center;   # describes the hitbox for the character
     
     
     # plan action and set command for the ai to execute
@@ -174,56 +188,29 @@ class Enemy_B(pygame.sprite.Sprite):
         return;
             
         
-    
-    # function to calculate what is the current direction of movement for animation purposes
-    def determine_movement_status(self,dir):
-        displacement =  dir - self.previous_direction;
-        
-        if displacement:
-            pass
-        
-        # my current direction is...
-        
-        #print("displacement: ", displacement)
-        
-        
-    # get the location of the nearest enemy character
+      
+    #get the location of the nearest enemy character
     def find_nearest_enemy(self):
         nearest_target_distance = 100000;
         nearest_target = ''
-        
         # scan through all opponent players for the one with the shortest distance
         for opp in self.opponents:
             myVec = pygame.math.Vector2(self.rect.center)
             opponentVec = pygame.math.Vector2(opp.rect.center)  #calculate the vector between each opp and ai
-        
             temp_distance = (opponentVec - myVec).magnitude()
             if temp_distance < nearest_target_distance:
                 nearest_target = opp;
                 
-            # print(opp.rect[0], opp.rect[1]) # get the x,y coordinates of an opponent
-            
-        #print("target is unit id: " + nearest_target.id) # test to see what the target is
-        temp_target = self.find_opponent_distance_direction(nearest_target);
-        
-        return temp_target
+        return self.find_opponent_distance_direction(nearest_target);
     
     # iterate through enemy oppoenents and their locations
     def is_enemy_within_visible_range(self):
-        nearest_target_distance = 100000
         myVec = pygame.math.Vector2(self.rect.center)
-        
         for opp in self.opponents:
             opponentVec = pygame.math.Vector2(opp.rect.center)  #calculate the vector between each opp and ai
             temp_distance = (opponentVec - myVec).magnitude()
             if temp_distance < self.view_radius:  
-                
-                print("there is an enemy within view")  # if the distance between ai and other character is within my visitable range return true
-               
-               
-                return opp
-            else:
-                print("there is not an enemy within view")  # print(opp.rect[0], opp.rect[1]) # get the x,y coordinates of an opponent
+                return opp  # if the distance between ai and other character is within my visitable range return true
             
             
     # determine if an enemy is within the attack range
@@ -232,34 +219,29 @@ class Enemy_B(pygame.sprite.Sprite):
         for opp in self.opponents:
             opponentVec = pygame.math.Vector2(opp.rect.center)
             temp_distance = (opponentVec - myVec).magnitude()
-            if temp_distance < self.attack_radius:                  # if the distance between ai and other character is within my visitable range return true
-                # print("AI is close enough to attack")   # if there is an opponent within my range, attack in a certain direction...
-                if opp is not None:
-                    if self.opp.health > 0: # check if the target is still alive
-                        self.command = 'attack';
-                # give the command to attack the unit
+            if temp_distance < self.attack_radius:  # if the distance between ai and other character is within my visitable range return true
+               # if there is an opponent within my range, attack in a certain direction...
+                if self.target is not None and self.target.health > 0: # check if the target is still alive
+                    
+                    # the command to attack is given here, perhaps use a random int to determine whether to block first or attack? 
+                    
+                    self.command = 'attack'; # give the command to attack the unit
+                    #self.command = 'block'
+            
             else:
                 self.target = None
                 self.command = ''
+    
             
         
-    
-    
-    def get_waypoint(self):
-            # plan path to this new waypoint
-        waypoint = 1;
-        return waypoint;
-    
-    
-    def plan_path(self):
-        pass
-    
-    def get_damage(self,damage):
-        print("cpu b is taking damage")
-        self.health = self.health - damage;
-        self.damage_sound.play()
-        #self.flicker() # flicker animation to show taking damage
-        self.check_death()
+     # get damage total from an attacking weapon
+    def get_damage(self,damage,weapon_owner_id):
+        if self.blocking == False and weapon_owner_id != self.id:
+            print("cpu a is taking damage")
+            self.health = self.health - damage;
+            self.damage_sound.play()   
+            self.check_death()
+            
         
     
     # check if health is 0 and character has died
@@ -270,37 +252,24 @@ class Enemy_B(pygame.sprite.Sprite):
     
 
     # change the status of the cpu AI to actually animate and execute the action
-    def cpu_input(self):        
-        if self.command == 'wait':
-            self.status = 'idle_down'
-
-        if self.command == "move_up":
-            self.direction.y = -1;
-            self.status = "up"
-        
-        if self.command == "move_down":
-            self.direction.y = 1;
-            self.status = "down"
-        
-        if self.command == "move_left":
-            self.direction.x = -1;
-            self.status = 'left'
-        
-        if self.command == "move_right":
-            self.direction.x = 1
-            self.status = 'right'
-        
+    def cpu_input(self):
+     
         if self.command == 'attack' and not self.attacking:
             self.attack_time = pygame.time.get_ticks();
+            print("cpu ai A is attacking")
             self.attacking = True;
             self.create_attack()
             self.weapon_sound.play()
         
         if self.command == 'block' and not self.blocking:
+            self.block_time = pygame.time.get_ticks()
+            print("cpu ai A is blocking")
             self.blocking = True;
-        
+            self.create_block();
+             
         if self.command == "idle":
             pass
+        
         
              
     # get the distance and direction for an opponent
@@ -324,20 +293,14 @@ class Enemy_B(pygame.sprite.Sprite):
         total_damage = self.ai_stats['attack'] + weapon_data[self.weapon]['damage']
         return total_damage
     
-    
-    def rotate(self):
-        misc_dirs = ['left','right','up','down']
-        random_dir = random.randint(0,3);
-        self.status = misc_dirs[random_dir]
-    
-    
-    def get_status(self):
+   
+    def get_status(self):   
         # handle move to idle
         if self.direction.x == 0 and self.direction.y == 0:
-            if not 'idle' in self.status and not 'attack' in self.status:
+            if not 'idle' in self.status and not 'attack' in self.status and not 'block' in self.status:
                 self.status = self.status + '_idle'
                 
-         # handle attack then idle transition
+            # handle attack then idle transition
         if self.attacking:
             self.direction.x = 0;
             self.direction.y = 0;
@@ -351,6 +314,22 @@ class Enemy_B(pygame.sprite.Sprite):
         else:
             if 'attack' in self.status:
                 self.status = self.status.replace('_attack', '')
+        
+        
+        # handle block to idle transition
+        if self.blocking:
+            self.direction.x = 0;
+            self.direction.y = 0;
+            if not 'block' in self.status:
+                if 'idle' in self.status:
+                    self.status = self.status.replace('_idle', '_block')
+                    
+                else:
+                    self.status = self.status + "_block"
+        
+        else:
+            if 'block' in self.status:
+                self.status = self.status.replace('_block', '')
                 
                 
     def collision(self,direction):
@@ -383,9 +362,6 @@ class Enemy_B(pygame.sprite.Sprite):
     def animate(self):
         animation = self.animations[self.status];
         self.frame_index += self.animation_speed
-        # get the frame index to select the current animation
-        #print("cpu b: ", self.status)
-        
         if self.frame_index >= len(animation): # get the len of the number of the items in the sprite sub folder
             self.frame_index = 0;
         self.image = animation[int(self.frame_index)]; # set curent image
@@ -397,6 +373,11 @@ class Enemy_B(pygame.sprite.Sprite):
             if current_time - self.attack_time >= self.attack_cooldown + self.weapon_cool_down: 
                 self.attacking = False;
                 self.destroy_attack()
+                
+        if self.blocking:
+            if current_time - self.block_time >= self.block_cooldown:
+                self.destroy_block();
+                self.blocking = False;
 
     
     def flicker(self):
@@ -413,15 +394,11 @@ class Enemy_B(pygame.sprite.Sprite):
     
         
     def update(self):
-        
         self.action_controller(); # determine the next action for the CPU AI
         self.cpu_input(); # animate based on the command and change cpu status
-        self.get_status()
-        self.animate();
+        self.get_status()        
         self.cool_down();
         self.move(self.speed);
-        
-      
-        
+        self.animate();        
         self.previous_direction = self.direction # save the previous direction 
         

@@ -36,12 +36,6 @@ class Enemy_A(pygame.sprite.Sprite):
         self.damage_sound = pygame.mixer.Sound(damage_sound_file)
         self.damage_sound.set_volume(0.05)
         
-        
-        # load death sound
-        death_sound_file = Path('music/death.wav')
-        self.death_sound = pygame.mixer.Sound(death_sound_file)
-        self.death_sound.set_volume(0.05)
-        
         # direction and status vars
         self.status = 'down'
         self.frame_index = 0;
@@ -201,10 +195,7 @@ class Enemy_A(pygame.sprite.Sprite):
     
     # plan action and set command for the ai to execute
     def action_controller(self):
-             
-        # Strategy: Wander        
-        if self.goal == 'wander':
-            
+         
             # if an enemy is spotted while wandering, lock on to their location and attack
             self.target = self.is_enemy_within_visible_range();
             if self.target is not None:
@@ -355,7 +346,6 @@ class Enemy_A(pygame.sprite.Sprite):
     # check if health is 0 and character has died
     def check_death(self):
         if self.health <= 0:
-            self.death_sound.play() 
             self.destroy_attack() # remove any sprites from the previous command before dying
             self.destroy_block()
             self.kill()
