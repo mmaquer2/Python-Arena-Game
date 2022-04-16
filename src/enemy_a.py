@@ -12,12 +12,10 @@ from pathfinding.finder.a_star import AStarFinder
 class Enemy_A(pygame.sprite.Sprite):
     def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack, create_block, destroy_block, nav_grid):
         super().__init__(groups)
-        
         # id types
         self.id = '2'
         self.sprite_type = "cpu_ai"     
           
-         
         # import starting sprite
         idle_down_folder = Path('sprites/characters/cpu_a/down_idle/idle_down.png')
         self.image_import = pygame.image.load(idle_down_folder) # import image 
@@ -168,7 +166,6 @@ class Enemy_A(pygame.sprite.Sprite):
         return items
     
     
-    
     def move(self,speed):
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize();
@@ -194,31 +191,30 @@ class Enemy_A(pygame.sprite.Sprite):
     
     # plan action and set command for the ai to execute
     def action_controller(self):
-         
-            # if an enemy is spotted while wandering, lock on to their location and attack
-            self.target = self.is_enemy_within_visible_range();
-            if self.target is not None:
-                temp_dir = self.find_opponent_distance_direction(self.target)
-                self.direction = temp_dir[1]
-                self.tracking_enemy = True
-                self.converted_path = []  # empty the path if we decided to attack an enemy
-                self.is_enemy_within_attack_range() 
-            else:
-                self.tracking_enemy = False
-            
-            # conditions of when to create a new path
-            if len(self.converted_path) == 0 and not self.tracking_enemy :
-                
-                # get start and end destinations for a new path
-                start_loc = (self.rect.centerx, self.rect.centery)  # this may cause some positions to be out of bounds
-                print("center vars: ",self.rect.centerx, self.rect.centery)
+        # if an enemy is spotted while wandering, lock on to their location and attack
+        self.target = self.is_enemy_within_visible_range();
+        if self.target is not None:
+            temp_dir = self.find_opponent_distance_direction(self.target)
+            self.direction = temp_dir[1]
+            self.tracking_enemy = True
+            self.converted_path = []  # empty the path if we decided to attack an enemy
+            self.is_enemy_within_attack_range() 
+        else:
+            self.tracking_enemy = False
         
-                end_loc = self.get_waypoint(); 
-                #print("end loc:", end_loc)
-                self.plan_path(start_loc,end_loc) # plan a path to that destination
-                self.convert_path_to_pixels() # convert the nav_mesh grid to surface coordinates
-               
-            self.get_direction();
+        # conditions of when to create a new path
+        if len(self.converted_path) == 0 and not self.tracking_enemy :
+            
+            # get start and end destinations for a new path
+            start_loc = (self.rect.centerx, self.rect.centery)  # this may cause some positions to be out of bounds
+            print("center vars: ",self.rect.centerx, self.rect.centery)
+    
+            end_loc = self.get_waypoint(); 
+            #print("end loc:", end_loc)
+            self.plan_path(start_loc,end_loc) # plan a path to that destination
+            self.convert_path_to_pixels() # convert the nav_mesh grid to surface coordinates
+            
+        self.get_direction();
                
                   
     
@@ -234,7 +230,7 @@ class Enemy_A(pygame.sprite.Sprite):
             if temp_distance < nearest_target_distance:
                 nearest_target = opp;
                 
-        return self.find_opponent_distance_direction(nearest_target);
+        return nearest_target;
         
     
     # iterate through enemy oppoenents and their locations

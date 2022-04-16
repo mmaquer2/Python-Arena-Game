@@ -285,7 +285,7 @@ class Level:
         if self.cpu_a_attack != None and self.health_cpu_a > 0:
                 self.cpu_a_attack_logic()
         
-        if self.cpu_b_attack != None and self.health_cpu_b > 0:
+        if self.cpu_b_attack != None:
                 self.cpu_b_attack_logic()
           
         if self.cpu_c_attack != None and self.health_cpu_c > 0:
