@@ -260,13 +260,16 @@ class Player(pygame.sprite.Sprite):
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize();
         
+        #self.char_collision('vertical')
+        #self.char_collision('horizontal')
         self.hitbox.x += self.direction.x * speed
         self.collision('horizontal')
-        self.char_collision('horizontal')
         self.hitbox.y += self.direction.y * speed
         self.collision('vertical')
-        self.char_collision('vertical')
+     
         self.rect.center = self.hitbox.center;
+        
+        
         
             
     # collision handling for obstacles           
