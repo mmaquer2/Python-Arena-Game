@@ -241,7 +241,6 @@ class Player(pygame.sprite.Sprite):
                 self.status = self.status.replace('_block', '')
             
         
-    
     def cool_down(self):
         current_time = pygame.time.get_ticks();
         if self.attacking:

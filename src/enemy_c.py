@@ -451,7 +451,7 @@ class Enemy_C(pygame.sprite.Sprite):
         self.cpu_input(); # animate based on the command and change cpu status
         self.get_status()        
         self.cool_down();
-        print("cpu c: ",self.status)
+        #print("cpu c: ",self.status)
         self.move(self.speed);
         self.animate();        
         self.previous_direction = self.direction # save the previous direction 
