@@ -156,7 +156,7 @@ class Enemy_C(pygame.sprite.Sprite):
         else:
             self.direction = self.previous_direction;
             
-        return
+        self.is_enemy_within_attack_range() 
     
     def move(self,speed):
         if self.direction.magnitude() != 0:

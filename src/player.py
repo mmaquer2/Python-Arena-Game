@@ -366,6 +366,7 @@ class Player(pygame.sprite.Sprite):
         self.animate()
         self.cool_down();
         self.move(self.speed)
+        print(self.direction)
             
         
     

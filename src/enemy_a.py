@@ -198,7 +198,8 @@ class Enemy_A(pygame.sprite.Sprite):
             self.direction = temp_dir[1]
             self.tracking_enemy = True
             self.converted_path = []  # empty the path if we decided to attack an enemy
-            self.is_enemy_within_attack_range() 
+            if self.is_enemy_within_attack_range():
+                self.use_weapon(); 
         else:
             self.tracking_enemy = False
         
@@ -215,7 +216,8 @@ class Enemy_A(pygame.sprite.Sprite):
             self.convert_path_to_pixels() # convert the nav_mesh grid to surface coordinates
             
         self.get_direction();
-               
+        if self.is_enemy_within_attack_range():
+            self.use_weapon();       
                   
     
     # get the location of the nearest enemy character
@@ -255,12 +257,16 @@ class Enemy_A(pygame.sprite.Sprite):
                     
                     # the command to attack is given here, perhaps use a random int to determine whether to block first or attack? 
                     
-                    self.command = 'attack'; # give the command to attack the unit
-                    #self.command = 'block'
+                    #self.command = 'attack'; # give the command to attack the unit
+                    return True
             
             else:
-                self.target = None
-                self.command = ''
+                return False
+                
+    
+    
+    def use_weapon(self):
+        self.command = 'attack'
     
     
     # select a random waypoint to be used as a destination
@@ -481,6 +487,12 @@ class Enemy_A(pygame.sprite.Sprite):
         else:
             return 0;
     
+    
+    # reset the direction of the player after each tick..
+    def reset_state(self):
+        pass
+    
+    
         
     def update(self):
         self.action_controller(); # determine the next action for the CPU AI
@@ -489,6 +501,7 @@ class Enemy_A(pygame.sprite.Sprite):
         self.cool_down();
         self.move(self.speed);
         self.animate(); 
+        self.command = '' # reset the command 
         #print("cpu a: ", self.status)       
         self.previous_direction = self.direction # save the previous direction 
    
