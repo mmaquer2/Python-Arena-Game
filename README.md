@@ -43,12 +43,13 @@ python main.py
 
 ``` 
 
-## Player Controls
+## Controls
 
 - movement, arrow keys
 - primary attack, space bar
 - block/defend, b letter key
-
+- p, pause game
+- u , unpause game
 
 ## Resources and Credits
 - https://www.pygame.org/docs/
