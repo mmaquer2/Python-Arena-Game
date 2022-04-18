@@ -1,26 +1,21 @@
-# 2d Zelda-like arena game with randomly assinged NPC AI personalities and behavior 
+# 2d Zelda-like arena game with assinged NPC AI personalities
 
 
 [Image]
 
 ## Description: 
-- This served as a final Project for CS5150 (Game AI) at Northeastern University, Spring 2022. The project is a 2d arena fighting game with action rpg mechanics. The game contains 3 NPC characters and one human player. Each is randomly assigned a weapon and stats, and is placed in the map all to fight each other until a single victor emerges.
+- This served as a final Project for CS5150 (Game AI) at Northeastern University, Spring 2022. The project is a 2d arena fighting game with action rpg mechanics. The game contains 3 NPC characters and one human player. Each is randomly assigned a weapon, and is placed in the map all to fight each other until a single victor emerges.
 
 - **Note** This program will only work on a windows system due to file path constraints, I have not yet transferred the code to a common file path system
 
 ## CPU AI Behavior: 
+    - The CPU AI are given each a different personality to drive their behaviour during the game.
+    - CPU A, balenced, cpu A will wander around the map and attempt to look for an enemy to attack, and will lock onto a character within its viewable range, then attempt to attack
+    - CPU B, aggressive, cpu b will immediately lock onto the neartest character then attack until it wins or is defeated.
+    - CPU C, timid, cpu c will hide and attempt to "ambush" players when they walk into a range near the character
 
-- Randomly Selected Personalities: 
-    - The behavior and strategy of the AI is selected at random from a collection of different prebuilt strategies and actions. 
-
-- Possible AI Strategies and Personalities:
-    - bersek mode, enemy will find the nearest target lock and and might until destoryed and victory is reached 
-    - ambush, wait for enemies to enter a specific radius of the CPU and attack
-    - patrol area, wander around a set path with waypoints, and attack units when they are found
-    - flee and hide, avoid being attacked at all costs, will use block a lot.
-
-- Pathfinding:
-    - Pathfinding was implemented using the python core libraries 
+    - Pathfinding:
+        - Pathfinding was implemented using the python core libraries 
 
 ## Setup and Settings
 - Download the source directory onto your machine 
