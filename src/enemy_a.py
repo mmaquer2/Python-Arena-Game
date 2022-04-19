@@ -167,18 +167,19 @@ class Enemy_A(pygame.sprite.Sprite):
     def move(self,speed):
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize();
-            if self.direction.x > self.direction.y:
-                if self.direction.x > 0.5:
-                    self.status = "right"
+           
+            if (self.direction.x > -.5 and self.direction.y < .5) and (self.direction.x < .5 and self.direction.y < .5):
+               self.status = "up"
+               
+            elif (self.direction.x > -0.5 and self.direction.y < -0.5) and ( self.direction.x < 0.5 and self.direction.y > -0.5):
+                self.status = "down"
+                 
+            elif (self.direction.x  < .5 and self.direction.y < .5) and (self.direction.x > .5 and self.direction.y > -.5):
+                self.status = 'right'
                 
-                else: 
-                    self.status = "left"
-            
-            else: 
-                if self.direction.y > 0.5:
-                    self.status = "down"
-                else:
-                    self.status = "up"
+            elif (self.direction.x > -0.5 and self.direction.y < 0.5 ) and (self.direction.x > -0.5 and self.direction.y > -0.5):
+                self.status = 'left'
+               
             
         self.hitbox.x += self.direction.x * speed
         self.collision('horizontal')
@@ -331,6 +332,8 @@ class Enemy_A(pygame.sprite.Sprite):
         if self.blocking == False and weapon_owner_id != self.id:
             print("cpu a is taking damage", self.health)
             self.health = self.health - damage;
+            self.roll_dice_to_block()
+            self.command = 'block'
             self.damage_sound.play()   
             self.check_death()
             

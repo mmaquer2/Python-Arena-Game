@@ -162,9 +162,22 @@ class Enemy_B(pygame.sprite.Sprite):
             self.direction = temp_dir[1]
             
         if self.is_enemy_within_attack_range():
-            self.use_weapon();
+            # face correct direction of the target to attack
+            self.get_target_direction() 
+            
+            self.use_weapon();   
+        
+    
+    # function to check where the current target is located around the CPU
+    def get_target_direction(self):
+        myVec = pygame.math.Vector2(self.rect.center)
+        opponentVec = pygame.math.Vector2(self.target.rect.center)
+        direction_to_face = (opponentVec - myVec).normalize()
+        print(direction_to_face)
         
         
+    
+    
     #get the location of the nearest enemy character
     def find_nearest_enemy(self):
         nearest_target_distance = 100000;
