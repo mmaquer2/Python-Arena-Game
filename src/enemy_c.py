@@ -150,13 +150,34 @@ class Enemy_C(pygame.sprite.Sprite):
             temp_dir = self.find_opponent_distance_direction(self.target)
             self.direction = temp_dir[1] # move towards the enemy 
             if self.is_enemy_within_attack_range():
+                self.get_target_direction(); 
                 self.use_weapon() # attack if you are in range 
             
         else:
             self.direction = self.previous_direction;
             
         if self.is_enemy_within_attack_range():
+            self.get_target_direction()
             self.use_weapon(); 
+    
+    
+    
+    # function to check where the current target is located around the CPU
+    def get_target_direction(self):
+        myVec = pygame.math.Vector2(self.rect.center)
+        opponentVec = pygame.math.Vector2(self.target.rect.center)
+        direction_to_face = (opponentVec - myVec).normalize()
+        if (self.direction.x > -.5 and self.direction.y < .5) and (self.direction.x < .5 and self.direction.y < .5):
+            self.status = "up"
+               
+        elif (self.direction.x > -0.5 and self.direction.y > -0.5) and ( self.direction.x < 0.5 and self.direction.y > -0.5):
+            self.status = "down"
+                
+        elif (self.direction.x  < .5 and self.direction.y < .5) and (self.direction.x < .5 and self.direction.y > -.5):
+            self.status = 'left'
+            
+        elif (self.direction.x > -0.5 and self.direction.y < 0.5 ) and (self.direction.x > -0.5 and self.direction.y > -0.5):
+            self.status = 'right'
     
     
     
@@ -297,17 +318,34 @@ class Enemy_C(pygame.sprite.Sprite):
             print("cpu c is taking damage", self.health)
             self.health = self.health - damage;
             
+            if self.roll_dice_to_block():
+                self.command = 'block'
             
-            self.damage_sound.play()   
+            
+            
+            
+            self.damage_sound.play();  
             self.check_death()
             
-    
+    # roll a virtual die to decide whether or not to block from a current attack
+    # 32 percent chance to block an attack from an opponent
     def roll_dice_to_block(self):
-        rand_num = random.randint(0,5)
-        if(rand_num % 2 == 0):
+        rand_num = random.randint(0,30)
+        if(rand_num < 12):
             return True;
         else:
             return False
+    
+    # roll a virtual die to determine to flee from an attack
+    def roll_dice_to_flee(self):
+        if self.health < self.starting_health // 2 :
+            print(self.health)
+            print("fleeing from attack")
+            return True
+        else:
+            return False
+    
+    
     
     # check if health is 0 and character has died
     def check_death(self):

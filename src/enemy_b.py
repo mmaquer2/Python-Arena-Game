@@ -176,14 +176,14 @@ class Enemy_B(pygame.sprite.Sprite):
         if (self.direction.x > -.5 and self.direction.y < .5) and (self.direction.x < .5 and self.direction.y < .5):
             self.status = "up"
                
-        elif (self.direction.x > -0.5 and self.direction.y < -0.5) and ( self.direction.x < 0.5 and self.direction.y > -0.5):
-            self.status = "down"
+        elif (self.direction.x > -0.5 and self.direction.y > -0.5) and ( self.direction.x < 0.5 and self.direction.y > -0.5):
+                self.status = "down"
                 
-        elif (self.direction.x  < .5 and self.direction.y < .5) and (self.direction.x > .5 and self.direction.y > -.5):
-            self.status = 'right'
+        elif (self.direction.x  < .5 and self.direction.y < .5) and (self.direction.x < .5 and self.direction.y > -.5):
+            self.status = 'left'
             
         elif (self.direction.x > -0.5 and self.direction.y < 0.5 ) and (self.direction.x > -0.5 and self.direction.y > -0.5):
-            self.status = 'left'
+            self.status = 'right'
         
         
     
@@ -248,14 +248,14 @@ class Enemy_B(pygame.sprite.Sprite):
      
         if self.command == 'attack' and not self.attacking:
             self.attack_time = pygame.time.get_ticks();
-            print("cpu ai A is attacking")
+            print("cpu AI B is attacking")
             self.attacking = True;
             self.create_attack()
             self.weapon_sound.play()
         
         if self.command == 'block' and not self.blocking:
             self.block_time = pygame.time.get_ticks()
-            print("cpu ai A is blocking")
+            print("cpu AI B is blocking")
             self.blocking = True;
             self.create_block();
              

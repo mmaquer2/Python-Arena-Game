@@ -163,16 +163,16 @@ class Enemy_A(pygame.sprite.Sprite):
             self.direction = self.direction.normalize();
            
             if (self.direction.x > -.5 and self.direction.y < .5) and (self.direction.x < .5 and self.direction.y < .5):
-               self.status = "up"
+                self.status = "up"
                
-            elif (self.direction.x > -0.5 and self.direction.y < -0.5) and ( self.direction.x < 0.5 and self.direction.y > -0.5):
+            elif (self.direction.x > -0.5 and self.direction.y > -0.5) and ( self.direction.x < 0.5 and self.direction.y > -0.5):
                 self.status = "down"
-                 
-            elif (self.direction.x  < .5 and self.direction.y < .5) and (self.direction.x > .5 and self.direction.y > -.5):
-                self.status = 'right'
                 
-            elif (self.direction.x > -0.5 and self.direction.y < 0.5 ) and (self.direction.x > -0.5 and self.direction.y > -0.5):
+            elif (self.direction.x  < .5 and self.direction.y < .5) and (self.direction.x < .5 and self.direction.y > -.5):
                 self.status = 'left'
+            
+            elif (self.direction.x > -0.5 and self.direction.y < 0.5 ) and (self.direction.x > -0.5 and self.direction.y > -0.5):
+                self.status = 'right'
                
             
         self.hitbox.x += self.direction.x * speed
@@ -193,6 +193,7 @@ class Enemy_A(pygame.sprite.Sprite):
             self.converted_path = []  # empty the path if we decided to attack an enemy
             if self.is_enemy_within_attack_range():
                 self.converted_path = [] # empty the path again 
+                self.get_target_direction();
                 self.use_weapon(); 
         else:
             self.tracking_enemy = False
@@ -209,10 +210,28 @@ class Enemy_A(pygame.sprite.Sprite):
         self.get_direction(); # get the next step in the current path
         if self.is_enemy_within_attack_range():
             self.use_weapon();    
-        
-        self.flee_from_attack();
-           
+    
                   
+    
+        # function to check where the current target is located around the CPU
+    def get_target_direction(self):
+        myVec = pygame.math.Vector2(self.rect.center)
+        opponentVec = pygame.math.Vector2(self.target.rect.center)
+        direction_to_face = (opponentVec - myVec).normalize()
+        if (self.direction.x > -.5 and self.direction.y < .5) and (self.direction.x < .5 and self.direction.y < .5):
+            self.status = "up"
+               
+        elif (self.direction.x > -0.5 and self.direction.y > -0.5) and ( self.direction.x < 0.5 and self.direction.y > -0.5):
+            self.status = "down"
+                
+        elif (self.direction.x  < .5 and self.direction.y < .5) and (self.direction.x < .5 and self.direction.y > -.5):
+            self.status = 'left'
+            
+        elif (self.direction.x > -0.5 and self.direction.y < 0.5 ) and (self.direction.x > -0.5 and self.direction.y > -0.5):
+            self.status = 'right'
+    
+    
+    
     
     # get the location of the nearest enemy character
     def find_nearest_enemy(self):
@@ -316,15 +335,19 @@ class Enemy_A(pygame.sprite.Sprite):
             self.direction = (end - start).normalize()
             
     # decide whether or not to block from a current attack
+    # 25 percent chance to block an attack from an opponent
     def roll_dice_to_block(self):
-        rand_num = random.randint(0,5)
-        if(rand_num % 2 == 0):
+        rand_num = random.randint(0,20)
+        if(rand_num < 3):
             return True;
         else:
             return False
     
-    # decide whether or not to flee from an attack, when health drops to below half
+    # roll a virtual die to decide whether or not to flee from an attack, when health drops to below half
     def flee_from_attack(self):
+        
+        # also roll a random dice here to determine if you should flee or not
+        
         if self.health < self.starting_health // 2 :
             print(self.health)
             print("fleeing from attack")
