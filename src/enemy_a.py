@@ -202,7 +202,7 @@ class Enemy_A(pygame.sprite.Sprite):
         if len(self.converted_path) == 0 and not self.tracking_enemy: # conditions of when to create a new path
             # get start and end destinations for a new path
             start_loc = (self.rect.centerx, self.rect.centery)  # this may cause some positions to be out of bounds
-            print("center vars: ",self.rect.centerx, self.rect.centery)
+            #print("center vars: ",self.rect.centerx, self.rect.centery)
             end_loc = self.get_waypoint();      
             self.plan_path(start_loc,end_loc) # plan a path to that destination
             self.convert_path_to_pixels() # convert the nav_mesh grid to surface coordinates

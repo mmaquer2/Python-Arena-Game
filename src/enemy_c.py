@@ -184,27 +184,25 @@ class Enemy_C(pygame.sprite.Sprite):
     def move(self,speed):
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize();
-            if self.direction.x > self.direction.y:
-                if self.direction.x > 0.5:
-                    self.status = "right"
-                
-                else: 
-                    self.status = "left"
         
-        else: 
-            if self.direction.y > 0.5:
-                self.status = "down"
-            else:
-                self.status = "up"
+        if (self.direction.x > -.5 and self.direction.y < .5) and (self.direction.x < .5 and self.direction.y < .5):
+            self.status = "up"
+            
+        elif (self.direction.x > -0.5 and self.direction.y > -0.5) and ( self.direction.x < 0.5 and self.direction.y > -0.5):
+            self.status = "down"
+            
+        elif (self.direction.x  < .5 and self.direction.y < .5) and (self.direction.x < .5 and self.direction.y > -.5):
+            self.status = 'left'
         
+        elif (self.direction.x > -0.5 and self.direction.y < 0.5 ) and (self.direction.x > -0.5 and self.direction.y > -0.5):
+            self.status = 'right'
+            
         self.hitbox.x += self.direction.x * speed
         self.collision('horizontal')
         self.hitbox.y += self.direction.y * speed
         self.collision('vertical')
         self.rect.center = self.hitbox.center;   # describes the hitbox for the character
         
-    
-              
     # get the location of the nearest enemy character
     def find_nearest_enemy(self):
         nearest_target_distance = 100000;
