@@ -67,9 +67,7 @@ class Enemy_A(pygame.sprite.Sprite):
         strat_ind = random.randint(0, len(strategies)-1)
         random_strat = strategies[strat_ind]  #set the current strategy of the cpu AI
         
-        self.goal = "wander"  # have the enemy cpu ai
-        #self.goal = "beserk" # this  currently works, find the nearest enemy and attack 
-        #self.goal = "ambush"
+      
         
         self.command = ""
         self.inCollision = False; # status in if in a collision or not
@@ -199,23 +197,21 @@ class Enemy_A(pygame.sprite.Sprite):
             self.tracking_enemy = True
             self.converted_path = []  # empty the path if we decided to attack an enemy
             if self.is_enemy_within_attack_range():
+                self.converted_path = [] # empty the path again 
                 self.use_weapon(); 
         else:
             self.tracking_enemy = False
         
-        # conditions of when to create a new path
-        if len(self.converted_path) == 0 and not self.tracking_enemy :
-            
+        
+        if len(self.converted_path) == 0 and not self.tracking_enemy: # conditions of when to create a new path
             # get start and end destinations for a new path
             start_loc = (self.rect.centerx, self.rect.centery)  # this may cause some positions to be out of bounds
             print("center vars: ",self.rect.centerx, self.rect.centery)
-    
-            end_loc = self.get_waypoint(); 
-            #print("end loc:", end_loc)
+            end_loc = self.get_waypoint();      
             self.plan_path(start_loc,end_loc) # plan a path to that destination
             self.convert_path_to_pixels() # convert the nav_mesh grid to surface coordinates
             
-        self.get_direction();
+        self.get_direction(); # get the next step in the current path
         if self.is_enemy_within_attack_range():
             self.use_weapon();       
                   
@@ -243,7 +239,7 @@ class Enemy_A(pygame.sprite.Sprite):
             temp_distance = (opponentVec - myVec).magnitude()
             if temp_distance < self.view_radius:  
                 return opp  # if the distance between ai and other character is within my visitable range return true
-        
+        return None
             
     # determine if an enemy is within the attack range
     def is_enemy_within_attack_range(self):
@@ -252,17 +248,10 @@ class Enemy_A(pygame.sprite.Sprite):
             opponentVec = pygame.math.Vector2(opp.rect.center)
             temp_distance = (opponentVec - myVec).magnitude()
             if temp_distance < self.attack_radius:  # if the distance between ai and other character is within my visitable range return true
-               # if there is an opponent within my range, attack in a certain direction...
                 if self.target is not None and self.target.health > 0: # check if the target is still alive
-                    
-                    # the command to attack is given here, perhaps use a random int to determine whether to block first or attack? 
-                    
-                    #self.command = 'attack'; # give the command to attack the unit
                     return True
             
-            else:
-                return False
-                
+        return False        
     
     
     def use_weapon(self):
@@ -306,7 +295,7 @@ class Enemy_A(pygame.sprite.Sprite):
         finder = AStarFinder(diagonal_movement = DiagonalMovement.always)
         
         self.current_path, runs = finder.find_path(start_node,end_node,self.nav_mesh)  
-        self.nav_mesh.cleanup(); 
+        self.nav_mesh.cleanup(); # cleanup the previous path to calculate another path
         
         
     # convert the Astar generated path to pixels related to the actual map sprite surface
@@ -322,23 +311,25 @@ class Enemy_A(pygame.sprite.Sprite):
     
     # get the current direction the player is facing based on where the next node in the path is
     def get_direction(self):
-        
         if len(self.converted_path) > 1:
             start = pygame.math.Vector2(self.rect.center)
             next_move = self.converted_path.pop(0)
             end = pygame.math.Vector2(next_move.center)
             self.direction = (end - start).normalize()
             
-        
-        # create a new waypoint and new path once the
+
+    def roll_dice_to_block(self):
+        rand_num = random.randint(0,5)
+        if(rand_num % 2 == 0):
+            return True;
         else:
-            pass
-        
+            return False
+    
     
     # get damage total from an attacking weapon
     def get_damage(self,damage,weapon_owner_id):
         if self.blocking == False and weapon_owner_id != self.id:
-            print("cpu a is taking damage")
+            print("cpu a is taking damage", self.health)
             self.health = self.health - damage;
             self.damage_sound.play()   
             self.check_death()
@@ -474,24 +465,8 @@ class Enemy_A(pygame.sprite.Sprite):
                 self.destroy_block();
                 self.blocking = False;
 
-    
-    def flicker(self):
-        alpha = self.flicker_value();
-        self.image.set_alpha(alpha)
-        
-    
-    def flicker_value(self):
-        value = sin(pygame.time.get_ticks())
-        if value >= 0:
-            return 255;
-        else:
-            return 0;
-    
-    
-    # reset the direction of the player after each tick..
-    def reset_state(self):
-        pass
-    
+ 
+
     
         
     def update(self):

@@ -143,20 +143,22 @@ class Enemy_C(pygame.sprite.Sprite):
         return items
 
     
-    
-    
     def action_controller(self):
                   
         self.target = self.is_enemy_within_visible_range()
         if self.target is not None:
             temp_dir = self.find_opponent_distance_direction(self.target)
             self.direction = temp_dir[1] # move towards the enemy 
-            self.is_enemy_within_attack_range()  # attack if you are in range 
+            if self.is_enemy_within_attack_range():
+                self.use_weapon() # attack if you are in range 
             
         else:
             self.direction = self.previous_direction;
             
-        self.is_enemy_within_attack_range() 
+        if self.is_enemy_within_attack_range():
+            self.use_weapon(); 
+    
+    
     
     def move(self,speed):
         if self.direction.magnitude() != 0:
@@ -207,25 +209,21 @@ class Enemy_C(pygame.sprite.Sprite):
                 return opp  # if the distance between ai and other character is within my visitable range return true
         
             
-    # determine if an enemy is within the attack range
+  # determine if an enemy is within the attack range
     def is_enemy_within_attack_range(self):
         myVec = pygame.math.Vector2(self.rect.center)
         for opp in self.opponents:
             opponentVec = pygame.math.Vector2(opp.rect.center)
             temp_distance = (opponentVec - myVec).magnitude()
             if temp_distance < self.attack_radius:  # if the distance between ai and other character is within my visitable range return true
-               # if there is an opponent within my range, attack in a certain direction...
                 if self.target is not None and self.target.health > 0: # check if the target is still alive
-                    
-                    # the command to attack is given here, perhaps use a random int to determine whether to block first or attack? 
-                    
-                    self.command = 'attack'; # give the command to attack the unit
-                    #self.command = 'block'
+                    return True
             
-            else:
-                self.target = None
-                self.command = ''
+        return False      
     
+    def use_weapon(self):
+            self.command = 'attack'
+            
     
     # select a random waypoint to be used as a destination
     def get_waypoint(self):
@@ -296,12 +294,21 @@ class Enemy_C(pygame.sprite.Sprite):
     # get damage total from an attacking weapon
     def get_damage(self,damage,weapon_owner_id):
         if self.blocking == False and weapon_owner_id != self.id:
-            print("cpu c is taking damage")
+            print("cpu c is taking damage", self.health)
             self.health = self.health - damage;
+            
+            
             self.damage_sound.play()   
             self.check_death()
             
-        
+    
+    def roll_dice_to_block(self):
+        rand_num = random.randint(0,5)
+        if(rand_num % 2 == 0):
+            return True;
+        else:
+            return False
+    
     # check if health is 0 and character has died
     def check_death(self):
         if self.health <= 0:
@@ -431,19 +438,6 @@ class Enemy_C(pygame.sprite.Sprite):
             if current_time - self.block_time >= self.block_cooldown:
                 self.destroy_block();
                 self.blocking = False;
-
-    
-    def flicker(self):
-        alpha = self.flicker_value();
-        self.image.set_alpha(alpha)
-        
-    
-    def flicker_value(self):
-        value = sin(pygame.time.get_ticks())
-        if value >= 0:
-            return 255;
-        else:
-            return 0;
     
         
     def update(self):
@@ -452,6 +446,7 @@ class Enemy_C(pygame.sprite.Sprite):
         self.get_status()        
         self.cool_down();
         #print("cpu c: ",self.status)
+        self.command = '' # reset command after every tick
         self.move(self.speed);
         self.animate();        
         self.previous_direction = self.direction # save the previous direction 

@@ -333,7 +333,7 @@ class Player(pygame.sprite.Sprite):
     def get_damage(self,damage_amount, weapon_owner_id):
               
         if self.blocking == False and weapon_owner_id != self.id:    # check if were blocking and the weapon sprite isn't ours
-            print("human player is taking damage")
+            print("human player is taking damage", self.health)
             self.health = self.health - damage_amount;
             self.damage_sound.play()
             self.check_death()
@@ -366,7 +366,7 @@ class Player(pygame.sprite.Sprite):
         self.animate()
         self.cool_down();
         self.move(self.speed)
-        print(self.direction)
+        #print(self.direction)
             
         
     

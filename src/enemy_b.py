@@ -161,7 +161,8 @@ class Enemy_B(pygame.sprite.Sprite):
             temp_dir = self.find_opponent_distance_direction(self.target)
             self.direction = temp_dir[1]
             
-        self.is_enemy_within_attack_range();
+        if self.is_enemy_within_attack_range():
+            self.use_weapon();
         
         
     #get the location of the nearest enemy character
@@ -193,31 +194,21 @@ class Enemy_B(pygame.sprite.Sprite):
         myVec = pygame.math.Vector2(self.rect.center)
         for opp in self.opponents:
             self.temp_enemy = opp
-            
             opponentVec = pygame.math.Vector2(opp.rect.center)
-            
-            
             temp_distance = (opponentVec - myVec).magnitude()
             if temp_distance < self.attack_radius:  # if the distance between ai and other character is within my visitable range return true
-               # if there is an opponent within my range, attack in a certain direction...
-                
                 if self.target is not None and self.temp_enemy.health > 0: # check if the target is still alive
-                    
-                    # the command to attack is given here, perhaps use a random int to determine whether to block first or attack? 
-                    
-                    self.command = 'attack'; # give the command to attack the unit
-                    #self.command = 'block'
-            
-            else:
-                self.target = None
-                self.command = ''
-    
-            
+                    return True
+        
+        return False
+                
+    def use_weapon(self):
+        self.command = 'attack'
         
      # get damage total from an attacking weapon
     def get_damage(self,damage,weapon_owner_id):
         if self.blocking == False and weapon_owner_id != self.id:
-            print("cpu b is taking damage")
+            print("cpu b is taking damage", self.health)
             self.health = self.health - damage;
             self.damage_sound.play()   
             self.check_death()
@@ -373,6 +364,7 @@ class Enemy_B(pygame.sprite.Sprite):
         self.get_status()        
         self.cool_down();
         self.move(self.speed);
-        self.animate();        
+        self.animate();    
+        self.command = '' # rest the command     
         self.previous_direction = self.direction # save the previous direction 
         

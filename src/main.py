@@ -14,7 +14,7 @@ class Game:
         game_window = (1280, 736)
         self.screen = pygame.display.set_mode(game_window)
         self.background = pygame.Surface(game_window)
-        self.screen.blit(self.background, (0,0))
+        self.screen.blgit(self.background, (0,0))
           
         # set game icon on window tab 
         icon_path = Path('sprites/characters/player/down_idle/idle_down.png') 
