@@ -339,8 +339,8 @@ class Enemy_A(pygame.sprite.Sprite):
         if self.blocking == False and weapon_owner_id != self.id:
             print("cpu a is taking damage", self.health)
             self.health = self.health - damage;
-            self.roll_dice_to_block()
-            self.command = 'block'
+            if self.roll_dice_to_block():
+                self.command = 'block'
             self.damage_sound.play()   
             self.check_death()
             
@@ -356,14 +356,14 @@ class Enemy_A(pygame.sprite.Sprite):
     # change the status of the cpu AI to actually animate and execute the action
     def cpu_input(self):
      
-        if self.command == 'attack' and not self.attacking:
+        if self.command == 'attack' and not self.attacking and not self.blocking:
             self.attack_time = pygame.time.get_ticks();
             print("cpu ai A is attacking")
             self.attacking = True;
             self.create_attack()
             self.weapon_sound.play()
         
-        if self.command == 'block' and not self.blocking:
+        if self.command == 'block' and not self.blocking and not self.attacking:
             self.block_time = pygame.time.get_ticks()
             print("cpu ai A is blocking")
             self.blocking = True;
