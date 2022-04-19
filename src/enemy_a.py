@@ -43,14 +43,11 @@ class Enemy_A(pygame.sprite.Sprite):
         self.obstacles_sprites = obstacle_sprites
         self.attacking = False;
         self.is_weapon_destroyed = True
-        self.is_block_destroyed = True
-        
+        self.is_block_destroyed = True 
         self.attack_time = None;
         self.attack_cooldown = 800;  
-        
         self.blocking = False;
         self.block_cooldown = 800;
-        
         self.create_block = create_block
         self.destroy_block = destroy_block
         
@@ -62,13 +59,8 @@ class Enemy_A(pygame.sprite.Sprite):
         self.previous_goal = None # holder to verify we aren't moving to our current location
         
         
-        # action_planning and behavior tree
-        strategies = ['ambush','wander','beserk'] # list of possible strategies
-        strat_ind = random.randint(0, len(strategies)-1)
-        random_strat = strategies[strat_ind]  #set the current strategy of the cpu AI
-        
-      
-        
+
+    
         self.command = ""
         self.inCollision = False; # status in if in a collision or not
         self.target = None; # this is the current target unit of the AI
@@ -94,9 +86,11 @@ class Enemy_A(pygame.sprite.Sprite):
         self.ambush_radius = 400;
         
         self.ai_stats = {'health': 5000, 'energy': 100, 'attack': 2, 'magic': 5, "speed": 5 }
+        
         self.health = self.ai_stats['health']
         self.speed = self.ai_stats['speed'];
-    
+        self.starting_health = self.health
+        
     
     def set_location(self,pos):
         self.rect = self.image.get_rect(topleft = pos)
@@ -214,7 +208,10 @@ class Enemy_A(pygame.sprite.Sprite):
             
         self.get_direction(); # get the next step in the current path
         if self.is_enemy_within_attack_range():
-            self.use_weapon();       
+            self.use_weapon();    
+        
+        self.flee_from_attack();
+           
                   
     
     # get the location of the nearest enemy character
@@ -318,13 +315,23 @@ class Enemy_A(pygame.sprite.Sprite):
             end = pygame.math.Vector2(next_move.center)
             self.direction = (end - start).normalize()
             
-
+    # decide whether or not to block from a current attack
     def roll_dice_to_block(self):
         rand_num = random.randint(0,5)
         if(rand_num % 2 == 0):
             return True;
         else:
             return False
+    
+    # decide whether or not to flee from an attack, when health drops to below half
+    def flee_from_attack(self):
+        if self.health < self.starting_health // 2 :
+            print(self.health)
+            print("fleeing from attack")
+            return True
+        else:
+            return False
+    
     
     
     # get damage total from an attacking weapon

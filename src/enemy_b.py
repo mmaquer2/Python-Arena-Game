@@ -173,7 +173,17 @@ class Enemy_B(pygame.sprite.Sprite):
         myVec = pygame.math.Vector2(self.rect.center)
         opponentVec = pygame.math.Vector2(self.target.rect.center)
         direction_to_face = (opponentVec - myVec).normalize()
-        print(direction_to_face)
+        if (self.direction.x > -.5 and self.direction.y < .5) and (self.direction.x < .5 and self.direction.y < .5):
+            self.status = "up"
+               
+        elif (self.direction.x > -0.5 and self.direction.y < -0.5) and ( self.direction.x < 0.5 and self.direction.y > -0.5):
+            self.status = "down"
+                
+        elif (self.direction.x  < .5 and self.direction.y < .5) and (self.direction.x > .5 and self.direction.y > -.5):
+            self.status = 'right'
+            
+        elif (self.direction.x > -0.5 and self.direction.y < 0.5 ) and (self.direction.x > -0.5 and self.direction.y > -0.5):
+            self.status = 'left'
         
         
     

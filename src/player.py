@@ -71,7 +71,7 @@ class Player(pygame.sprite.Sprite):
         self.obstacles_sprites = obstacle_sprites
        
         # base player stats
-        self.player_stats = {'health': 5000, 'energy': 100, 'attack': 5, 'magic': 5, "speed": 5 }
+        self.player_stats = {'health': 50000, 'energy': 100, 'attack': 5, 'magic': 5, "speed": 5 }
         self.health = self.player_stats['health']
         self.speed = self.player_stats['speed']
     

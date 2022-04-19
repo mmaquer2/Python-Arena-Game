@@ -231,14 +231,14 @@ class Level:
                    for target_sprite in collision_sprites:
                        if target_sprite.sprite_type == 'cpu_ai' or 'player':
                           
-                           if self.cpu_a_attack != None: # only proceed if there is a valid weapon attack
+                           if self.cpu_b_attack != None: # only proceed if there is a valid weapon attack
                             
-                            if self.cpu_a_attack.weapon_owner_id == self.cpu_a.id:
-                                if self.cpu_a_attack.weapon_owner_id != target_sprite.id:  # check that the owner of a weapon isnt taking damange for its own weapon sprite 
-                                    damage = self.cpu_a.get_weapon_damage() # get the damage from the current weapon
+                            if self.cpu_b_attack.weapon_owner_id == self.cpu_b.id:
+                                if self.cpu_b_attack.weapon_owner_id != target_sprite.id:  # check that the owner of a weapon isnt taking damange for its own weapon sprite 
+                                    damage = self.cpu_b.get_weapon_damage() # get the damage from the current weapon
                                     
-                                    target_sprite.get_damage(damage, self.cpu_a_attack.weapon_owner_id)  # pass the damage from
-                                    self.cpu_a.is_weapon_destroyed = False;
+                                    target_sprite.get_damage(damage, self.cpu_b_attack.weapon_owner_id)  # pass the damage from
+                                    self.cpu_b.is_weapon_destroyed = False;
     
     
     def cpu_c_attack_logic(self):
@@ -250,14 +250,14 @@ class Level:
                    for target_sprite in collision_sprites:
                        if target_sprite.sprite_type == 'cpu_ai' or 'player':
                           
-                           if self.cpu_a_attack != None: # only proceed if there is a valid weapon attack
+                           if self.cpu_c_attack != None: # only proceed if there is a valid weapon attack
                             
-                            if self.cpu_a_attack.weapon_owner_id == self.cpu_a.id:
-                                if self.cpu_a_attack.weapon_owner_id != target_sprite.id:  # check that the owner of a weapon isnt taking damange for its own weapon sprite 
-                                    damage = self.cpu_a.get_weapon_damage() # get the damage from the current weapon
+                            if self.cpu_c_attack.weapon_owner_id == self.cpu_a.id:
+                                if self.cpu_c_attack.weapon_owner_id != target_sprite.id:  # check that the owner of a weapon isnt taking damange for its own weapon sprite 
+                                    damage = self.cpu_c.get_weapon_damage() # get the damage from the current weapon
                                     
-                                    target_sprite.get_damage(damage, self.cpu_a_attack.weapon_owner_id)  # pass the damage from
-                                    self.cpu_a.is_weapon_destroyed = False;
+                                    target_sprite.get_damage(damage, self.cpu_c_attack.weapon_owner_id)  # pass the damage from
+                                    self.cpu_c.is_weapon_destroyed = False;
     
     
     # check the status of the players, is the game over?             
