@@ -154,12 +154,11 @@ class Enemy_B(pygame.sprite.Sprite):
     # plan action and set command for the ai to execute
     def action_controller(self):
         self.target = self.find_nearest_enemy() # find nearest enemy
-           
-        if self.target is not None: # if we can see a target, lock on and attack
+        if self.target is not None: # if we have a viable target, lock on and track it
             temp_dir = self.find_opponent_distance_direction(self.target)
             self.direction = temp_dir[1]
             
-        if self.is_enemy_within_attack_range():
+        if self.is_enemy_within_attack_range(): # if in attack range, use weapon
             self.get_target_direction()  # face correct direction of the target to attack 
             self.use_weapon();   
         
@@ -182,8 +181,6 @@ class Enemy_B(pygame.sprite.Sprite):
             self.status = 'right'
         
         
-    
-    
     #get the location of the nearest enemy character
     def find_nearest_enemy(self):
         current_min = 200000
@@ -199,8 +196,6 @@ class Enemy_B(pygame.sprite.Sprite):
         
         return current_target
         
-        #return self.find_opponent_distance_direction(current_target); # return the distance, direction of the nearest enemy
-    
     # iterate through enemy oppoenents and their locations
     def is_enemy_within_visible_range(self):
         myVec = pygame.math.Vector2(self.rect.center)
@@ -272,7 +267,6 @@ class Enemy_B(pygame.sprite.Sprite):
         else:
             direction = pygame.math.Vector2()
         return (distance, direction)
-    
     
     
     # calculate the total damage of a weapon based on player strength and weapon type

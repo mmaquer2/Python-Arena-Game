@@ -342,7 +342,18 @@ class Enemy_C(pygame.sprite.Sprite):
             return True
         else:
             return False
+        
     
+    # select a random waypoint to be used as a destination to flee from an attack
+    def get_waypoint(self):
+        waypoints = [[2,1], [2,34], [32,34],[34,1],[17,9]]
+        random_int = random.randint(0,4)
+        #print(" random location is: ",waypoints[random_int])
+        goal = waypoints[random_int]
+        goal_x = goal[0] * 32
+        goal_y = goal[1] * 32
+        
+        return [goal_x, goal_y]
     
     
     # check if health is 0 and character has died
