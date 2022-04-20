@@ -125,7 +125,7 @@ class Enemy_C(pygame.sprite.Sprite):
             currentPath = self.animations[animation]
             self.animations[animation] = self.import_folder(currentPath)  
             
-    
+    # import sprites from their respective file destinations
     def import_folder(self,path):
         items = []
         # get all images inside the given path
@@ -173,8 +173,7 @@ class Enemy_C(pygame.sprite.Sprite):
         elif (self.direction.x > -0.5 and self.direction.y < 0.5 ) and (self.direction.x > -0.5 and self.direction.y > -0.5):
             self.status = 'right'
     
-    
-    
+    # move character based on current direction and sped
     def move(self,speed):
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize();
@@ -191,9 +190,9 @@ class Enemy_C(pygame.sprite.Sprite):
         elif (self.direction.x > -0.5 and self.direction.y < 0.5 ) and (self.direction.x > -0.5 and self.direction.y > -0.5):
             self.status = 'right'
             
-        self.hitbox.x += self.direction.x * speed
+        self.hitbox.x += self.direction.x * speed # horizontal movement 
         self.collision('horizontal')
-        self.hitbox.y += self.direction.y * speed
+        self.hitbox.y += self.direction.y * speed # vertical movement
         self.collision('vertical')
         self.rect.center = self.hitbox.center;   # describes the hitbox for the character
         
@@ -234,6 +233,7 @@ class Enemy_C(pygame.sprite.Sprite):
             
         return False      
     
+    # character to use its assigned weapon to attack
     def use_weapon(self):
             self.command = 'attack'
             

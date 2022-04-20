@@ -150,7 +150,7 @@ class Enemy_A(pygame.sprite.Sprite):
             
         return items
     
-    
+    # actually move the character based on the direction and speed 
     def move(self,speed):
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize();
@@ -168,9 +168,9 @@ class Enemy_A(pygame.sprite.Sprite):
                 self.status = 'right'
                
             
-        self.hitbox.x += self.direction.x * speed
+        self.hitbox.x += self.direction.x * speed # horizontal movement 
         self.collision('horizontal')
-        self.hitbox.y += self.direction.y * speed
+        self.hitbox.y += self.direction.y * speed # vertical movement 
         self.collision('vertical')
         self.rect.center = self.hitbox.center;   # describes the hitbox for the character
     
@@ -199,7 +199,7 @@ class Enemy_A(pygame.sprite.Sprite):
             end_y = self.current_goal[1] * 32;
             endVec = pygame.math.Vector2(end_x, end_y)
             
-            self.direction = (start - endVec).normalize()
+            self.direction = ( endVec - start).normalize()
             
             print("current direction:",self.direction);
             
@@ -241,9 +241,9 @@ class Enemy_A(pygame.sprite.Sprite):
     # check if the character has reached a current goal     
     def check_goal_reached(self):
         if self.current_goal is not None:
-            #print("goal: ",self.current_goal) 
-            #temp_pos = [self.rect.x // 32 , self.rect.y // 32 ]
-            #print('pos: ', temp_pos)
+            print("goal: ",self.current_goal) 
+            temp_pos = [self.rect.x // 32 , self.rect.y // 32 ]
+            print('pos: ', temp_pos)
             
             if self.current_goal[0] == self.rect.x // 32 and self.current_goal[1] == self.rect.y // 32:
                 print("goal reached!")
@@ -306,10 +306,9 @@ class Enemy_A(pygame.sprite.Sprite):
             
         return False        
     
-    
+    # use assigned weapon to attack
     def use_weapon(self):
         self.command = 'attack'
-    
     
     # select a random waypoint to be used as a destination
     def get_waypoint(self):
