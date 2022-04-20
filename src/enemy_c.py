@@ -9,6 +9,7 @@ from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 
+# Class for CPU Character C
 class Enemy_C(pygame.sprite.Sprite):
     def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack, create_block, destroy_block, nav_grid):
         super().__init__(groups)
@@ -34,19 +35,17 @@ class Enemy_C(pygame.sprite.Sprite):
         
         # direction and status vars
         self.status = 'down'
-        self.frame_index = 0;
-        self.animation_speed = 0.15;
+        self.frame_index = 0
+        self.animation_speed = 0.15
         self.direction = pygame.math.Vector2()
-        self.previous_direction = pygame.math.Vector2()
         self.obstacles_sprites = obstacle_sprites
-        self.attacking = False;
+        self.attacking = False
         self.is_weapon_destroyed = True
         self.is_block_destroyed = True
-        self.attack_time = None;
-        self.attack_cooldown = 800;  
-        self.blocking = False;
-        self.block_cooldown = 800;
-        
+        self.attack_time = None
+        self.attack_cooldown = 800 
+        self.blocking = False
+        self.block_cooldown = 800
         self.create_block = create_block
         self.destroy_block = destroy_block
         
@@ -77,15 +76,12 @@ class Enemy_C(pygame.sprite.Sprite):
         
         # the radius at which it is acceptable to move from our ambush location and attack another character
         self.ambush_radius = 400;
-        
         self.ai_stats = {'health': 5000, 'energy': 100, 'attack': 2, 'magic': 5, "speed": 5 }
         self.health = self.ai_stats['health']
         self.speed = self.ai_stats['speed'];
     
     
-    
     def set_location(self,pos):
-        print("cpu c location: " , pos)
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-5);
         
@@ -142,9 +138,8 @@ class Enemy_C(pygame.sprite.Sprite):
             
         return items
 
-    
+    # decide the next action for the cpu character
     def action_controller(self):
-                  
         self.target = self.is_enemy_within_visible_range()
         if self.target is not None:
             temp_dir = self.find_opponent_distance_direction(self.target)
@@ -160,8 +155,7 @@ class Enemy_C(pygame.sprite.Sprite):
             self.get_target_direction()
             self.use_weapon(); 
     
-    
-    
+ 
     # function to check where the current target is located around the CPU
     def get_target_direction(self):
         myVec = pygame.math.Vector2(self.rect.center)
@@ -367,14 +361,14 @@ class Enemy_C(pygame.sprite.Sprite):
     # change the status of the cpu AI to actually animate and execute the action
     def cpu_input(self):
      
-        if self.command == 'attack' and not self.attacking:
+        if self.command == 'attack' and not self.attacking and not self.blocking:
             self.attack_time = pygame.time.get_ticks();
             print("cpu ai C is attacking")
             self.attacking = True;
             self.create_attack()
             self.weapon_sound.play()
         
-        if self.command == 'block' and not self.blocking:
+        if self.command == 'block' and not self.blocking and not self.attacking:
             self.block_time = pygame.time.get_ticks()
             print("cpu ai C is blocking")
             self.blocking = True;
@@ -441,8 +435,6 @@ class Enemy_C(pygame.sprite.Sprite):
             if 'block' in self.status:
                 self.status = self.status.replace('_block', '')
         
-        
-                
     def collision(self,direction):
          # handle horizontal collisions
         if direction == 'horizontal':
@@ -492,11 +484,10 @@ class Enemy_C(pygame.sprite.Sprite):
         self.cpu_input(); # animate based on the command and change cpu status
         self.get_status()        
         self.cool_down();
-        #print("cpu c: ",self.status)
         self.command = '' # reset command after every tick
         self.move(self.speed);
         self.animate();        
-        self.previous_direction = self.direction # save the previous direction 
+        #print("cpu c: ",self.status)
     
     
     

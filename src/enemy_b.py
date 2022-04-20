@@ -5,6 +5,7 @@ from os import walk
 from pathlib import Path
 from math import sin
 
+# Class for CPU Character B
 class Enemy_B(pygame.sprite.Sprite):
     def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack, create_block, destroy_block, nav_grid):
         super().__init__(groups)
