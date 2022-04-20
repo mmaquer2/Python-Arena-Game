@@ -214,35 +214,53 @@ class Enemy_A(pygame.sprite.Sprite):
     def action_controller(self):
         if len(self.current_path) == 0: # if we have no current path, make a new path
             self.make_path();
-        
+            self.current_goal = self.current_path.pop(0) # get the next checkpoint from the current path
+            start = pygame.math.Vector2(self.rect.center)
+            end_x = self.current_goal[0] * 32;
+            end_y = self.current_goal[1] * 32;
+            endVec = pygame.math.Vector2(end_x, end_y)
+            self.direction = (endVec - start).normalize()
 
-    
     def make_path(self):
             # get start and end destinations for a new path
             start_loc = (self.rect.centerx, self.rect.centery)  # this may cause some positions to be out of bounds
             #end_loc = self.get_waypoint();      
             end_loc = [14,2]
-            
             self.plan_path(start_loc,end_loc) # plan a path to that destination
             self.convert_path_to_pixels() # convert the nav_mesh grid to surface coordinates
 
-    # if we've reached a new point along the path, adjust the character's direction
-    def get_new_azimuth(self):
-        if self.current_path:
+    
+    # get the next goal location and direction for the path planning 
+    def get_next_step(self):
+        if self.current_path and self.converted_path:
             self.current_goal = self.current_path.pop(0) # get the next checkpoint from the current path
-            self.get_direction(); # get the next movement direction for the character
+            start = pygame.math.Vector2(self.rect.center)
+            end_x = self.current_goal[0] * 32;
+            end_y = self.current_goal[1] * 32;
+            endVec = pygame.math.Vector2(end_x, end_y)
+            self.direction = (endVec - start).normalize()
+            del self.converted_path[0]; # remove the newly assigned direction from converted_path list
+           
         else:
             # if the path is empty, stop
             self.direction.x = 0
             self.direction.y = 0
+            self.direction = pygame.math.Vector2(0,0)
+            self.converted_path = []
     
+    # check if the character has reached a current goal     
     def check_goal_reached(self):
-        if self.goal_position is not None:
-            if self.goal_position[0] == self.rect.x // 32 and self.goal_position[1] == self.rect.y // 32:
-                self.get_new_azimuth()
-                  
-    
-        # function to check where the current target is located around the CPU
+        if self.current_goal is not None:
+            print("goal: ",self.current_goal) 
+            temp_pos = [self.rect.x // 32 , self.rect.y // 32 ]
+            print('pos: ', temp_pos)
+            
+            if self.current_goal[0] == self.rect.x // 32 and self.current_goal[1] == self.rect.y // 32:
+                print("goal reached!")
+                self.get_next_step()
+
+
+    # function to check where the current target is located around the CPU
     def get_target_direction(self):
         myVec = pygame.math.Vector2(self.rect.center)
         opponentVec = pygame.math.Vector2(self.target.rect.center)
@@ -333,24 +351,15 @@ class Enemy_A(pygame.sprite.Sprite):
         if self.current_path:
             self.converted_path = []
             for coor in self.current_path:   
-                new_x = (coor[0] * 32) + 16
-                new_y = (coor[1] * 32) + 16
-                new_rect = pygame.Rect((new_x - 2, new_y - 2),( 4, 4 ))
+                new_x = (coor[0] * 32) 
+                new_y = (coor[1] * 32) 
+                new_rect = pygame.Rect((new_x , new_y ),( 64, 64 ))
                 self.converted_path.append(new_rect)
-        print(self.converted_path)
         
     
-    # get the current direction the player is facing based on where the next node in the path is
-    def get_direction(self):
-        if self.converted_path:
-            start = pygame.math.Vector2(self.rect.center)
-            end = pygame.math.Vector2(self.converted_path[0].center)
-            self.direction = (end - start).normalize()
-            #print("next direction", self.direction)
-        else:
-            self.direction = pygame.math.Vector2(0,0)
-            self.converted_path = []
-            
+        print(self.converted_path)
+        
+  
     
     # decide whether or not to block from a current attack
     # 25 percent chance to block an attack from an opponent
@@ -369,8 +378,6 @@ class Enemy_A(pygame.sprite.Sprite):
             return True
         else:
             return False
-    
-    
     
     # get damage total from an attacking weapon
     def get_damage(self,damage,weapon_owner_id):
@@ -422,8 +429,6 @@ class Enemy_A(pygame.sprite.Sprite):
             direction = pygame.math.Vector2()
         
         return (distance, direction)
-    
-    
     
     # calculate the total damage of a weapon based on player strength and weapon type
     def get_weapon_damage(self):
@@ -524,17 +529,15 @@ class Enemy_A(pygame.sprite.Sprite):
             self.converted_path = []
             self.current_path = []
     
-    
-
-        
+         
     def update(self):
-        self.action_controller(); # determine the next action for the CPU AI
+        #self.action_controller(); # determine the next action for the CPU AI
         self.cpu_input(); # animate based on the command and change cpu status
         self.get_status()        
         self.cool_down();
         self.move(self.speed);
-        self.rect.center = self.direction * self.speed
-        self.check_goal_reached() # if we have reached our current check point
+        
+        #self.check_goal_reached() # if we have reached our current check point
         self.animate(); 
         self.command = '' # reset the command 
         self.previous_direction = self.direction # save the previous direction  

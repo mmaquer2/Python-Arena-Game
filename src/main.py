@@ -3,7 +3,6 @@ from pathlib import Path
 from settings import *
 from level import Level 
 
-
 # main game loop class
 class Game:
     def __init__(self):
