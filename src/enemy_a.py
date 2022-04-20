@@ -235,18 +235,18 @@ class Enemy_A(pygame.sprite.Sprite):
     
     # get the location of the nearest enemy character
     def find_nearest_enemy(self):
-        nearest_target_distance = 100000;
-        nearest_target = ''
+        current_min = 200000
+        current_target = ''
         # scan through all opponent players for the one with the shortest distance
         for opp in self.opponents:
             myVec = pygame.math.Vector2(self.rect.center)
             opponentVec = pygame.math.Vector2(opp.rect.center)  #calculate the vector between each opp and ai
-            temp_distance = (opponentVec - myVec).magnitude()
-            if temp_distance < nearest_target_distance:
-                nearest_target = opp;
-                
-        return nearest_target;
+            temp_distance = ( myVec - opponentVec).magnitude()
+            if (temp_distance < current_min and opp.health > 0): # find the nearest opponent with health > 0
+                current_target = opp
+                current_min = temp_distance
         
+        return current_target;
     
     # iterate through enemy oppoenents and their locations
     def is_enemy_within_visible_range(self):
