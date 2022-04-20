@@ -194,24 +194,32 @@ class Enemy_A(pygame.sprite.Sprite):
                 self.use_weapon();   
     
             
-        if len(self.current_path) == 0: # if we have no current path, make a new path
+        if len(self.converted_path) == 0: # if we have no current path, make a new path
             self.make_path();
+            self.get_movement_direction();
            
         else:
             self.check_goal_reached() # if we have reached our current check point
             
             
-        
     def make_path(self):
             # get start and end destinations for a new path
+            print("making path")
             x = self.rect.centerx // 32
             y = self.rect.centery // 32
             start_loc = [x,y]  
             end_loc = [14,2]
             self.plan_path(start_loc,end_loc) # plan a path to that destination
             self.convert_path_to_pixels() # convert the nav_mesh grid to surface coordinates
-
-    
+   
+    # check if the character has reached a current goal     
+    def check_goal_reached(self):
+        if self.converted_path:
+            for rect in self.converted_path:
+                if rect.collidepoint(self.rect.center):
+                    del self.converted_path[0]
+                    self.get_movement_direction();
+                    
     # get the next goal location and direction for the path planning    
     def get_movement_direction(self):
         if self.converted_path:
@@ -222,14 +230,7 @@ class Enemy_A(pygame.sprite.Sprite):
             self.direction = pygame.math.Vector2(0,0)
             self.current_path = []
             self.converted_path = []
-    
-    # check if the character has reached a current goal     
-    def check_goal_reached(self):
-        if self.converted_path:
-            for rect in self.converted_path:
-                if rect.collidepoint(self.rect.center):
-                    del self.converted_path[0]
-                    self.get_movement_direction();
+ 
 
     # function to check where the current target is located around the CPU
     def get_target_direction(self):
@@ -483,17 +484,6 @@ class Enemy_A(pygame.sprite.Sprite):
                 self.destroy_block();
                 self.blocking = False;
                 
-    def check_collisions(self):
-        if self.converted_path:
-            for rect in self.converted_path:
-                if rect.collidepoint(self.rect.center):
-                    del self.converted_path[0]
-                    self.get_direction();
-        
-        else:
-            self.converted_path = []
-            self.current_path = []
-    
          
     def update(self):
         self.action_controller(); # determine the next action for the CPU AI
@@ -503,4 +493,3 @@ class Enemy_A(pygame.sprite.Sprite):
         self.move(self.speed);
         self.animate(); 
         self.command = '' # reset the command 
-        print(self.direction)
