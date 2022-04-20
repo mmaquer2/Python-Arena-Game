@@ -294,7 +294,6 @@ class Level:
         if self.cpu_c_attack != None and self.health_cpu_c > 0:
                 self.cpu_c_attack_logic()
         
-        
         self.visible_sprites.update();
     
     

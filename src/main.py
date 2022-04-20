@@ -7,7 +7,6 @@ from level import Level
 # main game loop class
 class Game:
     def __init__(self):
-        
         # set up game window and object 
         pygame.init()
         pygame.display.set_caption('Arena Game by Mike Maquera')
@@ -30,12 +29,11 @@ class Game:
   
         # init game level and map   
         self.level = Level()
-        
         self.paused = False;
     
     # primary game loop
     def run(self):
-        while True:
+        while True:   
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -50,10 +48,12 @@ class Game:
                 
                 if event.type == pygame.KEYDOWN:
                      if event.key == pygame.K_p:
+                        print("Game Paused!")
                         self.paused = True;
                 
                 if event.type == pygame.KEYDOWN:
                      if event.key == pygame.K_u:
+                        print("Game Unaused!")
                         self.paused = False;
                 
                 

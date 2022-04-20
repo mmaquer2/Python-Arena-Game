@@ -488,7 +488,7 @@ class Enemy_C(pygame.sprite.Sprite):
     
         
     def update(self):
-        self.action_controller(); # determine the next action for the CPU AI
+        #self.action_controller(); # determine the next action for the CPU AI
         self.cpu_input(); # animate based on the command and change cpu status
         self.get_status()        
         self.cool_down();

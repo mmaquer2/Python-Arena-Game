@@ -360,13 +360,12 @@ class Player(pygame.sprite.Sprite):
             return 0;
     
     def update(self):
-        
         self.get_status(); # get the current status of the player
         self.input();
         self.animate()
         self.cool_down();
         self.move(self.speed)
-        #print(self.direction)
+        #print(self.rect.x // 32, self.rect.y// 32)
             
         
     

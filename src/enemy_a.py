@@ -80,7 +80,7 @@ class Enemy_A(pygame.sprite.Sprite):
         self.attack_radius = self.local_weapon_data['attack_radius'];
         
         # the ranage/raidus of which being able to detect or "see" other units
-        self.view_radius = 200;
+        self.view_radius = 100;
         
         # the radius at which it is acceptable to move from our ambush location and attack another character
         self.ambush_radius = 400;
@@ -182,7 +182,8 @@ class Enemy_A(pygame.sprite.Sprite):
         self.rect.center = self.hitbox.center;   # describes the hitbox for the character
     
     
-    # plan action and set command for the ai to execute
+    '''
+       # plan action and set command for the ai to execute
     def action_controller(self):
         # if an enemy is spotted while wandering, lock on to their location and attack
         self.target = self.is_enemy_within_visible_range();
@@ -197,20 +198,48 @@ class Enemy_A(pygame.sprite.Sprite):
                 self.use_weapon(); 
         else:
             self.tracking_enemy = False
+            self.make_path();
         
+        if len(self.converted_path) > 0: 
+            self.get_direction(); # get the next step in the current path
         
-        if len(self.converted_path) == 0 and not self.tracking_enemy: # conditions of when to create a new path
-            # get start and end destinations for a new path
-            start_loc = (self.rect.centerx, self.rect.centery)  # this may cause some positions to be out of bounds
-            #print("center vars: ",self.rect.centerx, self.rect.centery)
-            end_loc = self.get_waypoint();      
-            self.plan_path(start_loc,end_loc) # plan a path to that destination
-            self.convert_path_to_pixels() # convert the nav_mesh grid to surface coordinates
-            
-        self.get_direction(); # get the next step in the current path
         if self.is_enemy_within_attack_range():
             self.use_weapon();    
     
+    
+
+    '''
+    
+    # plan action and set command for the ai to execute
+    def action_controller(self):
+        if len(self.current_path) == 0: # if we have no current path, make a new path
+            self.make_path();
+        
+
+    
+    def make_path(self):
+            # get start and end destinations for a new path
+            start_loc = (self.rect.centerx, self.rect.centery)  # this may cause some positions to be out of bounds
+            #end_loc = self.get_waypoint();      
+            end_loc = [14,2]
+            
+            self.plan_path(start_loc,end_loc) # plan a path to that destination
+            self.convert_path_to_pixels() # convert the nav_mesh grid to surface coordinates
+
+    # if we've reached a new point along the path, adjust the character's direction
+    def get_new_azimuth(self):
+        if self.current_path:
+            self.current_goal = self.current_path.pop(0) # get the next checkpoint from the current path
+            self.get_direction(); # get the next movement direction for the character
+        else:
+            # if the path is empty, stop
+            self.direction.x = 0
+            self.direction.y = 0
+    
+    def check_goal_reached(self):
+        if self.goal_position is not None:
+            if self.goal_position[0] == self.rect.x // 32 and self.goal_position[1] == self.rect.y // 32:
+                self.get_new_azimuth()
                   
     
         # function to check where the current target is located around the CPU
@@ -229,8 +258,6 @@ class Enemy_A(pygame.sprite.Sprite):
             
         elif (self.direction.x > -0.5 and self.direction.y < 0.5 ) and (self.direction.x > -0.5 and self.direction.y > -0.5):
             self.status = 'right'
-    
-    
     
     
     # get the location of the nearest enemy character
@@ -277,63 +304,54 @@ class Enemy_A(pygame.sprite.Sprite):
     
     # select a random waypoint to be used as a destination
     def get_waypoint(self):
-        waypoints = [[2,1], [2,34], [32,34],[34,1],[17,9]]
+        waypoints = [[2,3], [2,34], [32,34],[34,1],[17,9]]
         random_int = random.randint(0,4)
-        #print(" random location is: ",waypoints[random_int])
-        goal = waypoints[random_int]
-        goal_x = goal[0] * 32
-        goal_y = goal[1] * 32
-        
-        self.goal_position = [goal_x, goal_y]
-        if self.goal_position == self.previous_goal:
-            self.get_waypoint()
-        else:
-            self.previous_goal = self.goal_position
-        
-        
-        return goal 
-        
-    
+        return waypoints[random_int]
     
     # plan a path using the Astar package       
     def plan_path(self,start,end):
-        
+    
         self.current_path = [] # reset the current_path to empty
         start_x = start[0] // 32  # convert game_space coordinates to nav_mesh coordinates
         start_y = start[1]  // 32 
         end_x = end[0] 
         end_y = end[1] 
-        
-        print("starting convert values: ",start_x, start_y)
         start_node = self.nav_mesh.node(start_y,start_x,)
-        end_node = self.nav_mesh.node(end_y, end_x)
+        end_node = self.nav_mesh.node( end_x,end_y)
         
         # calculate the actual path
         finder = AStarFinder(diagonal_movement = DiagonalMovement.always)
         
         self.current_path, runs = finder.find_path(start_node,end_node,self.nav_mesh)  
+        print("current path", self.current_path)
+        
         self.nav_mesh.cleanup(); # cleanup the previous path to calculate another path
         
         
     # convert the Astar generated path to pixels related to the actual map sprite surface
     def convert_path_to_pixels(self):
-        
-        while len(self.current_path) > 0:      
-            move = self.current_path.pop(0)
-            new_x = (move[0] * 32) + 16
-            new_y = (move[1] * 32) + 16
-            new_rect = pygame.Rect((new_x - 2, new_y - 2),( 4, 4 ))
-            self.converted_path.append(new_rect)
+        if self.current_path:
+            self.converted_path = []
+            for coor in self.current_path:   
+                new_x = (coor[0] * 32) + 16
+                new_y = (coor[1] * 32) + 16
+                new_rect = pygame.Rect((new_x - 2, new_y - 2),( 4, 4 ))
+                self.converted_path.append(new_rect)
+        print(self.converted_path)
         
     
     # get the current direction the player is facing based on where the next node in the path is
     def get_direction(self):
-        if len(self.converted_path) > 1:
+        if self.converted_path:
             start = pygame.math.Vector2(self.rect.center)
-            next_move = self.converted_path.pop(0)
-            end = pygame.math.Vector2(next_move.center)
+            end = pygame.math.Vector2(self.converted_path[0].center)
             self.direction = (end - start).normalize()
+            #print("next direction", self.direction)
+        else:
+            self.direction = pygame.math.Vector2(0,0)
+            self.converted_path = []
             
+    
     # decide whether or not to block from a current attack
     # 25 percent chance to block an attack from an opponent
     def roll_dice_to_block(self):
@@ -344,10 +362,7 @@ class Enemy_A(pygame.sprite.Sprite):
             return False
     
     # roll a virtual die to decide whether or not to flee from an attack, when health drops to below half
-    def flee_from_attack(self):
-        
-        # also roll a random dice here to determine if you should flee or not
-        
+    def flee_from_attack(self):    
         if self.health < self.starting_health // 2 :
             print(self.health)
             print("fleeing from attack")
@@ -497,10 +512,20 @@ class Enemy_A(pygame.sprite.Sprite):
             if current_time - self.block_time >= self.block_cooldown:
                 self.destroy_block();
                 self.blocking = False;
-
- 
-
+                
+    def check_collisions(self):
+        if self.converted_path:
+            for rect in self.converted_path:
+                if rect.collidepoint(self.rect.center):
+                    del self.converted_path[0]
+                    self.get_direction();
+        
+        else:
+            self.converted_path = []
+            self.current_path = []
     
+    
+
         
     def update(self):
         self.action_controller(); # determine the next action for the CPU AI
@@ -508,8 +533,11 @@ class Enemy_A(pygame.sprite.Sprite):
         self.get_status()        
         self.cool_down();
         self.move(self.speed);
+        self.rect.center = self.direction * self.speed
+        self.check_goal_reached() # if we have reached our current check point
         self.animate(); 
         self.command = '' # reset the command 
-        #print("cpu a: ", self.status)       
-        self.previous_direction = self.direction # save the previous direction 
-   
+        self.previous_direction = self.direction # save the previous direction  
+
+        
+        #vprint(self.rect.x // 32, self.rect.y// 32)
