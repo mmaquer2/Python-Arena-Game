@@ -58,15 +58,11 @@ class Enemy_A(pygame.sprite.Sprite):
         self.goal_position = None
         self.previous_goal = None # holder to verify we aren't moving to our current location
         
-        
-
-    
         self.command = ""
         self.inCollision = False; # status in if in a collision or not
         self.target = None; # this is the current target unit of the AI
         self.tracking_enemy = False;
         
-
         # weapon assignment and selection
         self.create_attack = create_attack;
         weaponRandomAssignment = random.randint(0,len(weapon_data) - 1);
@@ -181,10 +177,10 @@ class Enemy_A(pygame.sprite.Sprite):
         self.collision('vertical')
         self.rect.center = self.hitbox.center;   # describes the hitbox for the character
     
-    
-    '''
-       # plan action and set command for the ai to execute
+
+    # plan action and set command for the ai to execute
     def action_controller(self):
+        
         # if an enemy is spotted while wandering, lock on to their location and attack
         self.target = self.is_enemy_within_visible_range();
         if self.target is not None:
@@ -195,35 +191,36 @@ class Enemy_A(pygame.sprite.Sprite):
             if self.is_enemy_within_attack_range():
                 self.converted_path = [] # empty the path again 
                 self.get_target_direction();
-                self.use_weapon(); 
-        else:
-            self.tracking_enemy = False
-            self.make_path();
-        
-        if len(self.converted_path) > 0: 
-            self.get_direction(); # get the next step in the current path
-        
-        if self.is_enemy_within_attack_range():
-            self.use_weapon();    
+                self.use_weapon();   
     
-    
-
-    '''
-    
-    # plan action and set command for the ai to execute
-    def action_controller(self):
+            
         if len(self.current_path) == 0: # if we have no current path, make a new path
             self.make_path();
             self.current_goal = self.current_path.pop(0) # get the next checkpoint from the current path
             start = pygame.math.Vector2(self.rect.center)
+            
+            print(self.rect.center)
+            
             end_x = self.current_goal[0] * 32;
             end_y = self.current_goal[1] * 32;
             endVec = pygame.math.Vector2(end_x, end_y)
-            self.direction = (endVec - start).normalize()
+            print(self.current_goal)
+            self.direction = (start - endVec).normalize()
+            print("current direction:",self.direction);
+            
+        else:
+            self.check_goal_reached() # if we have reached our current check point
+            
+            
+            
 
     def make_path(self):
             # get start and end destinations for a new path
-            start_loc = (self.rect.centerx, self.rect.centery)  # this may cause some positions to be out of bounds
+            start_loc = [self.rect.x // 32 , self.rect.y // 32]  # this may cause some positions to be out of bounds
+            
+            #print("rect cpu a divide by 32",self.rect.x // 32 , self.rect.y // 32)
+            
+            
             #end_loc = self.get_waypoint();      
             end_loc = [14,2]
             self.plan_path(start_loc,end_loc) # plan a path to that destination
@@ -234,15 +231,17 @@ class Enemy_A(pygame.sprite.Sprite):
     def get_next_step(self):
         if self.current_path and self.converted_path:
             self.current_goal = self.current_path.pop(0) # get the next checkpoint from the current path
+            print("new goal:", self.current_goal)
             start = pygame.math.Vector2(self.rect.center)
             end_x = self.current_goal[0] * 32;
             end_y = self.current_goal[1] * 32;
             endVec = pygame.math.Vector2(end_x, end_y)
-            self.direction = (endVec - start).normalize()
+            
+            self.direction = (endVec - start)
             del self.converted_path[0]; # remove the newly assigned direction from converted_path list
            
         else:
-            # if the path is empty, stop
+            # if the path is empty, stop moving
             self.direction.x = 0
             self.direction.y = 0
             self.direction = pygame.math.Vector2(0,0)
@@ -251,12 +250,13 @@ class Enemy_A(pygame.sprite.Sprite):
     # check if the character has reached a current goal     
     def check_goal_reached(self):
         if self.current_goal is not None:
-            print("goal: ",self.current_goal) 
-            temp_pos = [self.rect.x // 32 , self.rect.y // 32 ]
-            print('pos: ', temp_pos)
+            #print("goal: ",self.current_goal) 
+            #temp_pos = [self.rect.x // 32 , self.rect.y // 32 ]
+            #print('pos: ', temp_pos)
             
             if self.current_goal[0] == self.rect.x // 32 and self.current_goal[1] == self.rect.y // 32:
                 print("goal reached!")
+                print(self.direction);
                 self.get_next_step()
 
 
@@ -330,11 +330,11 @@ class Enemy_A(pygame.sprite.Sprite):
     def plan_path(self,start,end):
     
         self.current_path = [] # reset the current_path to empty
-        start_x = start[0] // 32  # convert game_space coordinates to nav_mesh coordinates
-        start_y = start[1]  // 32 
+        start_x = start[0]   # convert game_space coordinates to nav_mesh coordinates
+        start_y = start[1]   
         end_x = end[0] 
         end_y = end[1] 
-        start_node = self.nav_mesh.node(start_y,start_x,)
+        start_node = self.nav_mesh.node(start_x,start_y)
         end_node = self.nav_mesh.node( end_x,end_y)
         
         # calculate the actual path
@@ -457,7 +457,6 @@ class Enemy_A(pygame.sprite.Sprite):
             if 'attack' in self.status:
                 self.status = self.status.replace('_attack', '')
         
-        
         # handle block to idle transition
         if self.blocking:
             self.direction.x = 0;
@@ -472,7 +471,6 @@ class Enemy_A(pygame.sprite.Sprite):
         else:
             if 'block' in self.status:
                 self.status = self.status.replace('_block', '')
-        
         
                 
     def collision(self,direction):
@@ -531,16 +529,11 @@ class Enemy_A(pygame.sprite.Sprite):
     
          
     def update(self):
-        #self.action_controller(); # determine the next action for the CPU AI
+        self.action_controller(); # determine the next action for the CPU AI
         self.cpu_input(); # animate based on the command and change cpu status
         self.get_status()        
         self.cool_down();
         self.move(self.speed);
-        
-        #self.check_goal_reached() # if we have reached our current check point
         self.animate(); 
         self.command = '' # reset the command 
-        self.previous_direction = self.direction # save the previous direction  
-
-        
-        #vprint(self.rect.x // 32, self.rect.y// 32)
+        print(self.direction)
