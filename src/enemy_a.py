@@ -198,7 +198,7 @@ class Enemy_A(pygame.sprite.Sprite):
         
         if len(self.converted_path) == 0: # if we have no current path, make a new path
            self.make_path();
-           self.direction = self.get_movement_direction();
+           self.get_movement_direction();
            
         else:
             pass
@@ -211,7 +211,8 @@ class Enemy_A(pygame.sprite.Sprite):
             x = self.rect.centerx // 64 # divide location by map tile size of 64
             y = self.rect.centery // 64
             start_loc = [x,y]  
-            end_loc = [14,2]
+            end_loc = self.get_waypoint()
+            
             self.plan_path(start_loc,end_loc) # plan a path to that destination
             self.create_surface_checkpoints() # convert the nav_mesh grid to surface coordinates
    
@@ -228,12 +229,12 @@ class Enemy_A(pygame.sprite.Sprite):
         if self.converted_path:
             start = pygame.math.Vector2(self.rect.center)
             end = pygame.math.Vector2(self.converted_path[0].center)
-            return (end - start).normalize()
+            self.direction = (end - start).normalize()
         else:
             
             self.current_path = []
             self.converted_path = []
-            return pygame.math.Vector2(0,0)
+            self.direction = pygame.math.Vector2(0,0)
 
     # function to check where the current target is located around the CPU
     def get_target_direction(self):
@@ -324,7 +325,7 @@ class Enemy_A(pygame.sprite.Sprite):
             for coor in self.current_path:   
                 new_x = (coor[0] * 64) + 32
                 new_y = (coor[1] * 64) + 32
-                new_rect = pygame.Rect((new_x , new_y ),( 32,32 ))  # create a large enough checkpoint rect to colide with
+                new_rect = pygame.Rect((new_x - 4 , new_y - 4 ),( 32,32 ))  # create a large enough checkpoint rect to colide with
                 self.converted_path.append(new_rect)
         
         print(self.converted_path)
@@ -495,4 +496,4 @@ class Enemy_A(pygame.sprite.Sprite):
         self.move(self.speed);
         self.animate(); 
         self.command = '' # reset the command 
-        print(self.direction)
+        
