@@ -177,37 +177,31 @@ class Enemy_A(pygame.sprite.Sprite):
         self.collision('vertical')
         self.rect.center = self.hitbox.center;   # describes the hitbox for the character
     
-    
-    '''
-     # if an enemy is spotted while wandering, lock on to their location and attack
-        self.target = self.is_enemy_within_visible_range();
-        if self.target is not None:
-            temp_dir = self.find_opponent_distance_direction(self.target)
-            self.direction = temp_dir[1]
-            self.tracking_enemy = True
-            self.converted_path = []  # empty the path if we decided to attack an enemy
-            if self.is_enemy_within_attack_range():
-                self.converted_path = [] # empty the path again 
-                self.get_target_direction();
-                self.use_weapon();   
-    
-    '''
-
     # plan action and set command for the ai to execute
     def action_controller(self):
         
-        if len(self.converted_path) == 0: # if we have no current path, make a new path
+        if self.target is None and len(self.converted_path) == 0: # if we have no current path, make a new path
            self.make_path();
            self.get_movement_direction();
-           
-        else:
-            pass
-            #self.check_goal_reached() # if we have reached our current check point
+        
+        if len(self.converted_path) > 0 and self.target is None: # resume patroling once combat is complete 
+            self.get_movement_direction()
+            self.check_goal_reached()  
+            
+        self.target = self.is_enemy_within_visible_range();
+        if self.target is not None:
+            self.converted_path = [] # empty the checkpoint path so it will reset if the target moves out of visual range
+            temp_dir = self.find_opponent_distance_direction(self.target)
+            self.direction = temp_dir[1]
+            if self.is_enemy_within_attack_range():
+                self.converted_path = [] # empty the path again 
+                self.get_target_direction();
+                self.use_weapon();  
+        
             
             
     def make_path(self):
             # get start and end destinations for a new path
-            print("making path")
             x = self.rect.centerx // 64 # divide location by map tile size of 64
             y = self.rect.centery // 64
             start_loc = [x,y]  
@@ -298,8 +292,8 @@ class Enemy_A(pygame.sprite.Sprite):
     
     # select a random waypoint to be used as a destination for the CPU 
     def get_waypoint(self):
-        waypoints = [[2,3], [2,34], [32,34],[34,1],[17,9]]
-        random_int = random.randint(0,4)
+        waypoints = [[2,3], [17,9], [17,9]]
+        random_int = random.randint(0,2)
         return waypoints[random_int]
     
     # plan a path using the Astar package       
@@ -314,7 +308,7 @@ class Enemy_A(pygame.sprite.Sprite):
         finder = AStarFinder() # calculate the actual path
         
         self.current_path, runs = finder.find_path(start_node,end_node,self.nav_mesh)  
-        print("current path", self.current_path)
+        #print("current path", self.current_path)
         self.nav_mesh.cleanup(); # cleanup the previous path to calculate another path
         
         
@@ -328,7 +322,7 @@ class Enemy_A(pygame.sprite.Sprite):
                 new_rect = pygame.Rect((new_x - 4 , new_y - 4 ),( 32,32 ))  # create a large enough checkpoint rect to colide with
                 self.converted_path.append(new_rect)
         
-        print(self.converted_path)
+        #print(self.converted_path)
         
    
     # decide whether or not to block from a current attack
@@ -339,16 +333,7 @@ class Enemy_A(pygame.sprite.Sprite):
             return True;
         else:
             return False
-    
-    # roll a virtual die to decide whether or not to flee from an attack, when health drops to below half
-    def flee_from_attack(self):    
-        if self.health < self.starting_health // 2 :
-            print(self.health)
-            print("fleeing from attack")
-            return True
-        else:
-            return False
-    
+        
     # get damage total from an attacking weapon
     def get_damage(self,damage,weapon_owner_id):
         if self.blocking == False and weapon_owner_id != self.id:
@@ -489,11 +474,11 @@ class Enemy_A(pygame.sprite.Sprite):
          
     def update(self):
         self.action_controller(); # determine the next action for the CPU AI
-        self.check_goal_reached()
         self.cpu_input(); # animate based on the command and change cpu status
         self.get_status()        
         self.cool_down();
         self.move(self.speed);
         self.animate(); 
         self.command = '' # reset the command 
+
         
