@@ -48,6 +48,7 @@ class Enemy_C(pygame.sprite.Sprite):
         self.block_cooldown = 800
         self.create_block = create_block
         self.destroy_block = destroy_block
+        self.fleeing = False
         
         # declare the nav_grid for pathfinding
         self.nav_mesh = Grid(matrix = nav_grid)
@@ -78,6 +79,7 @@ class Enemy_C(pygame.sprite.Sprite):
         self.ambush_radius = 400;
         self.ai_stats = {'health': 5000, 'energy': 100, 'attack': 2, 'magic': 5, "speed": 5 }
         self.health = self.ai_stats['health']
+        self.starting_health = self.health # record what the health was started at to judge when/if to flee an attack
         self.speed = self.ai_stats['speed'];
     
     
@@ -141,21 +143,40 @@ class Enemy_C(pygame.sprite.Sprite):
     # decide the next action for the cpu character
     def action_controller(self):
         self.target = self.is_enemy_within_visible_range()
-        if self.target is not None:
+        if self.target is not None and not self.fleeing:
             temp_dir = self.find_opponent_distance_direction(self.target)
             self.direction = temp_dir[1] # move towards the enemy 
             if self.is_enemy_within_attack_range():
                 self.get_target_direction(); 
                 self.use_weapon() # attack if you are in range 
             
-        else:
-            self.direction = self.previous_direction;
-            
-        if self.is_enemy_within_attack_range():
+        if not self.fleeing and self.is_enemy_within_attack_range():
             self.get_target_direction()
             self.use_weapon(); 
+        
+        # roll dice to see if the CPU should flee
+        if not self.fleeing and self.roll_dice_to_flee() :
+            self.fleeing = True
+            self.make_path(); # init pathfinding sequence to flee to a random locaiton
+            self.get_movement_direction();
+        
+        # if fleeing is in process check the current path
+        if self.fleeing:
+            self.check_goal_reached()  
+            
     
- 
+        # roll a virtual die to determine to flee from an attack
+    def roll_dice_to_flee(self):
+        if self.health < self.starting_health // 2 :
+            # roll a random die to decide whether to flee or not
+            #rand_num = random.randint(0,30)
+            # if rand_mum < 18:
+            print(" cpu c fleeing from attack")
+            return True
+        else:
+            return False
+    
+    
     # function to check where the current target is located around the CPU
     def get_target_direction(self):
         myVec = pygame.math.Vector2(self.rect.center)
@@ -236,85 +257,77 @@ class Enemy_C(pygame.sprite.Sprite):
     # character to use its assigned weapon to attack
     def use_weapon(self):
             self.command = 'attack'
-            
     
-    # select a random waypoint to be used as a destination
+    
+    def make_path(self):
+            # get start and end destinations for a new path
+            x = self.rect.centerx // 64 # divide location by map tile size of 64
+            y = self.rect.centery // 64
+            start_loc = [x,y]  
+            end_loc = self.get_waypoint()
+            self.plan_path(start_loc,end_loc) # plan a path to that destination
+            self.create_surface_checkpoints() # convert the nav_mesh grid to surface coordinates
+    
+    
+    # select a random waypoint to be used as a destination for the CPU 
     def get_waypoint(self):
-        waypoints = [[2,1], [2,34], [32,34],[34,1],[17,9]]
-        random_int = random.randint(0,4)
-        #print(" random location is: ",waypoints[random_int])
-        goal = waypoints[random_int]
-        goal_x = goal[0] * 32
-        goal_y = goal[1] * 32
-        
-        self.goal_position = [goal_x, goal_y]
-        if self.goal_position == self.previous_goal:
-            self.get_waypoint()
-        else:
-            self.previous_goal = self.goal_position
-        
-        
-        return goal 
-        
-    
+        waypoints = [[2,3], [17,9], [17,9]]
+        random_int = random.randint(0,2)
+        return waypoints[random_int]
     
     # plan a path using the Astar package       
     def plan_path(self,start,end):
-        
         self.current_path = [] # reset the current_path to empty
-        start_x = start[0] // 32  # convert game_space coordinates to nav_mesh coordinates
-        start_y = start[1]  // 32 
+        start_x = start[0]   # convert game_space coordinates to nav_mesh coordinates
+        start_y = start[1]   
         end_x = end[0] 
         end_y = end[1] 
-        
-        print("starting convert values: ",start_x, start_y)
-        start_node = self.nav_mesh.node(start_y,start_x,)
-        end_node = self.nav_mesh.node(end_y, end_x)
-        
-        # calculate the actual path
-        finder = AStarFinder(diagonal_movement = DiagonalMovement.always)
-        
+        start_node = self.nav_mesh.node(start_x,start_y)
+        end_node = self.nav_mesh.node( end_x,end_y)
+        finder = AStarFinder() # calculate the actual path
         self.current_path, runs = finder.find_path(start_node,end_node,self.nav_mesh)  
-        self.nav_mesh.cleanup(); 
-        
-        
-    # convert the Astar generated path to pixels related to the actual map sprite surface
-    def convert_path_to_pixels(self):
-        
-        while len(self.current_path) > 0:      
-            move = self.current_path.pop(0)
-            new_x = (move[0] * 32) + 16
-            new_y = (move[1] * 32) + 16
-            new_rect = pygame.Rect((new_x - 2, new_y - 2),( 4, 4 ))
-            self.converted_path.append(new_rect)
-        
+        self.nav_mesh.cleanup(); # cleanup the previous path to calculate another path
     
-    # get the current direction the player is facing based on where the next node in the path is
-    def get_direction(self):
-        
-        if len(self.converted_path) > 1:
+    # convert the Astar generated path into a series of checkpoints on the map surface
+    def create_surface_checkpoints(self):
+        if self.current_path:
+            self.converted_path = []
+            for coor in self.current_path:   
+                new_x = (coor[0] * 64) + 32
+                new_y = (coor[1] * 64) + 32
+                new_rect = pygame.Rect((new_x - 4 , new_y - 4 ),( 32,32 ))  # create a large enough checkpoint rect to colide with
+                self.converted_path.append(new_rect)
+    
+    
+    # check if the character has reached a current goal     
+    def check_goal_reached(self):
+        if self.converted_path:
+            for rect in self.converted_path:
+                if rect.collidepoint(self.rect.center):
+                    del self.converted_path[0]
+                    
+    
+    # get the next goal location and direction for the path planning    
+    def get_movement_direction(self):
+        if self.converted_path:
             start = pygame.math.Vector2(self.rect.center)
-            next_move = self.converted_path.pop(0)
-            end = pygame.math.Vector2(next_move.center)
+            end = pygame.math.Vector2(self.converted_path[0].center)
             self.direction = (end - start).normalize()
-            
-        
-        # create a new waypoint and new path once the
         else:
-            pass
-        
-    
+            self.fleeing = False # set to action controller state that the character is no longer in a fleeing mode
+            self.current_path = []
+            self.converted_path = []
+            self.direction = pygame.math.Vector2(0,0)
+            
+ 
     # get damage total from an attacking weapon
     def get_damage(self,damage,weapon_owner_id):
         if self.blocking == False and weapon_owner_id != self.id:
             print("cpu c is taking damage", self.health)
             self.health = self.health - damage;
             
-            if self.roll_dice_to_block():
-                self.command = 'block'
-            
-            
-            
+            #if self.roll_dice_to_block():
+            #    self.command = 'block'
             
             self.damage_sound.play();  
             self.check_death()
@@ -328,14 +341,7 @@ class Enemy_C(pygame.sprite.Sprite):
         else:
             return False
     
-    # roll a virtual die to determine to flee from an attack
-    def roll_dice_to_flee(self):
-        if self.health < self.starting_health // 2 :
-            print(self.health)
-            print("fleeing from attack")
-            return True
-        else:
-            return False
+
         
     
     # select a random waypoint to be used as a destination to flee from an attack
@@ -480,7 +486,7 @@ class Enemy_C(pygame.sprite.Sprite):
     
         
     def update(self):
-        #self.action_controller(); # determine the next action for the CPU AI
+        self.action_controller(); # determine the next action for the CPU AI
         self.cpu_input(); # animate based on the command and change cpu status
         self.get_status()        
         self.cool_down();

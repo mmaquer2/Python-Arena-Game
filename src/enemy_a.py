@@ -197,16 +197,13 @@ class Enemy_A(pygame.sprite.Sprite):
                 self.converted_path = [] # empty the path again 
                 self.get_target_direction();
                 self.use_weapon();  
-        
-            
-            
+                
     def make_path(self):
             # get start and end destinations for a new path
             x = self.rect.centerx // 64 # divide location by map tile size of 64
             y = self.rect.centery // 64
             start_loc = [x,y]  
             end_loc = self.get_waypoint()
-            
             self.plan_path(start_loc,end_loc) # plan a path to that destination
             self.create_surface_checkpoints() # convert the nav_mesh grid to surface coordinates
    
@@ -322,7 +319,7 @@ class Enemy_A(pygame.sprite.Sprite):
                 new_rect = pygame.Rect((new_x - 4 , new_y - 4 ),( 32,32 ))  # create a large enough checkpoint rect to colide with
                 self.converted_path.append(new_rect)
         
-        #print(self.converted_path)
+      
         
    
     # decide whether or not to block from a current attack
@@ -473,7 +470,7 @@ class Enemy_A(pygame.sprite.Sprite):
                 
          
     def update(self):
-        self.action_controller(); # determine the next action for the CPU AI
+        #self.action_controller(); # determine the next action for the CPU AI
         self.cpu_input(); # animate based on the command and change cpu status
         self.get_status()        
         self.cool_down();

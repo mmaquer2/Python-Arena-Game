@@ -16,7 +16,7 @@ class Game:
           
         # set game icon on window tab 
         icon_path = Path('sprites/characters/player/down_idle/idle_down.png') 
-        icon = pygame.image.load(icon_path)
+        icon = pygame.image.load(icon_path)    
         pygame.display.set_icon(icon)
         self.clock = pygame.time.Clock()
                
