@@ -190,6 +190,11 @@ class Enemy_B(pygame.sprite.Sprite):
         for opp in self.opponents:
             myVec = pygame.math.Vector2(self.rect.center)
             opponentVec = pygame.math.Vector2(opp.rect.center)  #calculate the vector between each opp and ai
+            
+            print("cpu b loc ", myVec)
+            print("opp loc ",opponentVec)
+            
+            
             temp_distance = ( myVec - opponentVec).magnitude()
             if (temp_distance < current_min and opp.health > 0): # find the nearest opponent with health > 0
                 current_target = opp
@@ -362,20 +367,7 @@ class Enemy_B(pygame.sprite.Sprite):
                 self.blocking = False;
 
     
-    def flicker(self):
-        alpha = self.flicker_value();
-        self.image.set_alpha(alpha)
-        
-    
-    def flicker_value(self):
-        value = sin(pygame.time.get_ticks())
-        if value >= 0:
-            return 255;
-        else:
-            return 0;
-    
-    
-    
+  
     
     def update(self):
         #self.action_controller(); # determine the next action for the CPU AI
@@ -386,4 +378,5 @@ class Enemy_B(pygame.sprite.Sprite):
         self.animate();    
         self.command = '' # rest the command     
         self.previous_direction = self.direction # save the previous direction 
+        
         

@@ -19,7 +19,7 @@ class Enemy_A(pygame.sprite.Sprite):
         # import starting sprite
         idle_down_folder = Path('sprites/characters/cpu_a/down_idle/idle_down.png')
         self.image_import = pygame.image.load(idle_down_folder) # import image 
-        self.image = pygame.transform.scale(self.image_import,(60,60));   # scale sprite sheet
+        self.image = pygame.transform.scale(self.image_import,(64,64));   # scale sprite sheet
         self.rect = self.image.get_rect(center = (60,60))
         
         self.import_animations()  # load animations
@@ -177,11 +177,9 @@ class Enemy_A(pygame.sprite.Sprite):
         self.collision('vertical')
         self.rect.center = self.hitbox.center;   # describes the hitbox for the character
     
-
-    # plan action and set command for the ai to execute
-    def action_controller(self):
-        
-        # if an enemy is spotted while wandering, lock on to their location and attack
+    
+    '''
+     # if an enemy is spotted while wandering, lock on to their location and attack
         self.target = self.is_enemy_within_visible_range();
         if self.target is not None:
             temp_dir = self.find_opponent_distance_direction(self.target)
@@ -193,24 +191,29 @@ class Enemy_A(pygame.sprite.Sprite):
                 self.get_target_direction();
                 self.use_weapon();   
     
-            
+    '''
+
+    # plan action and set command for the ai to execute
+    def action_controller(self):
+        
         if len(self.converted_path) == 0: # if we have no current path, make a new path
-            self.make_path();
-            self.get_movement_direction();
+           self.make_path();
+           self.direction = self.get_movement_direction();
            
         else:
-            self.check_goal_reached() # if we have reached our current check point
+            pass
+            #self.check_goal_reached() # if we have reached our current check point
             
             
     def make_path(self):
             # get start and end destinations for a new path
             print("making path")
-            x = self.rect.centerx // 32
-            y = self.rect.centery // 32
+            x = self.rect.centerx // 64 # divide location by map tile size of 64
+            y = self.rect.centery // 64
             start_loc = [x,y]  
             end_loc = [14,2]
             self.plan_path(start_loc,end_loc) # plan a path to that destination
-            self.convert_path_to_pixels() # convert the nav_mesh grid to surface coordinates
+            self.create_surface_checkpoints() # convert the nav_mesh grid to surface coordinates
    
     # check if the character has reached a current goal     
     def check_goal_reached(self):
@@ -225,12 +228,12 @@ class Enemy_A(pygame.sprite.Sprite):
         if self.converted_path:
             start = pygame.math.Vector2(self.rect.center)
             end = pygame.math.Vector2(self.converted_path[0].center)
-            self.direction = (end - start).normalize()
+            return (end - start).normalize()
         else:
-            self.direction = pygame.math.Vector2(0,0)
+            
             self.current_path = []
             self.converted_path = []
- 
+            return pygame.math.Vector2(0,0)
 
     # function to check where the current target is located around the CPU
     def get_target_direction(self):
@@ -292,7 +295,7 @@ class Enemy_A(pygame.sprite.Sprite):
         self.command = 'attack'
     
     
-    # select a random waypoint to be used as a destination
+    # select a random waypoint to be used as a destination for the CPU 
     def get_waypoint(self):
         waypoints = [[2,3], [2,34], [32,34],[34,1],[17,9]]
         random_int = random.randint(0,4)
@@ -307,28 +310,26 @@ class Enemy_A(pygame.sprite.Sprite):
         end_y = end[1] 
         start_node = self.nav_mesh.node(start_x,start_y)
         end_node = self.nav_mesh.node( end_x,end_y)
-        finder = AStarFinder(diagonal_movement = DiagonalMovement.always) # calculate the actual path
+        finder = AStarFinder() # calculate the actual path
         
         self.current_path, runs = finder.find_path(start_node,end_node,self.nav_mesh)  
         print("current path", self.current_path)
         self.nav_mesh.cleanup(); # cleanup the previous path to calculate another path
         
         
-    # convert the Astar generated path to pixels related to the actual map sprite surface
-    def convert_path_to_pixels(self):
+    # convert the Astar generated path into a series of checkpoints on the map surface
+    def create_surface_checkpoints(self):
         if self.current_path:
             self.converted_path = []
             for coor in self.current_path:   
-                new_x = (coor[0] * 32) + 16
-                new_y = (coor[1] * 32) + 16
-                new_rect = pygame.Rect((new_x , new_y ),( 4, 4 ))
+                new_x = (coor[0] * 64) + 32
+                new_y = (coor[1] * 64) + 32
+                new_rect = pygame.Rect((new_x , new_y ),( 32,32 ))  # create a large enough checkpoint rect to colide with
                 self.converted_path.append(new_rect)
         
-    
         print(self.converted_path)
         
-  
-    
+   
     # decide whether or not to block from a current attack
     # 25 percent chance to block an attack from an opponent
     def roll_dice_to_block(self):
@@ -487,9 +488,11 @@ class Enemy_A(pygame.sprite.Sprite):
          
     def update(self):
         self.action_controller(); # determine the next action for the CPU AI
+        self.check_goal_reached()
         self.cpu_input(); # animate based on the command and change cpu status
         self.get_status()        
         self.cool_down();
         self.move(self.speed);
         self.animate(); 
         self.command = '' # reset the command 
+        print(self.direction)
