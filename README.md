@@ -14,7 +14,6 @@
 - CPU B, aggressive, cpu b will immediately lock onto the neartest character then attack until it wins or is defeated.
 - CPU C, timid, will hide and attempt to "ambush" players when they walk into a range near the character and attempt to flee when its health level drops below a certain threshold
 
-- Pathfinding:
 - Pathfinding was implemented using the python core libraries 
 
 ## Setup and Settings
@@ -55,8 +54,6 @@ python main.py
 - https://pypi.org/project/pathfinding/
 - Special Thanks to the clear code youtube channel, for providing starter code and boilerplate for the game main loop 
 - Pixel ninja on itch.io ( https://pixel-boy.itch.io/ninja-adventure-asset-pack ) for providing free art assets used for the game's characters and environment 
-- Procedural Content Generation using Behavior Trees (PCGBT) by 
-Anurag Sarkar and Seth Cooper
 
 
 
