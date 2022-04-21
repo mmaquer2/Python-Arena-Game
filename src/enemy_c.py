@@ -155,13 +155,14 @@ class Enemy_C(pygame.sprite.Sprite):
             self.use_weapon(); 
         
         # roll dice to see if the CPU should flee
-        if not self.fleeing and self.roll_dice_to_flee() :
+        if not self.fleeing and self.roll_dice_to_flee():
             self.fleeing = True
             self.make_path(); # init pathfinding sequence to flee to a random locaiton
             self.get_movement_direction();
         
         # if fleeing is in process check the current path
         if self.fleeing:
+            self.get_movement_direction()
             self.check_goal_reached()  
             
     
@@ -271,8 +272,8 @@ class Enemy_C(pygame.sprite.Sprite):
     
     # select a random waypoint to be used as a destination for the CPU 
     def get_waypoint(self):
-        waypoints = [[2,3], [17,9], [17,9]]
-        random_int = random.randint(0,2)
+        waypoints = [[2,3], [17,9]]
+        random_int = random.randint(0,1)
         return waypoints[random_int]
     
     # plan a path using the Astar package       
@@ -281,9 +282,11 @@ class Enemy_C(pygame.sprite.Sprite):
         start_x = start[0]   # convert game_space coordinates to nav_mesh coordinates
         start_y = start[1]   
         end_x = end[0] 
-        end_y = end[1] 
+        end_y = end[1]
+        print(start, end) 
         start_node = self.nav_mesh.node(start_x,start_y)
         end_node = self.nav_mesh.node( end_x,end_y)
+        
         finder = AStarFinder() # calculate the actual path
         self.current_path, runs = finder.find_path(start_node,end_node,self.nav_mesh)  
         self.nav_mesh.cleanup(); # cleanup the previous path to calculate another path
@@ -340,21 +343,6 @@ class Enemy_C(pygame.sprite.Sprite):
             return True;
         else:
             return False
-    
-
-        
-    
-    # select a random waypoint to be used as a destination to flee from an attack
-    def get_waypoint(self):
-        waypoints = [[2,1], [2,34], [32,34],[34,1],[17,9]]
-        random_int = random.randint(0,4)
-        #print(" random location is: ",waypoints[random_int])
-        goal = waypoints[random_int]
-        goal_x = goal[0] * 32
-        goal_y = goal[1] * 32
-        
-        return [goal_x, goal_y]
-    
     
     # check if health is 0 and character has died
     def check_death(self):
