@@ -9,13 +9,13 @@
 - **Note** This program will only work on a windows system due to file path constraints, I have not yet transferred the code to a common file path system
 
 ## CPU AI Behavior: 
-    - The CPU AI are given each a different personality to drive their behaviour during the game.
-    - CPU A, balenced, cpu A will wander around the map and attempt to look for an enemy to attack, and will lock onto a character within its viewable range, then attempt to attack
-    - CPU B, aggressive, cpu b will immediately lock onto the neartest character then attack until it wins or is defeated.
-    - CPU C, timid, cpu c will hide and attempt to "ambush" players when they walk into a range near the character
+- The CPU AI are given each a different personality to drive their behaviour during the game.
+- CPU A, balenced, cpu A will wander around the map and attempt to look for an enemy to attack, and will lock onto a character within its viewable range, then attempt to attack
+- CPU B, aggressive, cpu b will immediately lock onto the neartest character then attack until it wins or is defeated.
+- CPU C, timid, will hide and attempt to "ambush" players when they walk into a range near the character and attempt to flee when its health level drops below a certain threshold
 
-    - Pathfinding:
-        - Pathfinding was implemented using the python core libraries 
+- Pathfinding:
+- Pathfinding was implemented using the python core libraries 
 
 ## Setup and Settings
 - Download the source directory onto your machine 
@@ -44,7 +44,6 @@ python main.py
 ``` 
 
 ## Controls
-
 - movement, arrow keys
 - primary attack, space bar
 - block/defend, b letter key
