@@ -329,8 +329,8 @@ class Enemy_C(pygame.sprite.Sprite):
             print("cpu c is taking damage", self.health)
             self.health = self.health - damage;
             
-            #if self.roll_dice_to_block():
-            #    self.command = 'block'
+            if self.roll_dice_to_block():
+                self.command = 'block'
             
             self.damage_sound.play();  
             self.check_death()
