@@ -1,7 +1,7 @@
 # 2d Zelda-like arena game with assinged NPC AI personalities
 
 
-[Image]
+[https://github.com/mmaquer2/Python-Arena-Game/blob/main/src/sprites/screen_shot.png]
 
 ## Description: 
 - This served as a final Project for CS5150 (Game AI) at Northeastern University, Spring 2022. The project is a 2d arena fighting game with action rpg mechanics. The game contains 3 NPC characters and one human player. Each is randomly assigned a weapon, and is placed in the map all to fight each other until a single victor emerges.
