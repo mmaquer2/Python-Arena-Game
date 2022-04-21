@@ -189,12 +189,7 @@ class Enemy_B(pygame.sprite.Sprite):
         # scan through all opponent players for the one with the shortest distance
         for opp in self.opponents:
             myVec = pygame.math.Vector2(self.rect.center)
-            opponentVec = pygame.math.Vector2(opp.rect.center)  #calculate the vector between each opp and ai
-            
-            print("cpu b loc ", myVec)
-            print("opp loc ",opponentVec)
-            
-            
+            opponentVec = pygame.math.Vector2(opp.rect.center)  #calculate the vector between each opp and ai        
             temp_distance = ( myVec - opponentVec).magnitude()
             if (temp_distance < current_min and opp.health > 0): # find the nearest opponent with health > 0
                 current_target = opp
