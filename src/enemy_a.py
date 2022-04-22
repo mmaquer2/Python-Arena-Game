@@ -50,6 +50,7 @@ class Enemy_A(pygame.sprite.Sprite):
         self.block_cooldown = 800;
         self.create_block = create_block
         self.destroy_block = destroy_block
+        self.fleeing = False
         
         # declare the nav_grid for pathfinding
         self.nav_mesh = Grid(matrix = nav_grid)
@@ -266,8 +267,9 @@ class Enemy_A(pygame.sprite.Sprite):
         for opp in self.opponents:
             opponentVec = pygame.math.Vector2(opp.rect.center)  #calculate the vector between each opp and ai
             temp_distance = (opponentVec - myVec).magnitude()
-            if temp_distance < self.view_radius:  
-                return opp  # if the distance between ai and other character is within my visitable range return true
+            if temp_distance < self.view_radius and opp.health > 0:
+                 
+                    return opp  # if the distance between ai and other character is within my visitable range return true
         return None
             
     # determine if an enemy is within the attack range
@@ -341,6 +343,18 @@ class Enemy_A(pygame.sprite.Sprite):
             self.damage_sound.play()   
             self.check_death()
             
+    
+    # roll a virtual die to determine to flee from an attack
+    def roll_dice_to_flee(self):
+        if self.health < self.starting_health // 2 :
+            # roll a random die to decide whether to flee or not
+            rand_num = random.randint(0,30)
+            if rand_num < 18:
+                print(" cpu a fleeing from attack")
+                return True
+        else:
+            return False
+    
         
     # check if health is 0 and character has died
     def check_death(self):
