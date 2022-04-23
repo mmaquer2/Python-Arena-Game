@@ -291,8 +291,8 @@ class Enemy_A(pygame.sprite.Sprite):
     
     # select a random waypoint to be used as a destination for the CPU 
     def get_waypoint(self):
-        waypoints = [[2,3], [9,17], [17,9]]
-        random_int = random.randint(0,2)
+        waypoints = [[2,3], [9,17], [17,9],[3,17]]
+        random_int = random.randint(0,3)
         return waypoints[random_int]
     
     # plan a path using the Astar package       
