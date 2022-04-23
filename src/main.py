@@ -21,10 +21,10 @@ class Game:
         self.clock = pygame.time.Clock()
                
         # load music 
-        #main_music = Path('music/battle_music.wav')
-        #main_sound = pygame.mixer.Sound(main_music) # play music   
-        #main_sound.set_volume(0.1)
-        #main_sound.play(loops = -1) # keep looping the music
+        main_music = Path('music/battle_music.wav')
+        main_sound = pygame.mixer.Sound(main_music) # play music   
+        main_sound.set_volume(0.1)
+        main_sound.play(loops = -1) # keep looping the music
                 
         # init game level and map   
         self.level = Level()

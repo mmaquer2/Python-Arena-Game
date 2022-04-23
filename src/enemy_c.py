@@ -283,7 +283,6 @@ class Enemy_C(pygame.sprite.Sprite):
         start_y = start[1]   
         end_x = end[0] 
         end_y = end[1]
-        print(start, end) 
         start_node = self.nav_mesh.node(start_x,start_y)
         end_node = self.nav_mesh.node( end_x,end_y)
         
